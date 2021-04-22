@@ -1,0 +1,27 @@
+.btn {
+  @apply w-full h-full flex items-center justify-center;
+  @apply px-8 py-3;
+  @apply border border-transparent;
+  @apply text-base font-medium;
+  @apply rounded-md;
+
+  @screen md {
+    @apply  py-4 text-lg px-10;
+  }
+}
+
+.btn-indigo {
+  @apply text-white bg-indigo-600;
+
+  &:hover {
+    @apply bg-indigo-700;
+  }
+}
+
+.btn-white {
+  @apply text-indigo-600 bg-white;
+
+  &:hover {
+    @apply bg-gray-50;
+  }
+}
