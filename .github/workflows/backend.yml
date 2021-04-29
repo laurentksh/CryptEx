@@ -1,16 +1,16 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - CryptEx-Back
+name: CryptEx-Back: Build - Test - Deploy
 
 on:
   push:
-    branches:
-      - master
-  workflow_dispatch:
+    branches: [ master ]
+    paths: [ "src/back-end/**", ".github/workflows/backend.yml" ]
 
 jobs:
   build:
+    name: .NET Back-End CI/CD
     runs-on: ubuntu-latest
 
     steps:
