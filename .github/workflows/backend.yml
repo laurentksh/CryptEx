@@ -27,6 +27,9 @@ jobs:
     - name: Build with dotnet
       run: dotnet build --configuration Release
 
+    - name: Test
+      run: dotnet test
+    
     - name: dotnet publish
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
@@ -56,4 +59,4 @@ jobs:
         app-name: 'CryptEx-Back'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_abb347b9b08c4551b383815c8cff1a24 }}
-        package: .
+        package: ${{env.DOTNET_ROOT}}/myapp
