@@ -1,24 +1,8 @@
-<div class="relative bg-gray-50 overflow-hidden h-screen flex">
-  <main class="my-auto mx-auto max-w-7xl">
-    <div class="text-center">
-      <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-        <span class="block xl:inline">Angular </span>
-        <span class="block text-indigo-600 xl:inline">Tailwind</span>
-      </h1>
-      <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
-        <div class="rounded-md shadow">
-          <a href="https://tailwindcss.com/docs"
-             class="btn btn-indigo">
-            Tailwind
-          </a>
-        </div>
-        <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
-          <a href="https://angular.io/docs"
-             class="btn btn-white">
-            Angular
-          </a>
-        </div>
-      </div>
+
+<div class="flex flex-col min-h-screen">
+        <app-header class="fixed w-full z-10"></app-header>
+    <div class="flex-grow mt-16">
+        <router-outlet></router-outlet>
     </div>
-  </main>
+    <app-footer></app-footer>
 </div>
