@@ -1,4 +1,4 @@
-name: CryptEx-Front: Build - Deploy
+name: 'CryptEx-Front: Build - Deploy'
 
 on:
   push:
