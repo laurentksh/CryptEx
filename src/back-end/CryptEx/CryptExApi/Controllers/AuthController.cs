@@ -23,6 +23,7 @@ namespace CryptExApi.Controllers
             this.exceptionHandler = exceptionHandler;
         }
 
+        [HttpPost("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Authenticate([FromBody] AuthDTO auth)
         {

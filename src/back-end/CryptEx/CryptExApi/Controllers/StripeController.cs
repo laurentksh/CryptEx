@@ -21,13 +21,15 @@ namespace CryptExApi.Controllers
         private readonly IConfiguration configuration;
         private readonly IStripeService stripeService;
 
-        public StripeController(ILogger<StripeController> logger, IConfiguration configuration)
+        public StripeController(ILogger<StripeController> logger, IConfiguration configuration, IStripeService stripeService)
         {
             this.logger = logger;
             this.configuration = configuration;
+            this.stripeService = stripeService;
         }
 
-        public async Task<IActionResult> Callback()
+        [HttpPost("checkout")]
+        public async Task<IActionResult> CheckoutCallback()
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 

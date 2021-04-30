@@ -25,7 +25,7 @@ namespace CryptExApi.Controllers
             this.exceptionHandler = exceptionHandler;
         }
 
-        [Route("deposit/fiat")]
+        [HttpPost("deposit/fiat")]
         public async Task<IActionResult> DepositFiat([FromQuery] decimal amount)
         {
             try {
@@ -37,7 +37,7 @@ namespace CryptExApi.Controllers
             }
         }
 
-        [Route("deposit/crypto")]
+        [HttpPost("deposit/crypto")]
         public async Task<IActionResult> DepositCrypto([FromQuery] int walletId)
         {
             try {

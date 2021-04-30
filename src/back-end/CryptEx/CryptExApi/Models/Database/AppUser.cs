@@ -13,4 +13,12 @@ namespace CryptExApi.Models.Database
             
         }
     }
+
+    public class AppRole : IdentityRole<Guid>
+    {
+        public AppRole()
+        {
+
+        }
+    }
 }

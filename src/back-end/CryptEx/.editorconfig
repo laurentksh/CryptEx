@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS1998: Disable async method without await warning.
+dotnet_diagnostic.CS1998.severity = silent

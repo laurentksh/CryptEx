@@ -1,3 +1,5 @@
+using CryptExApi.Data;
+using CryptExApi.Models.Database;
 using CryptExApi.Services;
 using CryptExApi.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -65,6 +67,21 @@ namespace CryptExApi
                 });
             });
 
+            services.AddDbContext<CryptExDbContext>(/* Add DB Provider */);
+
+            services.Configure<JwtOptions>(Configuration.GetSection("JwtOptions"));
+
+            services.AddIdentity<AppUser, AppRole>(x =>
+            {
+                x.Password.RequiredUniqueChars = 4;
+                x.Password.RequiredLength = 8;
+
+                x.Lockout.AllowedForNewUsers = false;
+
+                x.User.AllowedUserNameCharacters = StringUtilities.AlphabetMin + StringUtilities.AlphabetMaj + StringUtilities.Numbers;
+                x.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<CryptExDbContext>();
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -90,20 +107,11 @@ namespace CryptExApi
 
             services.AddAuthorization();
 
-            services.AddIdentity<IdentityUser, IdentityRole>(x =>
-            {
-                x.Password.RequiredUniqueChars = 4;
-                x.Password.RequiredLength = 8;
-                
-                x.Lockout.AllowedForNewUsers = false;
-                
-                x.User.AllowedUserNameCharacters = StringUtilities.AlphabetMin + StringUtilities.AlphabetMaj + StringUtilities.Numbers;
-                x.User.RequireUniqueEmail = true;
-            });
-
             StripeConfiguration.ApiKey = Configuration["StripeApiKey"];
 
             services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
+            services.AddTransient<IPaymentService, PaymentService>();
+            services.AddTransient<IStripeService, StripeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
