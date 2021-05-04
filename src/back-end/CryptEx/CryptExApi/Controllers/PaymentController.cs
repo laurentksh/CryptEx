@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CryptExApi.Authentication;
 using CryptExApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,17 +20,21 @@ namespace CryptExApi.Controllers
         private readonly IPaymentService paymentService;
         private readonly IExceptionHandlerService exceptionHandler;
 
-        public PaymentController(ILogger<PaymentController> logger, IExceptionHandlerService exceptionHandler)
+        public PaymentController(ILogger<PaymentController> logger, IExceptionHandlerService exceptionHandler, IPaymentService paymentService)
         {
             this.logger = logger;
             this.exceptionHandler = exceptionHandler;
+            this.paymentService = paymentService;
         }
 
         [HttpPost("deposit/fiat")]
         public async Task<IActionResult> DepositFiat([FromQuery] decimal amount)
         {
+            var user = await HttpContext.GetUser();
+
             try {
-                var session = await paymentService.CreatePaymentSession(amount);
+                var session = await paymentService.CreatePaymentSession(amount, user);
+
                 return Ok(session);
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could create payment session.");
@@ -40,8 +45,10 @@ namespace CryptExApi.Controllers
         [HttpPost("deposit/crypto")]
         public async Task<IActionResult> DepositCrypto([FromQuery] int walletId)
         {
+            var user = await HttpContext.GetUser();
+
             try {
-                var address = await paymentService.GenerateDepositWallet();
+                var address = await paymentService.GenerateDepositWallet(walletId, user);
                 
                 return Ok(address);
             } catch (Exception ex) {

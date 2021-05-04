@@ -34,7 +34,7 @@ namespace CryptExApi.Controllers
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
             try {
-                var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], configuration["Stripe:WHCallbackSecret"]);
+                var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], configuration["WHCheckoutCallbackSecret"]);
                 Session session;
 
                 switch (stripeEvent.Type) {
