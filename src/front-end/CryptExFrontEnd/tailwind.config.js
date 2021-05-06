@@ -5,7 +5,11 @@ module.exports = {
     extend: {},
   },
   variants: {
-    extend: {},
+    extend: {
+      ringOffsetWidth: ['hover', 'active'],
+      ringColor: ['hover', 'active'],
+      ringWidth: ['hover', 'active'],
+    },
   },
   plugins: [
     require('@tailwindcss/forms')
