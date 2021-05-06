@@ -7,6 +7,7 @@ import { ChangePasswordComponent } from './Components/change-password/change-pas
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {AuthRouting} from './auth-routing';
+import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import {AuthRouting} from './auth-routing';
     LoginComponent,
     LogoutComponent,
     RegisterComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     CommonModule,
