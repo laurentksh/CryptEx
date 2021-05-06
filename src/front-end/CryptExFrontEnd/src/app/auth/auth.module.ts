@@ -9,7 +9,6 @@ import {FormsModule} from '@angular/forms';
 import {AuthRouting} from './auth-routing';
 
 
-
 @NgModule({
   declarations: [
     LoginComponent,
