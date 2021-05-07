@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "tailwind-angular-starter": {
+    "cryptex-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -21,7 +21,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "extraWebpackConfig": "webpack.config.js",
-            "outputPath": "dist/tailwind-angular-starter",
+            "outputPath": "dist/cryptex-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -56,7 +56,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -71,18 +71,18 @@
           "builder": "ngx-build-plus:dev-server",
           "options": {
             "extraWebpackConfig": "webpack.config.js",
-            "browserTarget": "tailwind-angular-starter:build"
+            "browserTarget": "cryptex-frontend:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "tailwind-angular-starter:build:production"
+              "browserTarget": "cryptex-frontend:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "tailwind-angular-starter:build"
+            "browserTarget": "cryptex-frontend:build"
           }
         },
         "test": {
@@ -120,16 +120,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "tailwind-angular-starter:serve"
+            "devServerTarget": "cryptex-frontend:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "tailwind-angular-starter:serve:production"
+              "devServerTarget": "cryptex-frontend:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "tailwind-angular-starter"
+  "defaultProject": "cryptex-frontend"
 }

@@ -2,21 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CryptExApi.Models.Database;
 using Stripe.Checkout;
 
 namespace CryptExApi.Services
 {
     public interface IPaymentService
     {
-        Task<Session> CreatePaymentSession(decimal amount);
+        Task<Session> CreatePaymentSession(decimal amount, AppUser user);
 
-        Task<string> GenerateDepositWallet();
+        Task<string> GenerateDepositWallet(int walletId, AppUser user);
     }
 
     public class PaymentService : IPaymentService
     {
-        public async Task<Session> CreatePaymentSession(decimal amount)
+        public PaymentService()
         {
+
+        }
+
+        public async Task<Session> CreatePaymentSession(decimal amount, AppUser user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
             var options = new SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string> //https://stripe.com/docs/api/payment_methods/object
@@ -43,7 +52,7 @@ namespace CryptExApi.Services
                 Mode = "payment",
                 SuccessUrl = "/checkout/success",
                 CancelUrl = "/checkout/cancel",
-                CustomerEmail = "TODO" //TODO: Fill in email from JWT token
+                CustomerEmail = user.Email
             };
 
             var service = new SessionService();
@@ -52,7 +61,7 @@ namespace CryptExApi.Services
             return session;
         }
 
-        public Task<string> GenerateDepositWallet()
+        public Task<string> GenerateDepositWallet(int walletId, AppUser user)
         {
             throw new NotImplementedException();
         }

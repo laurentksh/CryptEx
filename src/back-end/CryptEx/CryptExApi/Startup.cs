@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,12 +26,15 @@ namespace CryptExApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -67,9 +71,13 @@ namespace CryptExApi
                 });
             });
 
-            services.AddDbContext<CryptExDbContext>(/* Add DB Provider */);
+            if (Environment.IsProduction()) {
+                services.AddDbContext<CryptExDbContext>(/* Add DB Provider */);
+            } else if (Environment.IsDevelopment()) {
+                services.AddDbContext<CryptExDbContext>(x => x.UseInMemoryDatabase(nameof(CryptExDbContext)));
 
-            services.Configure<JwtOptions>(Configuration.GetSection("JwtOptions"));
+                // TODO: Mock test data
+            }
 
             services.AddIdentity<AppUser, AppRole>(x =>
             {
@@ -89,7 +97,7 @@ namespace CryptExApi
             })
             .AddJwtBearer(x =>
             {
-                var key = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtOptions")["SigningKey"]);
+                var key = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("JwtSigningKey"));
 
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
@@ -105,9 +113,21 @@ namespace CryptExApi
                 x.Validate(JwtBearerDefaults.AuthenticationScheme);
             });
 
+            services.AddLogging(x =>
+            {
+                if (Environment.IsDevelopment()) {
+                    x.AddConsole();
+                    x.SetMinimumLevel(LogLevel.Debug);
+                } else if (Environment.IsProduction()) {
+                    x.AddApplicationInsights(Configuration.GetConnectionString("AppInsights"));
+                }
+            });
+
+            services.AddApplicationInsightsTelemetry();
+
             services.AddAuthorization();
 
-            StripeConfiguration.ApiKey = Configuration["StripeApiKey"];
+            StripeConfiguration.ApiKey = Configuration["StripePrivateKey"];
 
             services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
             services.AddTransient<IPaymentService, PaymentService>();
