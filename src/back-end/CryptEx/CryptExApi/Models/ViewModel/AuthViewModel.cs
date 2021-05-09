@@ -8,5 +8,10 @@ namespace CryptExApi.Models.ViewModel
     public class AuthViewModel
     {
         public string JWToken { get; set; }
+
+        public AuthViewModel(string jwToken)
+        {
+            JWToken = jwToken;
+        }
     }
 }

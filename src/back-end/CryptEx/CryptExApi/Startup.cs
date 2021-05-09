@@ -5,9 +5,7 @@ using CryptExApi.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +15,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Stripe;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -83,13 +79,15 @@ namespace CryptExApi
             {
                 x.Password.RequiredUniqueChars = 4;
                 x.Password.RequiredLength = 8;
+                x.Password.RequireNonAlphanumeric = false;
 
                 x.Lockout.AllowedForNewUsers = false;
 
                 x.User.AllowedUserNameCharacters = StringUtilities.AlphabetMin + StringUtilities.AlphabetMaj + StringUtilities.Numbers;
                 x.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<CryptExDbContext>();
-
+            })
+                .AddEntityFrameworkStores<CryptExDbContext>();
+            
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -103,8 +101,9 @@ namespace CryptExApi
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
+                    ValidateIssuer = false,
                     ValidateLifetime = true,
+                    ValidateAudience = false,
 
                     RequireExpirationTime = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -130,6 +129,8 @@ namespace CryptExApi
             StripeConfiguration.ApiKey = Configuration["StripePrivateKey"];
 
             services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPaymentService, PaymentService>();
             services.AddTransient<IStripeService, StripeService>();
         }
@@ -137,16 +138,20 @@ namespace CryptExApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var scope = app.ApplicationServices.CreateScope())
+                Task.WaitAll(DefaultDataSeeder.Seed(scope.ServiceProvider));
+
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CryptExApi v1"));
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
