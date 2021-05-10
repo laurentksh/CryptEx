@@ -5,12 +5,17 @@ using System.Threading.Tasks;
 
 namespace CryptExApi.Models.DTO
 {
-    public class AuthDTO
+    public class CreateUserDTO
     {
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        //TODO: Add birthday validation
+        public DateTime BirthDay { get; set; }
+
         public string Email { get; set; }
 
         public string Password { get; set; }
-
-        public bool ExtendSession { get; set; } = false;
     }
 }

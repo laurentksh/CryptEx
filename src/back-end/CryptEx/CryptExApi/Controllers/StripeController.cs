@@ -41,11 +41,11 @@ namespace CryptExApi.Controllers
                     case Events.CheckoutSessionCompleted:
                         session = stripeEvent.Data.Object as Session;
 
-                        // Save the deposit in DB, mark it as "processing".
-                        await stripeService.CreateDeposit(session);
-
                         if (session.PaymentStatus == "paid") { // Payment successfull (probably paid with Card as success was instant)
                             await stripeService.FullfillDeposit(session);
+                        } else {
+                            // Save the deposit in DB, mark it as "processing".
+                            await stripeService.CreateDeposit(session);
                         }
 
                         break;
@@ -63,10 +63,10 @@ namespace CryptExApi.Controllers
 
                 return Ok();
             } catch (StripeException stripeEx) {
-                logger.LogError(stripeEx, "Could not handle Stripe callback.");
+                logger.LogCritical(stripeEx, "Could not handle Stripe callback.");
                 return BadRequest();
             } catch (Exception ex) {
-                logger.LogWarning(ex, "Error.");
+                logger.LogCritical(ex, "Error.");
                 return Problem(statusCode: StatusCodes.Status500InternalServerError, title: "StripeEventProcessError");
             }
         }

@@ -8,15 +8,26 @@ namespace CryptExApi.Models.Database
 {
     public class AppUser : IdentityUser<Guid>
     {
-        public AppUser()
+        public AppUser() : base()
         {
             
         }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public DateTime BirthDay { get; set; }
     }
 
     public class AppRole : IdentityRole<Guid>
     {
-        public AppRole()
+        public AppRole() : base()
+        {
+
+        }
+
+        public AppRole(string roleName) : base(roleName)
         {
 
         }
