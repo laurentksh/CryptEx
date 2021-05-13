@@ -13,6 +13,10 @@ export class EnvironmentService implements IEnvironment {
     return environment.production;
   }
 
+  get baseUrl(): string {
+    return environment.baseUrl;
+  }
+
   get apiBaseUrl(): string {
     return environment.apiBaseUrl;
   }
