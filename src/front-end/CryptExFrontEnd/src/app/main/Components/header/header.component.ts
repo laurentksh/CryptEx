@@ -34,6 +34,7 @@ export class HeaderComponent implements OnInit {
       this.showMobileMenu = false;
       this.isOpen = false;
     } else {
+      this.showMobileMenu = false;
       this.isOpen = false;
     }
   }

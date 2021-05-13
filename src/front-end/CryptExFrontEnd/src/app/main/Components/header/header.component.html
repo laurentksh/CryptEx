@@ -37,13 +37,13 @@
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
               <a routerLink="home" routerLinkActive="bg-gray-900" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Home</a>
 
-              <a routerLink="contact" routerLinkActive="bg-gray-900" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact</a>
-
               <a routerLink="buySell" routerLinkActive="bg-gray-900" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Buy / Sell</a>
 
               <a routerLink="wallets" routerLinkActive="bg-gray-900" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">My Wallets</a>
 
               <a routerLink="deposit" routerLinkActive="bg-gray-900" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Deposit / Withdraw</a>
+
+              <a routerLink="contact" routerLinkActive="bg-gray-900" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact</a>
             </div>
           </div>
         </div>
@@ -80,17 +80,17 @@
 
     <!-- Mobile menu, show/hide based on menu state. -->
     <div class="sm:hidden" id="mobile-menu" [hidden]="!showMobileMenu">
-      <div class="px-2 pt-2 pb-3 space-y-1 flex flex-col">
+      <div class="px-2 pt-2 pb-3 space-y-1 flex flex-col items-center user-dropdown">
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <a routerLink="home" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Home</a>
+        <a routerLink="home"    routerLinkActive="bg-gray-900 text-white" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
 
-        <a routerLink="contact" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+        <a routerLink="buySell" routerLinkActive="bg-gray-900 text-white" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Buy/Sell</a>
 
-        <a routerLink="buySell" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Buy/Sell</a>
+        <a routerLink="wallets" routerLinkActive="bg-gray-900 text-white" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">My Wallets</a>
 
-        <a routerLink="wallets" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">My Wallets</a>
+        <a routerLink="deposit" routerLinkActive="bg-gray-900 text-white" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Deposit / Withdraw</a>
 
-        <a routerLink="deposit" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Deposit / Withdraw</a>
+        <a routerLink="contact" routerLinkActive="bg-gray-900 text-white" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact</a>
       </div>
     </div>
   </nav>
