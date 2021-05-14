@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentService } from 'src/environments/service/environment.service';
-import { ApiResult } from './models/api-result';
-import { HttpParameters } from './models/http-parameters';
+import { ApiResult } from '../models/api-result';
+import { HttpParameters } from '../models/http-parameters';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class CustomHttpClientService {
    * @param parameters Request parameters
    * @returns Promise with type @type
    */
-  public async Get<T>(relativeUrl: string, parameters?: HttpParameters): Promise<ApiResult<T>> {
+  public async Get<T = void>(relativeUrl: string, parameters?: HttpParameters): Promise<ApiResult<T>> {
     const result = {} as ApiResult<T>;
     result.success = true;
     
@@ -31,7 +31,7 @@ export class CustomHttpClientService {
     return result;
   }
 
-  public async Post<T>(relativeUrl: string, body: any, parameters?: HttpParameters): Promise<ApiResult<T>> {
+  public async Post<T = void>(relativeUrl: string, body: any, parameters?: HttpParameters): Promise<ApiResult<T>> {
     const result = {} as ApiResult<T>;
     result.success = true;
     
