@@ -9,8 +9,15 @@ namespace CryptExApi.Models.Database
     {
         public Guid Id { get; set; }
 
-        public bool Fullfilled { get; set; }
+        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
 
         public string StripeSessionId { get; set; }
+    }
+
+    public enum PaymentStatus
+    {
+        Failed,
+        Success,
+        Pending
     }
 }

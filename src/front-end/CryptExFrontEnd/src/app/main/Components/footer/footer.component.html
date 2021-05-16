@@ -131,7 +131,7 @@
           </div>
         </div>
 
-        <!-- <div class="mt-12 xl:mt-0">
+        <div class="mt-12 xl:mt-0">
           <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">
             Language &amp; Currency
           </h3>
@@ -139,12 +139,8 @@
             <fieldset class="w-full">
               <label for="language" class="sr-only">Language</label>
               <div class="relative">
-                <select id="language" name="language" class="appearance-none block w-full bg-none bg-gray-700 border border-transparent rounded-md py-2 pl-3 pr-10 text-base text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm">
-                  <option selected>English</option>
-                  <option>French</option>
-                  <option>German</option>
-                  <option>Japanese</option>
-                  <option>Spanish</option>
+                <select id="language" name="language" (change)="onLanguageChange($event)" class="appearance-none block w-full bg-none bg-gray-700 border border-transparent rounded-md py-2 pl-3 pr-10 text-base text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm">
+                  <option *ngFor="let lang of languages" [value]="lang">{{ lang }}</option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 px-2 flex items-center">
                   <svg class="h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -156,15 +152,8 @@
             <fieldset class="mt-4 w-full">
               <label for="currency" class="sr-only">Currency</label>
               <div class="mt-1.5 relative">
-                <select id="currency" name="currency" class="appearance-none w-full bg-none bg-gray-700 border border-transparent rounded-md block py-2 pl-3 pr-10 text-base text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm">
-                  <option>ARS</option>
-                  <option selected>AUD</option>
-                  <option>CAD</option>
-                  <option>CHF</option>
-                  <option>EUR</option>
-                  <option>GBP</option>
-                  <option>JPY</option>
-                  <option>USD</option>
+                <select id="currency" name="currency" (change)="onCurrencyChange($event)" class="appearance-none w-full bg-none bg-gray-700 border border-transparent rounded-md block py-2 pl-3 pr-10 text-base text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm">
+                  <option></option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 px-2 flex items-center">
                   <svg class="h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -174,7 +163,7 @@
               </div>
             </fieldset>
           </form>
-        </div> -->
+        </div>
       
     </div>
       <div class="border-t border-gray-700 pt-8 lg:flex lg:items-center lg:justify-between xl:mt-0">

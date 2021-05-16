@@ -1,5 +1,6 @@
 using CryptExApi.Data;
 using CryptExApi.Models.Database;
+using CryptExApi.Repositories;
 using CryptExApi.Services;
 using CryptExApi.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -68,11 +69,19 @@ namespace CryptExApi
             });
 
             if (Environment.IsProduction()) {
-                services.AddDbContext<CryptExDbContext>(/* Add DB Provider */);
+                services.AddDbContext<CryptExDbContext>(x =>
+                {
+                    x.UseSqlServer(Configuration.GetConnectionString("Database"), options =>
+                    {
+                        options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+                    });
+                });
             } else if (Environment.IsDevelopment()) {
                 services.AddDbContext<CryptExDbContext>(x => x.UseInMemoryDatabase(nameof(CryptExDbContext)));
 
                 // TODO: Mock test data
+            } else {
+                throw new NotSupportedException("Environment not supported.");
             }
 
             services.AddIdentity<AppUser, AppRole>(x =>
@@ -86,6 +95,7 @@ namespace CryptExApi
                 x.User.AllowedUserNameCharacters = StringUtilities.AlphabetMin + StringUtilities.AlphabetMaj + StringUtilities.Numbers;
                 x.User.RequireUniqueEmail = true;
             })
+                .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<CryptExDbContext>();
             
             services.AddAuthentication(x =>
@@ -133,20 +143,40 @@ namespace CryptExApi
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPaymentService, PaymentService>();
             services.AddTransient<IStripeService, StripeService>();
+
+            services.AddTransient<IStripeRepository, StripeRepository>();
+
+            if (Environment.IsDevelopment())
+                services.AddTransient<IDataSeeder, DevelopmentDataSeeder>();
+            else if (Environment.IsProduction())
+                services.AddTransient<IDataSeeder, ProductionDataSeeder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            using (var scope = app.ApplicationServices.CreateScope())
-                Task.WaitAll(DefaultDataSeeder.Seed(scope.ServiceProvider));
+            using (var scope = app.ApplicationServices.CreateScope()) {
+                Task.Run(async () => {
+                    if (env.IsProduction())
+                        await scope.ServiceProvider.GetService<CryptExDbContext>().Database.MigrateAsync();
+
+                    await DefaultDataSeeder.Seed(scope.ServiceProvider);
+
+                    await scope.ServiceProvider.GetService<IDataSeeder>()?.Seed(scope.ServiceProvider);
+                }).Wait();
+            }
 
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CryptExApi v1"));
             }
-            
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CryptExApi v1");
+                c.DisplayRequestDuration();
+                c.EnableValidator();
+            });
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

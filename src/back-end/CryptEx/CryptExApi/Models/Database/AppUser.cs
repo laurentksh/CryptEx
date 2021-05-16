@@ -18,6 +18,8 @@ namespace CryptExApi.Models.Database
         public string LastName { get; set; }
 
         public DateTime BirthDay { get; set; }
+
+        public string PreferedCurrency { get; set; } = "USD";
     }
 
     public class AppRole : IdentityRole<Guid>

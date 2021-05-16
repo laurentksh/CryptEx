@@ -37,7 +37,7 @@ namespace CryptExApi.Controllers
 
                 return Ok(session);
             } catch (Exception ex) {
-                logger.LogWarning(ex, "Could create payment session.");
+                logger.LogWarning(ex, "Could not create payment session.");
                 return exceptionHandler.Handle(ex, Request);
             }
         }
