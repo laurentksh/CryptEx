@@ -39,11 +39,11 @@ namespace CryptExApi.Services
                     {
                         PriceData = new SessionLineItemPriceDataOptions
                         {
-                            Currency = "usd",
+                            Currency = user.PreferedCurrency.ToLower(),
                             UnitAmountDecimal = amount,
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
-                                Name = "Fiat USD Deposit",
+                                Name = $"Fiat {user.PreferedCurrency} Deposit",
                             }
                         },
                         Quantity = 1,

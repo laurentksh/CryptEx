@@ -2,13 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CryptExApi.Exceptions;
+using CryptExApi.Models.Database;
+using CryptExApi.Repositories;
+using Microsoft.Extensions.Configuration;
+using Stripe;
 using Stripe.Checkout;
 
 namespace CryptExApi.Services
 {
     public interface IStripeService
     {
-        Task CreateDeposit(Session session);
+        Task HandleCheckoutCallback(string jsonBody, string stripeSignature);
+
+        Task<FiatDeposit> CreateDeposit(Session session);
 
         Task FullfillDeposit(Session session);
 
@@ -17,19 +24,71 @@ namespace CryptExApi.Services
 
     public class StripeService : IStripeService
     {
-        public Task CreateDeposit(Session session)
+        private readonly IStripeRepository repository;
+        private readonly IConfiguration configuration;
+
+        public StripeService(IConfiguration configuration, IStripeRepository repository)
         {
-            throw new NotImplementedException();
+            this.configuration = configuration;
+            this.repository = repository;
         }
 
-        public Task FullfillDeposit(Session session)
+        public async Task HandleCheckoutCallback(string jsonBody, string stripeSignature)
         {
-            throw new NotImplementedException();
+            var stripeEvent = EventUtility.ConstructEvent(jsonBody, stripeSignature, configuration["WHCheckoutCallbackSecret"]);
+            Session session;
+
+            switch (stripeEvent.Type) {
+                case Events.CheckoutSessionCompleted:
+                    session = stripeEvent.Data.Object as Session;
+
+                    // Save the deposit in DB, mark it as "processing".
+                    await CreateDeposit(session);
+
+                    if (session.PaymentStatus == "paid") { // Payment successfull (probably paid with Card as success was instant)
+                        await FullfillDeposit(session);
+                    }
+
+                    break;
+                case Events.CheckoutSessionAsyncPaymentSucceeded:
+                    session = stripeEvent.Data.Object as Session;
+
+                    await FullfillDeposit(session);
+                    break;
+                case Events.CheckoutSessionAsyncPaymentFailed:
+                    session = stripeEvent.Data.Object as Session;
+
+                    await SetDepositAsFailed(session); //Payment failed.
+                    break;
+            }
         }
 
-        public Task SetDepositAsFailed(Session session)
+        public async Task<FiatDeposit> CreateDeposit(Session session)
         {
-            throw new NotImplementedException();
+            if (await repository.DepositExists(session.Id))
+                throw new ArgumentException("Session already exists.");
+
+            return await repository.CreateDeposit(new FiatDeposit
+            {
+                Status = PaymentStatus.Pending,
+                StripeSessionId = session.Id
+            });
+        }
+
+        public async Task FullfillDeposit(Session session)
+        {
+            if (!await repository.DepositExists(session.Id))
+                throw new NotFoundException($"Session with id {session.Id} does not exist.");
+
+            await repository.SetDepositStatus(session.Id, PaymentStatus.Success);
+        }
+
+        public async Task SetDepositAsFailed(Session session)
+        {
+            if (!await repository.DepositExists(session.Id))
+                throw new NotFoundException($"Session with id {session.Id} does not exist.");
+
+            await repository.SetDepositStatus(session.Id, PaymentStatus.Failed);
         }
     }
 }

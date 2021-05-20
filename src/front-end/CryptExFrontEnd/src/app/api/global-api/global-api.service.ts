@@ -10,7 +10,11 @@ export class GlobalApiService {
 
   constructor(private http: CustomHttpClientService) { }
 
-  public async GetApiResponseTime(): Promise<ApiResult<number>> {
-    return await this.http.Get<number>("ping");
+  /**
+   * Check if the service is up
+   * @returns "OK" if the service is up
+   */
+  public async HealthCheck(): Promise<ApiResult<string>> {
+    return await this.http.Get<string>("ping");
   }
 }

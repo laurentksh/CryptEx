@@ -8,6 +8,7 @@ import { Component, HostListener, OnInit, ViewEncapsulation } from '@angular/cor
 })
 export class HeaderComponent implements OnInit {
   isOpen = false;
+  showMobileMenu = false;
 
   constructor() { 
 
@@ -20,16 +21,20 @@ export class HeaderComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     var el = event.target as HTMLElement;
-    console.log(el?.className)
-    console.log(el.parentElement?.className)
-    if (el == null)
+    
+    if (el == null || el.nodeName == "path")
       return;
     
-    if(this.isOpen && !el.parentElement?.className.includes("user-dropdown")){
-      if (el.parentElement?.className.includes("dp-btn")) {
-        return;
-      }
+    if (el.parentElement?.className?.includes("dp-btn")) {
+      this.showMobileMenu = false;
+      return;
+    }
 
+    if(this.isOpen && !el.parentElement?.className.includes("user-dropdown")){
+      this.showMobileMenu = false;
+      this.isOpen = false;
+    } else {
+      this.showMobileMenu = false;
       this.isOpen = false;
     }
   }
