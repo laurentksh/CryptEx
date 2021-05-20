@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CryptExApi.Data
 {
-    public class CryptExDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
+    public class CryptExDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         public DbSet<FiatDeposit> Deposits { get; set; }
 

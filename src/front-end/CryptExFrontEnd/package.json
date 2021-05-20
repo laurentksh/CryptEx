@@ -21,8 +21,13 @@
     "@angular/platform-browser-dynamic": "~11.2.12",
     "@angular/router": "~11.2.12",
     "lightweight-charts": "^3.3.0",
+    "@auth0/angular-jwt": "^5.0.2",
+    "@stripe/stripe-js": "^1.14.0",
+    "@tailwindcss/forms": "^0.3.2",
+    "remixicon": "^2.5.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
+    "url-polyfill": "^1.1.12",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
@@ -31,6 +36,7 @@
     "@angular/cli": "~11.2.11",
     "@angular/compiler-cli": "~11.2.12",
     "@tailwindcss/forms": "^0.3.2",
+    "@angular/localize": "^11.2.12",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
