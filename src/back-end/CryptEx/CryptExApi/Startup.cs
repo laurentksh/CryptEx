@@ -77,7 +77,7 @@ namespace CryptExApi
                     {
                         y.AllowAnyMethod();
                         y.AllowAnyHeader();
-                        y.WithOrigins("cryptex-trade.tech", "api.cryptex-trade.tech");
+                        y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
                     });
                 });
                 services.AddDbContext<CryptExDbContext>(x =>
