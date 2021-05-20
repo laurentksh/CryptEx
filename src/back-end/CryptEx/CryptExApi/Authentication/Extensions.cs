@@ -17,13 +17,21 @@ namespace CryptExApi.Authentication
         /// <summary>
         /// Get the user from HttpContext.
         /// </summary>
+        /// <remarks>
+        /// WARNING: The returned AppUser object does not contains foreign properties.
+        /// </remarks>
         /// <param name="context">Request's HttpContext</param>
         /// <returns>AppUser or null</returns>
         public async static Task<AppUser> GetUser(this HttpContext context)
         {
             var userManager = context.RequestServices.GetService(typeof(UserManager<AppUser>)) as UserManager<AppUser>;
 
-            var user = await userManager.GetUserAsync(context.User);
+            var userId = context.User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+
+            if (userId == null)
+                return null;
+
+            var user = await userManager.FindByIdAsync(userId);
 
             return user;
         }

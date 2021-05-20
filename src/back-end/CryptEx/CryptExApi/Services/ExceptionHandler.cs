@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
+using CryptExApi.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,13 +16,13 @@ namespace CryptExApi.Services
         public IActionResult Handle(Exception exception, HttpRequest request)
         {
             var problem = GetProblem(exception);
-            ProblemDetails problemDetails = new ProblemDetails
+            var problemDetails = new ProblemDetails
             {
                 Type = $"/Problems/{problem.problemType}",
                 Title = problem.httpStatus.ToString(),
                 Status = (int)problem.httpStatus,
                 Detail = problem.problemMsg,
-                Instance = request?.Path
+                Instance = request?.Path,
             };
 
             return new ObjectResult(problemDetails) { StatusCode = problemDetails.Status };
@@ -36,6 +34,8 @@ namespace CryptExApi.Services
 
             return exception switch
             {
+                UnauthorizedException => (HttpStatusCode.Unauthorized, "Unauthorized", exMsg),
+                BadRequestException => (HttpStatusCode.BadRequest, "BadRequest", exMsg),
                 FormatException or ArgumentException => (HttpStatusCode.BadRequest, "BadRequest", exMsg),
                 NotImplementedException => (HttpStatusCode.NotImplemented, "NotImplemented", exMsg),
                 NullReferenceException => (HttpStatusCode.InternalServerError, "InternalServerError", "Unspecified server error"),

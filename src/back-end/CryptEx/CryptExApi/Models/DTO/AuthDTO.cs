@@ -10,5 +10,7 @@ namespace CryptExApi.Models.DTO
         public string Email { get; set; }
 
         public string Password { get; set; }
+
+        public bool ExtendSession { get; set; } = false;
     }
 }

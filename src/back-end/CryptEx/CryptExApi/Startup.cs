@@ -1,13 +1,12 @@
 using CryptExApi.Data;
 using CryptExApi.Models.Database;
+using CryptExApi.Repositories;
 using CryptExApi.Services;
 using CryptExApi.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +16,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Stripe;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,6 +23,8 @@ namespace CryptExApi
 {
     public class Startup
     {
+        private const string CorsPolicyName = "CorsPolicy";
+
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -72,24 +71,53 @@ namespace CryptExApi
             });
 
             if (Environment.IsProduction()) {
-                services.AddDbContext<CryptExDbContext>(/* Add DB Provider */);
+                services.AddCors(x =>
+                {
+                    x.AddPolicy(CorsPolicyName, y =>
+                    {
+                        y.AllowAnyMethod();
+                        y.AllowAnyHeader();
+                        y.AllowAnyOrigin(); //We allow any origin because we aren't a real website.
+                        //y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
+                    });
+                });
+                services.AddDbContext<CryptExDbContext>(x =>
+                {
+                    x.UseSqlServer(Configuration.GetConnectionString("Database"), options =>
+                    {
+                        options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+                    });
+                });
             } else if (Environment.IsDevelopment()) {
-                services.AddDbContext<CryptExDbContext>(x => x.UseInMemoryDatabase(nameof(CryptExDbContext)));
+                services.AddCors(x =>
+                {
+                    x.AddPolicy(CorsPolicyName, y =>
+                    {
+                        y.AllowAnyOrigin();
+                        y.AllowAnyMethod();
+                        y.AllowAnyHeader();
+                    });
+                });
 
-                // TODO: Mock test data
+                services.AddDbContext<CryptExDbContext>(x => x.UseInMemoryDatabase(nameof(CryptExDbContext)));
+            } else {
+                throw new NotSupportedException("Environment not supported.");
             }
 
             services.AddIdentity<AppUser, AppRole>(x =>
             {
                 x.Password.RequiredUniqueChars = 4;
                 x.Password.RequiredLength = 8;
+                x.Password.RequireNonAlphanumeric = false;
 
                 x.Lockout.AllowedForNewUsers = false;
 
                 x.User.AllowedUserNameCharacters = StringUtilities.AlphabetMin + StringUtilities.AlphabetMaj + StringUtilities.Numbers;
                 x.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<CryptExDbContext>();
-
+            })
+                .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<CryptExDbContext>();
+            
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -103,8 +131,9 @@ namespace CryptExApi
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
+                    ValidateIssuer = false,
                     ValidateLifetime = true,
+                    ValidateAudience = false,
 
                     RequireExpirationTime = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -130,23 +159,52 @@ namespace CryptExApi
             StripeConfiguration.ApiKey = Configuration["StripePrivateKey"];
 
             services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPaymentService, PaymentService>();
             services.AddTransient<IStripeService, StripeService>();
+
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IStripeRepository, StripeRepository>();
+
+            if (Environment.IsDevelopment())
+                services.AddTransient<IDataSeeder, DevelopmentDataSeeder>();
+            else if (Environment.IsProduction())
+                services.AddTransient<IDataSeeder, ProductionDataSeeder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var scope = app.ApplicationServices.CreateScope()) {
+                Task.Run(async () => {
+                    if (env.IsProduction())
+                        await scope.ServiceProvider.GetService<CryptExDbContext>().Database.MigrateAsync();
+
+                    await DefaultDataSeeder.Seed(scope.ServiceProvider);
+
+                    await scope.ServiceProvider.GetService<IDataSeeder>()?.Seed(scope.ServiceProvider);
+                }).Wait();
+            }
+
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CryptExApi v1"));
             }
+
+            app.UseCors(CorsPolicyName);
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CryptExApi v1");
+                c.DisplayRequestDuration();
+                c.EnableValidator();
+            });
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

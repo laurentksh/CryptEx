@@ -18,55 +18,28 @@ namespace CryptExApi.Controllers
     public class StripeController : ControllerBase // https://stripe.com/docs/payments/checkout/fulfill-orders
     {
         private readonly ILogger<StripeController> logger;
-        private readonly IConfiguration configuration;
+        
         private readonly IStripeService stripeService;
 
         public StripeController(ILogger<StripeController> logger, IConfiguration configuration, IStripeService stripeService)
         {
             this.logger = logger;
-            this.configuration = configuration;
             this.stripeService = stripeService;
         }
 
         [HttpPost("checkout")]
         public async Task<IActionResult> CheckoutCallback()
         {
-            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-
             try {
-                var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], configuration["WHCheckoutCallbackSecret"]);
-                Session session;
+                var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
-                switch (stripeEvent.Type) {
-                    case Events.CheckoutSessionCompleted:
-                        session = stripeEvent.Data.Object as Session;
-
-                        // Save the deposit in DB, mark it as "processing".
-                        await stripeService.CreateDeposit(session);
-
-                        if (session.PaymentStatus == "paid") { // Payment successfull (probably paid with Card as success was instant)
-                            await stripeService.FullfillDeposit(session);
-                        }
-
-                        break;
-                    case Events.CheckoutSessionAsyncPaymentSucceeded:
-                        session = stripeEvent.Data.Object as Session;
-
-                        await stripeService.FullfillDeposit(session);
-                        break;
-                    case Events.CheckoutSessionAsyncPaymentFailed:
-                        session = stripeEvent.Data.Object as Session;
-
-                        await stripeService.SetDepositAsFailed(session); //Payment failed.
-                        break;
-                }
-
+                await stripeService.HandleCheckoutCallback(json, Request.Headers["Stripe-Signature"]);
                 return Ok();
             } catch (StripeException stripeEx) {
-                logger.LogError(stripeEx, "Could not handle Stripe callback.");
+                logger.LogCritical(stripeEx, "Could not handle Stripe callback.");
                 return BadRequest();
             } catch (Exception ex) {
-                logger.LogWarning(ex, "Error.");
+                logger.LogCritical(ex, "Error.");
                 return Problem(statusCode: StatusCodes.Status500InternalServerError, title: "StripeEventProcessError");
             }
         }
