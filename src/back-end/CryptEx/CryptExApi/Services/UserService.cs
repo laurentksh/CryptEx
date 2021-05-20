@@ -5,12 +5,17 @@ using System.Threading.Tasks;
 using CryptExApi.Exceptions;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.DTO;
+using CryptExApi.Repositories;
 using Microsoft.AspNetCore.Identity;
 
 namespace CryptExApi.Services
 {
     public interface IUserService
     {
+        Task ChangeLanguage(AppUser user, string language);
+
+        Task ChangeCurrency(AppUser user, string currency);
+
         Task RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO);
 
         Task ChangePassword(AppUser user, ChangePasswordDTO changePasswordDTO);
@@ -18,11 +23,23 @@ namespace CryptExApi.Services
 
     public class UserService : IUserService
     {
-        private readonly UserManager<AppUser> userManager;
+        private readonly UserManager<AppUser> userManager; //User Manager acts as a repository.
+        private readonly IUserRepository userRepository;
 
-        public UserService(UserManager<AppUser> userManager)
+        public UserService(UserManager<AppUser> userManager, IUserRepository userRepository)
         {
             this.userManager = userManager;
+            this.userRepository = userRepository;
+        }
+
+        public async Task ChangeLanguage(AppUser user, string language)
+        {
+            await userRepository.ChangeLanguage(user, language);
+        }
+
+        public async Task ChangeCurrency(AppUser user, string currency)
+        {
+            await userRepository.ChangeCurrency(user, currency);
         }
 
         public async Task RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO)

@@ -17,6 +17,9 @@ namespace CryptExApi.Authentication
         /// <summary>
         /// Get the user from HttpContext.
         /// </summary>
+        /// <remarks>
+        /// WARNING: The returned AppUser object does not contains foreign properties.
+        /// </remarks>
         /// <param name="context">Request's HttpContext</param>
         /// <returns>AppUser or null</returns>
         public async static Task<AppUser> GetUser(this HttpContext context)

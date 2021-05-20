@@ -28,12 +28,39 @@ namespace CryptExApi.Controllers
             this.logger = logger;
         }
 
+        [HttpPost("language")]
+        public async Task<IActionResult> ChangeLanguage([FromQuery] string lang)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await userService.ChangeLanguage(user, lang);
+
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not change user's language.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("currency")]
+        public async Task<IActionResult> ChangeCurrency([FromQuery] string currency)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await userService.ChangeCurrency(user, currency);
+
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not change user's currency.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
         [HttpPost("resetPassword")]
         public async Task<IActionResult> ResetPassword(RequestPasswordChangeDTO resetPasswordDto)
         {
             try {
                 var user = await HttpContext.GetUser();
-
                 await userService.RequestPasswordChange(user, resetPasswordDto);
 
                 return Ok();

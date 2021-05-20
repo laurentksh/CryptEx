@@ -5,23 +5,18 @@ using System.Threading.Tasks;
 
 namespace CryptExApi.Models.Database
 {
-    public class FiatDeposit
+    public class CryptoDeposit
     {
         public Guid Id { get; set; }
 
-        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
+        public decimal Amount { get; set; }
 
-        public string StripeSessionId { get; set; }
+        public Guid WalletId { get; set; }
+
+        public Wallet Wallet { get; set; }
 
         public Guid UserId { get; set; }
 
         public AppUser User { get; set; }
-    }
-
-    public enum PaymentStatus
-    {
-        Failed,
-        Success,
-        Pending
     }
 }

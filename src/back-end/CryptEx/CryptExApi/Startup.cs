@@ -23,6 +23,8 @@ namespace CryptExApi
 {
     public class Startup
     {
+        private const string CorsPolicyName = "CorsPolicy";
+
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -69,6 +71,15 @@ namespace CryptExApi
             });
 
             if (Environment.IsProduction()) {
+                services.AddCors(x =>
+                {
+                    x.AddPolicy(CorsPolicyName, y =>
+                    {
+                        y.AllowAnyMethod();
+                        y.AllowAnyHeader();
+                        y.WithOrigins("cryptex-trade.tech", "api.cryptex-trade.tech");
+                    });
+                });
                 services.AddDbContext<CryptExDbContext>(x =>
                 {
                     x.UseSqlServer(Configuration.GetConnectionString("Database"), options =>
@@ -77,9 +88,17 @@ namespace CryptExApi
                     });
                 });
             } else if (Environment.IsDevelopment()) {
-                services.AddDbContext<CryptExDbContext>(x => x.UseInMemoryDatabase(nameof(CryptExDbContext)));
+                services.AddCors(x =>
+                {
+                    x.AddPolicy(CorsPolicyName, y =>
+                    {
+                        y.AllowAnyOrigin();
+                        y.AllowAnyMethod();
+                        y.AllowAnyHeader();
+                    });
+                });
 
-                // TODO: Mock test data
+                services.AddDbContext<CryptExDbContext>(x => x.UseInMemoryDatabase(nameof(CryptExDbContext)));
             } else {
                 throw new NotSupportedException("Environment not supported.");
             }
@@ -144,6 +163,7 @@ namespace CryptExApi
             services.AddTransient<IPaymentService, PaymentService>();
             services.AddTransient<IStripeService, StripeService>();
 
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IStripeRepository, StripeRepository>();
 
             if (Environment.IsDevelopment())
@@ -169,6 +189,8 @@ namespace CryptExApi
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(CorsPolicyName);
 
             app.UseSwagger();
             app.UseSwaggerUI(c => {
