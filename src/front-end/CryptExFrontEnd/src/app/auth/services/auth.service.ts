@@ -38,7 +38,7 @@ export class AuthService {
     const result = await this.http.Post<AuthViewModel>("Auth", auth);
 
     if (result.success) {
-      this.JWToken = result.content.JWToken;
+      this.JWToken = result.content.jwToken;
     }
 
     return result;
@@ -48,7 +48,7 @@ export class AuthService {
     const result = await this.http.Post<AuthViewModel>("Auth/signup", account);
 
     if (result.success) {
-      this.JWToken = result.content.JWToken;
+      this.JWToken = result.content.jwToken;
     }
 
     return result;
