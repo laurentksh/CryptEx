@@ -13,7 +13,7 @@ export class RegisterComponent implements OnInit {
   user: CreateUserDto;
   error: HttpErrorResponse;
 
-  constructor(private _service: AuthService, private routeur: Router)
+  constructor(private _service: AuthService, private router: Router)
   {
     this.user = {} as CreateUserDto;
   }
@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     if (this._service.IsAuthenticated)
     {
-      this.routeur.navigate(['home']);
+      this.router.navigate(['home']);
     }
   }
 
@@ -30,7 +30,7 @@ export class RegisterComponent implements OnInit {
     this._service.Signup(this.user).then(x => {
       if (x.success)
       {
-        this.routeur.navigate(['home']);
+        this.router.navigate(['home']);
       }
       else
         {
