@@ -11,12 +11,15 @@ namespace CryptExApi.Models.Database
 
         public string Ticker { get; set; }
 
+        public string FullName { get; set; }
+
         public WalletType Type { get; set; }
     }
 
     public enum WalletType
     {
-        Crypto,
-        Fiat
+        Fiat = 1,
+        Crypto = 2,
+        Both = Crypto | Fiat
     }
 }

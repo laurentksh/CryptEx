@@ -1,0 +1,41 @@
+{
+    "Header": {
+        "NavBar": {
+            "Home": "Accueil",
+            "BuySell": "Acheter / Vendre",
+            "MyWallets": "Mes porte-feuilles",
+            "DepositWithdraw": "Déposer / Retirer",
+            "Contact": "Nous contacter",
+            "OpenUserMenu": "Ouvrir le menu"
+        },
+        "UserMenu": {
+            "Login": "Se connecter",
+            "SignUp": "S'inscrire",
+            "MyAccount": "Mon compte",
+            "SignOut": "Se déconnecter"
+        }
+    },
+    "Footer": {
+        "LanguageAndCurrency": {
+            "Title": "Langue & Devise",
+            "Language": "Langue",
+            "Currency": "Devise",
+            "ChangingLang": "Changement de la langue...",
+            "ChangingCurrency": "Changement de la devise..."
+        },
+        "Newsletter": {
+            "Subscribe": "Abonnez-vous à notre newsletter !",
+            "Description": "Les dernières nouvelles, articles, et ressources, envoyés directement à votre boite mail hebdomadairement.",
+            "Placeholder": "Entrez votre email",
+            "Submit": "S'abonner"
+        },
+        "Nav": {
+            "Title": "Navigations",
+            "Home": "Accueil",
+            "BuySell": "Acheter / Vendre",
+            "Contact": "Nous contacter",
+            "DepositWithdraw": "Déposer / Retirer"
+        },
+        "Copyright": "2021 CryptEx - Tout droits réservés."
+    }
+}

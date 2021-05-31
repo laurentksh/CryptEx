@@ -8,6 +8,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {AuthRouting} from './auth-routing';
 import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { ForgotPasswordComponent } from './Components/forgot-password/forgot-pas
     CommonModule,
     FormsModule,
     BrowserModule,
-    AuthRouting
+    AuthRouting,
+    TranslateModule
   ]
 })
 export class AuthModule { }

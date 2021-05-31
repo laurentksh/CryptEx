@@ -1,3 +1,3 @@
 export interface AuthViewModel {
-    JWToken: string;
+    jwToken: string;
 }

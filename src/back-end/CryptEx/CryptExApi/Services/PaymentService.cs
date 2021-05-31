@@ -12,13 +12,17 @@ namespace CryptExApi.Services
         Task<Session> CreatePaymentSession(decimal amount, AppUser user);
 
         Task<string> GenerateDepositWallet(int walletId, AppUser user);
+
+        Task WithdrawFiat(AppUser user, decimal amount);
     }
 
     public class PaymentService : IPaymentService
     {
-        public PaymentService()
-        {
+        private readonly IStripeService stripeService;
 
+        public PaymentService(IStripeService stripeService)
+        {
+            this.stripeService = stripeService;
         }
 
         public async Task<Session> CreatePaymentSession(decimal amount, AppUser user)
@@ -58,10 +62,17 @@ namespace CryptExApi.Services
             var service = new SessionService();
             var session = await service.CreateAsync(options);
 
+            await stripeService.CreateDeposit(session);
+
             return session;
         }
 
         public Task<string> GenerateDepositWallet(int walletId, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task WithdrawFiat(AppUser user, decimal amount)
         {
             throw new NotImplementedException();
         }

@@ -7,19 +7,27 @@ import { FooterComponent } from './Components/footer/footer.component';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {MainRouting} from './main-routing';
+import { NotFoundComponent } from './Components/not-found/not-found.component';
+import { ForbiddenComponent } from './Components/forbidden/forbidden.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { UnauthorizedComponent } from './Components/unauthorized/unauthorized.component';
 
 @NgModule({
   declarations: [
     ContactComponent,
     HeaderComponent,
     FooterComponent,
-    HomeComponent
+    HomeComponent,
+    NotFoundComponent,
+    ForbiddenComponent,
+    UnauthorizedComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     BrowserModule,
-    MainRouting
+    MainRouting,
+    TranslateModule
   ],
   exports:[
     ContactComponent,

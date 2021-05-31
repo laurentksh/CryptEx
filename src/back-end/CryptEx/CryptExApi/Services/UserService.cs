@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CryptExApi.Exceptions;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.DTO;
+using CryptExApi.Models.ViewModel;
 using CryptExApi.Repositories;
 using Microsoft.AspNetCore.Identity;
 
@@ -12,6 +13,8 @@ namespace CryptExApi.Services
 {
     public interface IUserService
     {
+        Task<UserViewModel> GetUser(Guid id);
+
         Task ChangeLanguage(AppUser user, string language);
 
         Task ChangeCurrency(AppUser user, string currency);
@@ -30,6 +33,11 @@ namespace CryptExApi.Services
         {
             this.userManager = userManager;
             this.userRepository = userRepository;
+        }
+
+        public async Task<UserViewModel> GetUser(Guid id)
+        {
+            return UserViewModel.FromAppUser(await userRepository.GetUser(id));
         }
 
         public async Task ChangeLanguage(AppUser user, string language)

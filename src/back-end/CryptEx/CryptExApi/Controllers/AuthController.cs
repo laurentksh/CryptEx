@@ -45,7 +45,7 @@ namespace CryptExApi.Controllers
             try {
                 var result = await authService.CreateUser(createUserDTO);
 
-                return Ok(result);
+                return Created(string.Empty, result);
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could not create user.");
                 return exceptionHandler.Handle(ex, Request);

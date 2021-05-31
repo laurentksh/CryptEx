@@ -1,3 +1,4 @@
+using Coinbase;
 using CryptExApi.Data;
 using CryptExApi.Models.Database;
 using CryptExApi.Repositories;
@@ -16,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Stripe;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -158,14 +160,20 @@ namespace CryptExApi
 
             StripeConfiguration.ApiKey = Configuration["StripePrivateKey"];
 
+            services.AddTransient<ICoinbaseClient, CoinbaseClient>();
+
             services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
             services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IDepositService, DepositService>();
             services.AddTransient<IPaymentService, PaymentService>();
             services.AddTransient<IStripeService, StripeService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IWalletService, WalletService>();
 
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IDepositRepository, DepositRepository>();
             services.AddTransient<IStripeRepository, StripeRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IWalletRepository, WalletRepository>();
 
             if (Environment.IsDevelopment())
                 services.AddTransient<IDataSeeder, DevelopmentDataSeeder>();
@@ -178,8 +186,15 @@ namespace CryptExApi
         {
             using (var scope = app.ApplicationServices.CreateScope()) {
                 Task.Run(async () => {
-                    if (env.IsProduction())
-                        await scope.ServiceProvider.GetService<CryptExDbContext>().Database.MigrateAsync();
+                    if (env.IsProduction()) {
+                        var dbContext = scope.ServiceProvider.GetRequiredService<CryptExDbContext>();
+
+                        var pending = await dbContext.Database.GetPendingMigrationsAsync();
+                        if (pending.Count() == 1 && pending.Contains("Initial")) //Means we deleted all existing migrations.
+                            await dbContext.Database.EnsureDeletedAsync();
+
+                        await dbContext.Database.MigrateAsync();
+                    }
 
                     await DefaultDataSeeder.Seed(scope.ServiceProvider);
 
