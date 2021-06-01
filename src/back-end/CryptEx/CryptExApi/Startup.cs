@@ -72,39 +72,24 @@ namespace CryptExApi
                 });
             });
 
-            if (Environment.IsProduction()) {
-                services.AddCors(x =>
+            services.AddCors(x =>
+            {
+                x.AddPolicy(CorsPolicyName, y =>
                 {
-                    x.AddPolicy(CorsPolicyName, y =>
-                    {
-                        y.AllowAnyMethod();
-                        y.AllowAnyHeader();
-                        y.AllowAnyOrigin(); //We allow any origin because we aren't a real website.
-                        //y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
-                    });
+                    y.AllowAnyMethod();
+                    y.AllowAnyHeader();
+                    y.AllowAnyOrigin(); //We allow any origin because we aren't a real website.
+                  //y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
                 });
-                services.AddDbContext<CryptExDbContext>(x =>
+            });
+            
+            services.AddDbContext<CryptExDbContext>(x =>
+            {
+                x.UseSqlServer(Configuration.GetConnectionString("Database"), options =>
                 {
-                    x.UseSqlServer(Configuration.GetConnectionString("Database"), options =>
-                    {
-                        options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
-                    });
+                    options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
                 });
-            } else if (Environment.IsDevelopment()) {
-                services.AddCors(x =>
-                {
-                    x.AddPolicy(CorsPolicyName, y =>
-                    {
-                        y.AllowAnyOrigin();
-                        y.AllowAnyMethod();
-                        y.AllowAnyHeader();
-                    });
-                });
-
-                services.AddDbContext<CryptExDbContext>(x => x.UseInMemoryDatabase(nameof(CryptExDbContext)));
-            } else {
-                throw new NotSupportedException("Environment not supported.");
-            }
+            });
 
             services.AddIdentity<AppUser, AppRole>(x =>
             {
@@ -119,7 +104,7 @@ namespace CryptExApi
             })
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<CryptExDbContext>();
-            
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -185,7 +170,8 @@ namespace CryptExApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             using (var scope = app.ApplicationServices.CreateScope()) {
-                Task.Run(async () => {
+                Task.Run(async () =>
+                {
                     if (env.IsProduction()) {
                         var dbContext = scope.ServiceProvider.GetRequiredService<CryptExDbContext>();
 
@@ -209,7 +195,8 @@ namespace CryptExApi
             app.UseCors(CorsPolicyName);
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => {
+            app.UseSwaggerUI(c =>
+            {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "CryptExApi v1");
                 c.DisplayRequestDuration();
                 c.EnableValidator();

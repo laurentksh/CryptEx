@@ -11,7 +11,7 @@ namespace CryptExApi.Services
     {
         Task<Session> CreatePaymentSession(decimal amount, AppUser user);
 
-        Task<string> GenerateDepositWallet(int walletId, AppUser user);
+        Task<string> GenerateDepositWallet(Guid walletId, AppUser user);
 
         Task WithdrawFiat(AppUser user, decimal amount);
     }
@@ -67,7 +67,7 @@ namespace CryptExApi.Services
             return session;
         }
 
-        public Task<string> GenerateDepositWallet(int walletId, AppUser user)
+        public Task<string> GenerateDepositWallet(Guid walletId, AppUser user)
         {
             throw new NotImplementedException();
         }

@@ -43,7 +43,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("deposit/crypto")]
-        public async Task<IActionResult> DepositCrypto([FromQuery] int walletId)
+        public async Task<IActionResult> DepositCrypto([FromQuery] Guid walletId)
         {
             var user = await HttpContext.GetUser();
 

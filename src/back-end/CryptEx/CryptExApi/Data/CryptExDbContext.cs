@@ -23,5 +23,27 @@ namespace CryptExApi.Data
         {
             
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<FiatWithdrawal>()
+                .HasOne(x => x.BankAccount)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<FiatDeposit>()
+                .Property(x => x.Amount)
+                .HasPrecision(9, 2);
+
+            builder.Entity<FiatWithdrawal>()
+                .Property(x => x.Amount)
+                .HasPrecision(9, 2);
+
+            builder.Entity<CryptoDeposit>()
+                .Property(x => x.Amount)
+                .HasPrecision(9, 2);
+        }
     }
 }
