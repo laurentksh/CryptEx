@@ -4,6 +4,7 @@
             "Home": "Home",
             "BuySell": "Buy / Sell",
             "MyWallets": "My Wallets",
+            "Wallets": "Wallets",
             "DepositWithdraw": "Deposit / Withdraw",
             "Contact": "Contact",
             "OpenUserMenu": "Open user menu"
@@ -54,6 +55,9 @@
             "Confirm": "Confirm",
             "Return": "Go back"
         }
+    },
+    "Contact": {
+        "ContactUs": "Contact Us"
     },
     "Forbidden": {
         "Title": "Forbidden (403)",

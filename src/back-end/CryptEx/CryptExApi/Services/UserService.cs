@@ -19,9 +19,17 @@ namespace CryptExApi.Services
 
         Task ChangeCurrency(AppUser user, string currency);
 
-        Task RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO);
+        Task<string> RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO);
 
         Task ChangePassword(AppUser user, ChangePasswordDTO changePasswordDTO);
+
+        Task<AddressViewModel> GetAddress(AppUser user);
+
+        Task SetAddress(AppUser user, AddressDto dto);
+
+        Task<IbanViewModel> GetIban(AppUser user);
+
+        Task SetIban(AppUser user, IbanDto dto);
     }
 
     public class UserService : IUserService
@@ -50,7 +58,7 @@ namespace CryptExApi.Services
             await userRepository.ChangeCurrency(user, currency);
         }
 
-        public async Task RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO)
+        public async Task<string> RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO)
         {
             if (passwordChangeDTO is null)
                 throw new ArgumentNullException(nameof(passwordChangeDTO));
@@ -58,6 +66,7 @@ namespace CryptExApi.Services
             var token = await userManager.GeneratePasswordResetTokenAsync(user); //Send this by email
 
             //TODO: Implement, also use a mail sender like MailChimp. Or just display the password change token on screen.
+            return token;
         }
 
         public async Task ChangePassword(AppUser user, ChangePasswordDTO changePasswordDTO)
@@ -70,6 +79,38 @@ namespace CryptExApi.Services
             if (!result.Succeeded) {
                 throw new IdentityException(result.Errors.ToList());
             }
+        }
+
+        public async Task<AddressViewModel> GetAddress(AppUser user)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            return await userRepository.GetAddress(user);
+        }
+
+        public async Task SetAddress(AppUser user, AddressDto dto)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            await userRepository.SetAddress(user, dto);
+        }
+
+        public async Task<IbanViewModel> GetIban(AppUser user)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            return await userRepository.GetIban(user);
+        }
+
+        public async Task SetIban(AppUser user, IbanDto dto)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            await userRepository.SetIban(user, dto);
         }
     }
 }
