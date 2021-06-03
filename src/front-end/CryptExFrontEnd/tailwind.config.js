@@ -1,11 +1,8 @@
 module.exports = {
-  purge: ['./src/**/*.{html,ts,scss}'],
+  purge: ['./src/**/*.{html,ts}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
-      colors: {
-        'blue-logo': '#167DEA',
-      },
       minHeight: {
         //'0': '0', //Already provided by Tailwind
         '1/4': '25%',
@@ -191,12 +188,7 @@ module.exports = {
     },
   },
   variants: {
-    extend: {
-      ringOffsetWidth: ['hover', 'active'],
-      ringOffsetColor: ['hover', 'active'],
-      ringColor: ['hover', 'active'],
-      ringWidth: ['hover', 'active'],
-    },
+    extend: {},
   },
   plugins: [
     require('@tailwindcss/forms')

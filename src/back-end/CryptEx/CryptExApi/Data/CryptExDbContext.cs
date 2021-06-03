@@ -17,8 +17,6 @@ namespace CryptExApi.Data
 
         public DbSet<UserAddress> UserAddresses { get; set; }
 
-        public DbSet<BankAccount> BankAccounts { get; set; }
-
         public DbSet<Country> Countries { get; set; }
 
         public CryptExDbContext(DbContextOptions<CryptExDbContext> options) : base(options)
@@ -37,15 +35,15 @@ namespace CryptExApi.Data
 
             builder.Entity<FiatDeposit>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(9, 2);
 
             builder.Entity<FiatWithdrawal>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(9, 2);
 
             builder.Entity<CryptoDeposit>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(9, 2);
         }
     }
 }

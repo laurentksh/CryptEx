@@ -15,7 +15,6 @@ import { CurrencyInterceptor } from './interceptor/currency.interceptor';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { WalletModule } from './wallet/wallet.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -35,7 +34,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     MainModule,
     UserModule,
     DepositWithdrawModule,
-    WalletModule,
     AppRoutingModule,
     TranslateModule.forRoot({
       loader: {
