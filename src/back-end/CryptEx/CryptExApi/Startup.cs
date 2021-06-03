@@ -139,7 +139,7 @@ namespace CryptExApi
                 }
             });
 
-            services.AddApplicationInsightsTelemetry();
+            services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddAuthorization();
 
