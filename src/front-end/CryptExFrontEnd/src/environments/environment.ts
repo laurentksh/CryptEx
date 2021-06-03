@@ -7,7 +7,7 @@ import { IEnvironment } from "./ienvironment";
 export const environment: IEnvironment = {
   production: false,
   baseUrl: "https://localhost:4200/",
-  apiBaseUrl: "https://localhost:5001/api/",
+  apiBaseUrl: "https://localhost:5001/",
   stripePublicKey: "undefined"
 };
 

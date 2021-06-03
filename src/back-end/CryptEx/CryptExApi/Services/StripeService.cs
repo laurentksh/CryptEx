@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Exceptions;
+using CryptExApi.Models;
 using CryptExApi.Models.Database;
 using CryptExApi.Repositories;
 using Microsoft.Extensions.Configuration;
@@ -42,11 +43,13 @@ namespace CryptExApi.Services
                 case Events.CheckoutSessionCompleted:
                     session = stripeEvent.Data.Object as Session;
 
-                    // Save the deposit in DB, mark it as "processing".
-                    await CreateDeposit(session);
+                    if (!await repository.DepositExists(session.Id)) // Save the deposit in DB, mark it as "processing".
+                        await CreateDeposit(session);
 
                     if (session.PaymentStatus == "paid") { // Payment successfull (probably paid with Card as success was instant)
                         await FullfillDeposit(session);
+                    } else {
+                        await SetDepositAsPending(session);
                     }
 
                     break;
@@ -70,8 +73,9 @@ namespace CryptExApi.Services
 
             return await repository.CreateDeposit(new FiatDeposit
             {
-                Status = PaymentStatus.Pending,
-                StripeSessionId = session.Id
+                Status = PaymentStatus.NotProcessed,
+                StripeSessionId = session.Id,
+                Amount = Convert.ToDecimal(session.AmountTotal ?? 0)
             });
         }
 
@@ -89,6 +93,14 @@ namespace CryptExApi.Services
                 throw new NotFoundException($"Session with id {session.Id} does not exist.");
 
             await repository.SetDepositStatus(session.Id, PaymentStatus.Failed);
+        }
+
+        public async Task SetDepositAsPending(Session session)
+        {
+            if (!await repository.DepositExists(session.Id))
+                throw new NotFoundException($"Session with id {session.Id} does not exist.");
+
+            await repository.SetDepositStatus(session.Id, PaymentStatus.Pending);
         }
     }
 }

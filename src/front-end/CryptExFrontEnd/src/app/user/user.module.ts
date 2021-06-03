@@ -15,12 +15,14 @@ import { AssetCardComponent } from './Components/asset-card/asset-card.component
     WalletsComponent,
     MyAccountComponent,
     DepositComponent,
-    AssetCardComponent],
+    AssetCardComponent
+  ],
   imports: [
     CommonModule,
     UserRouting,
     FormsModule,
     BrowserModule,
+    TranslateModule
   ]
 })
 export class UserModule { }

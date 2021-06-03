@@ -89,7 +89,7 @@ namespace CryptExApi.Services
             return new AuthViewModel(token);
         }
 
-        public async Task<string> BuildJWT(AppUser user, bool prolongedSession = false, IEnumerable<Claim> claims = null, IEnumerable<string> roles = null)
+        /*public async Task<string> BuildJWT(AppUser user, bool prolongedSession = false, IEnumerable<Claim> claims = null, IEnumerable<string> roles = null)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -118,6 +118,39 @@ namespace CryptExApi.Services
                     tokenDescriptor.Claims.Add(ClaimTypes.Role, role);
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
+        }*/
+
+        public async Task<string> BuildJWT(AppUser user, bool prolongedSession = false, IEnumerable<Claim> inClaims = null, IEnumerable<string> roles = null) //New method that supports having multiple roles
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var key = Encoding.ASCII.GetBytes(configuration.GetValue<string>("JwtSigningKey"));
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                //new Claim(JwtRegisteredClaimNames.Sub, user.Email)), //.NET will map this to NameIdentifier for some reason...
+                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+            };
+
+            if (inClaims is not null)
+                claims.AddRange(inClaims);
+
+            if (roles is not null) {
+                foreach (var role in roles)
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var expiration = prolongedSession ? DateTime.UtcNow.AddDays(30) : DateTime.UtcNow.AddHours(4);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: expiration,
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+            );
 
             return tokenHandler.WriteToken(token);
         }

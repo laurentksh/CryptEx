@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CryptExApi.Authentication;
+using CryptExApi.Extensions;
 using CryptExApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -43,7 +43,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("deposit/crypto")]
-        public async Task<IActionResult> DepositCrypto([FromQuery] int walletId)
+        public async Task<IActionResult> DepositCrypto([FromQuery] Guid walletId)
         {
             var user = await HttpContext.GetUser();
 
@@ -51,6 +51,21 @@ namespace CryptExApi.Controllers
                 var address = await paymentService.GenerateDepositWallet(walletId, user);
                 
                 return Ok(address);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not generate deposit wallet address.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("withdraw")]
+        public async Task<IActionResult> WithdrawFiat([FromQuery] decimal amount)
+        {
+            var user = await HttpContext.GetUser();
+
+            try {
+                await paymentService.WithdrawFiat(user, amount);
+
+                return Ok();
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could not generate deposit wallet address.");
                 return exceptionHandler.Handle(ex, Request);

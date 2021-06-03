@@ -1,21 +1,19 @@
 import { Component, NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {DepositComponent} from './Components/deposit/deposit.component';
+import { AuthenticationGuard } from '../guards/authentication.guard';
 import {MyAccountComponent} from './Components/my-account/my-account.component';
 import {WalletsComponent} from './Components/wallets/wallets.component';
 
 const routes: Routes = [
   {
-    path: 'deposit',
-    component: DepositComponent
-  },
-  {
-    path: 'myAccount',
-    component: MyAccountComponent
+    path: 'my-account',
+    component: MyAccountComponent,
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'wallets',
-    component: WalletsComponent
+    component: WalletsComponent,
+    canActivate: [AuthenticationGuard]
   }];
 
 @NgModule({

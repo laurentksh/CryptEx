@@ -22,6 +22,8 @@ namespace CryptExApi.Models.Database
         public string PreferedLanguage { get; set; } = "en-us";
 
         public string PreferedCurrency { get; set; } = "usd";
+
+        public List<BankAccount> BankAccounts { get; set; }
     }
 
     public class AppRole : IdentityRole<Guid>

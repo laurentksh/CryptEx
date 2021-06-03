@@ -24,6 +24,15 @@ namespace CryptExApi.Models
         /// </summary>
         public decimal Rate { get; set; }
 
+        public WalletPair(Wallet left, Wallet right, decimal rate)
+        {
+            Left = left;
+            Right = right;
+            Rate = rate;
+        }
+
         public override string ToString() => Left.Ticker.ToUpper() + Right.Ticker.ToUpper();
+
+        public string ToCoinbaseString() => Left.Ticker.ToUpper() + "-" + Right.Ticker.ToUpper();
     }
 }

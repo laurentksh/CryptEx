@@ -12,10 +12,10 @@ export class CustomHttpClientService {
   constructor(public httpClient: HttpClient, public env: EnvironmentService) { }
 
   /**
-   * Send GET Request
+   * Send GET Request and parse the result as T
    * @param relativeUrl Relative URL
    * @param parameters Request parameters
-   * @returns Promise with type @type
+   * @returns Promise containing an ApiResult<T> object.
    */
   public async Get<T = void>(relativeUrl: string, parameters?: HttpParameters): Promise<ApiResult<T>> {
     const result = {} as ApiResult<T>;
@@ -31,6 +31,13 @@ export class CustomHttpClientService {
     return result;
   }
 
+  /**
+   * Send POST Request with a body and parse the result as T
+   * @param relativeUrl 
+   * @param body 
+   * @param parameters 
+   * @returns Promise containing an ApiResult<T> object.
+   */
   public async Post<T = void>(relativeUrl: string, body: any, parameters?: HttpParameters): Promise<ApiResult<T>> {
     const result = {} as ApiResult<T>;
     result.success = true;
@@ -45,6 +52,12 @@ export class CustomHttpClientService {
     return result;
   }
 
+  /**
+   * Send DELETE Request
+   * @param relativeUrl 
+   * @param parameters 
+   * @returns Promise containing an ApiResult<void> object (the result is not parsed).
+   */
   public async Delete(relativeUrl: string, parameters?: HttpParameters): Promise<ApiResult> {
     const result = {} as ApiResult;
     result.success = true;
@@ -61,7 +74,11 @@ export class CustomHttpClientService {
 
   //#region Utilities
   public ConcatUrl(relativeUrl: string): string {
-    return this.env.apiBaseUrl + relativeUrl;
+    if (relativeUrl.startsWith("/")) {
+      return this.env.apiBaseUrl.substr(0, this.env.apiBaseUrl.length - 1) + relativeUrl;
+    } else {
+      return this.env.apiBaseUrl + "api/" + relativeUrl;
+    }
   }
   //#endregion
 }

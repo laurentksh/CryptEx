@@ -1,4 +1,6 @@
 export interface Currency {
+    /**
+     * Currency identifier (e.g: USD)
+     */
     Id: string;
-    DisplayText: string;
 }

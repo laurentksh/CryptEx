@@ -1,11 +1,14 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { CustomHttpClientService } from 'src/app/api/custom-http-client/custom-http-client.service';
 import { ApiResult } from 'src/app/api/models/api-result';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { ChangePasswordDto } from '../models/change-password-dto';
 import { Currency } from '../models/currency';
 import { Language } from '../models/language';
 import { RequestPasswordChangeDto } from '../models/request-password-change-dto';
+import { UserViewModel } from '../models/user-view-model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +16,8 @@ import { RequestPasswordChangeDto } from '../models/request-password-change-dto'
 export class UserService {
   public languages: Language[];
   public currencies: Currency[];
-  public selectedLang = "en-us";
-  public selectedCurrency = "usd";
 
-  constructor(private http: CustomHttpClientService) {
+  constructor(private http: CustomHttpClientService, private authService: AuthService, private translateService: TranslateService) {
     this.languages = [
       { Id: "en-us", DisplayText: "English" },
       { Id: "fr-fr", DisplayText: "Français" },
@@ -24,14 +25,54 @@ export class UserService {
     ];
 
     this.currencies = [
-      { Id: "usd", DisplayText: "US Dollar (USD)" },
-      { Id: "chf", DisplayText: "Swiss Franc (CHF)" },
-      { Id: "eur", DisplayText: "Euro (EUR)" },
-      { Id: "gbp", DisplayText: "British Pound (GBP)" },
-      { Id: "cad", DisplayText: "Canadian Dollar (CAD)" },
-      { Id: "aud", DisplayText: "Australian Dollar (AUD)" },
-      { Id: "jpy", DisplayText: "Japan Yen (JPY)" }
+      { Id: "USD" },
+      { Id: "CHF" },
+      { Id: "EUR" },
+      { Id: "GBP" },
+      { Id: "CAD" },
+      { Id: "AUD" },
+      { Id: "JPY" }
     ];
+  }
+
+  public get User(): UserViewModel {
+    return JSON.parse(localStorage.getItem("user")) as UserViewModel;
+  }
+
+  public get IsLangSet(): boolean {
+      return localStorage.getItem("lang") != null;
+  }
+
+  public get IsCurrencySet(): boolean {
+      return localStorage.getItem("currency") != null;
+  }
+
+  public get SelectedLang() {
+    return localStorage.getItem("lang") ?? "en-us";
+  }
+
+  public get SelectedCurrency() {
+    return localStorage.getItem("currency") ?? "USD";
+  }
+
+  private setSelectedLang(val: string) {
+    localStorage.setItem("lang", val);
+  }
+
+  private setSelectedCurrency(val: string) {
+    localStorage.setItem("currency", val);
+  }
+
+  public async RefreshUser(): Promise<ApiResult<UserViewModel>> {
+    const user = await this.http.Get<UserViewModel>("User");
+    localStorage.setItem("user", JSON.stringify(user.content));
+
+    this.setSelectedLang(user.content.preferedLanguage);
+    this.setSelectedCurrency(user.content.preferedCurrency);
+
+    this.translateService.use(user.content.preferedLanguage);
+
+    return user;
   }
 
   public async RequestPasswordChange(body: RequestPasswordChangeDto): Promise<ApiResult> {
@@ -43,32 +84,37 @@ export class UserService {
   }
 
   public async UpdateLanguage(selectedLang: string): Promise<ApiResult> {
-    const result = await this.http.Post("User/language", null, { params: new HttpParams().set("lang", selectedLang) });
+    var result = null;
+    if (this.authService.IsAuthenticated) {
+      result = await this.http.Post("User/language", null, { params: new HttpParams().set("lang", selectedLang) });
 
-    if (result.success)
-      this.selectedLang = selectedLang;
+      await this.RefreshUser();
+    } else {
+      result = { success: true } as ApiResult;
+    }
+
+    if (result.success) {
+        this.setSelectedLang(selectedLang);
+        this.translateService.use(selectedLang);
+    }
     
-    /* if (result.success) {
-      this.languages.forEach((x, i) => {
-        x.IsSelected = x.Id == selectedLang;
-      });
-    } */
-
     return result;
   }
 
   public async UpdateCurrency(selectedCurrency: string): Promise<ApiResult> {
-    const result = await this.http.Post("User/currency", null, { params: new HttpParams().set("currency", selectedCurrency) });
+    if (this.authService.IsAuthenticated) {
+      const result = await this.http.Post("User/currency", null, { params: new HttpParams().set("currency", selectedCurrency) });
 
-    if (result.success)
-      this.selectedCurrency = selectedCurrency;
-    
-    /* if (result.success) {
-      this.languages.forEach((x, i) => {
-        x.IsSelected = x.Id == selectedCurrency;
-      });
-    } */
+      if (result.success)
+        this.setSelectedCurrency(selectedCurrency);
+        
+      await this.RefreshUser();
+      
+      return result;
+    } else {
+      this.setSelectedCurrency(selectedCurrency);
 
-    return result;
+      return { success: true } as ApiResult;
+    }
   }
 }
