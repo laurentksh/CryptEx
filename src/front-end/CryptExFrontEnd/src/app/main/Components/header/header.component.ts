@@ -1,4 +1,5 @@
 import { Component, HostListener, OnInit, ViewEncapsulation } from '@angular/core';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -10,12 +11,16 @@ export class HeaderComponent implements OnInit {
   isOpen = false;
   showMobileMenu = false;
 
-  constructor() { 
+  constructor(private authService: AuthService) { 
 
   }
 
   ngOnInit(): void {
    
+  }
+
+  IsAuthenticated(): boolean {
+    return this.authService.IsAuthenticated;
   }
 
   @HostListener('document:click', ['$event'])

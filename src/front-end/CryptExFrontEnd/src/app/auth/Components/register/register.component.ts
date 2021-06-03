@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {CreateUserDto} from "../../models/create-user-dto";
-import {AuthService} from "../../services/auth.service";
-import {HttpErrorResponse} from "@angular/common/http";
-import {Router} from "@angular/router";
+import { Router } from '@angular/router';
+import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { CreateUserDto } from '../../models/create-user-dto';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -10,13 +11,10 @@ import {Router} from "@angular/router";
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
-  user: CreateUserDto;
-  error: HttpErrorResponse;
+  registerDto: CreateUserDto = {} as CreateUserDto;
+  registering: boolean = false;
 
-  constructor(private _service: AuthService, private router: Router)
-  {
-    this.user = {} as CreateUserDto;
-  }
+  constructor(private authService: AuthService, private router: Router, private snackService: SnackbarService) { }
 
   ngOnInit(): void {
     if (this._service.IsAuthenticated)
@@ -36,6 +34,24 @@ export class RegisterComponent implements OnInit {
         {
           this.error = x.error
         }
+    })
+  }
+
+  doRegister(): void {
+    if (this.registering) //Prevent spam
+      return;
+    
+    this.registering = true;
+    this.authService.Signup(this.registerDto).then(x => {
+      this.registering = false;
+
+      if (x.success) {
+        this.snackService.ClearSnackBars();
+        this.router.navigate(["my-account"]);
+        this.snackService.ShowSnackbar(new SnackBarCreate("Account created successfully", "Welcome to CryptEx !", AlertType.Success, 5000));
+      } else {
+        this.snackService.ShowSnackbar(new SnackBarCreate("Could not create account", "Make sure you filled all fields correctly !", AlertType.Error, 5000));
+      }
     })
   }
 

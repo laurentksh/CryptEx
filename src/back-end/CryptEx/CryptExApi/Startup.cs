@@ -1,3 +1,4 @@
+using Coinbase;
 using CryptExApi.Data;
 using CryptExApi.Models.Database;
 using CryptExApi.Repositories;
@@ -16,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Stripe;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -70,38 +72,24 @@ namespace CryptExApi
                 });
             });
 
-            if (Environment.IsProduction()) {
-                services.AddCors(x =>
+            services.AddCors(x =>
+            {
+                x.AddPolicy(CorsPolicyName, y =>
                 {
-                    x.AddPolicy(CorsPolicyName, y =>
-                    {
-                        y.AllowAnyMethod();
-                        y.AllowAnyHeader();
-                        y.WithOrigins("cryptex-trade.tech", "api.cryptex-trade.tech");
-                    });
+                    y.AllowAnyMethod();
+                    y.AllowAnyHeader();
+                    y.AllowAnyOrigin(); //We allow any origin because we aren't a real website.
+                  //y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
                 });
-                services.AddDbContext<CryptExDbContext>(x =>
+            });
+            
+            services.AddDbContext<CryptExDbContext>(x =>
+            {
+                x.UseSqlServer(Configuration.GetConnectionString("Database"), options =>
                 {
-                    x.UseSqlServer(Configuration.GetConnectionString("Database"), options =>
-                    {
-                        options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
-                    });
+                    options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
                 });
-            } else if (Environment.IsDevelopment()) {
-                services.AddCors(x =>
-                {
-                    x.AddPolicy(CorsPolicyName, y =>
-                    {
-                        y.AllowAnyOrigin();
-                        y.AllowAnyMethod();
-                        y.AllowAnyHeader();
-                    });
-                });
-
-                services.AddDbContext<CryptExDbContext>(x => x.UseInMemoryDatabase(nameof(CryptExDbContext)));
-            } else {
-                throw new NotSupportedException("Environment not supported.");
-            }
+            });
 
             services.AddIdentity<AppUser, AppRole>(x =>
             {
@@ -116,7 +104,7 @@ namespace CryptExApi
             })
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<CryptExDbContext>();
-            
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -157,14 +145,20 @@ namespace CryptExApi
 
             StripeConfiguration.ApiKey = Configuration["StripePrivateKey"];
 
+            services.AddTransient<ICoinbaseClient, CoinbaseClient>();
+
             services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
             services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IDepositService, DepositService>();
             services.AddTransient<IPaymentService, PaymentService>();
             services.AddTransient<IStripeService, StripeService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IWalletService, WalletService>();
 
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IDepositRepository, DepositRepository>();
             services.AddTransient<IStripeRepository, StripeRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IWalletRepository, WalletRepository>();
 
             if (Environment.IsDevelopment())
                 services.AddTransient<IDataSeeder, DevelopmentDataSeeder>();
@@ -176,9 +170,17 @@ namespace CryptExApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             using (var scope = app.ApplicationServices.CreateScope()) {
-                Task.Run(async () => {
-                    if (env.IsProduction())
-                        await scope.ServiceProvider.GetService<CryptExDbContext>().Database.MigrateAsync();
+                Task.Run(async () =>
+                {
+                    if (env.IsProduction()) {
+                        var dbContext = scope.ServiceProvider.GetRequiredService<CryptExDbContext>();
+
+                        var pending = await dbContext.Database.GetPendingMigrationsAsync();
+                        if (pending.Count() == 1 && pending.Contains("Initial")) //Means we deleted all existing migrations.
+                            await dbContext.Database.EnsureDeletedAsync();
+
+                        await dbContext.Database.MigrateAsync();
+                    }
 
                     await DefaultDataSeeder.Seed(scope.ServiceProvider);
 
@@ -193,7 +195,8 @@ namespace CryptExApi
             app.UseCors(CorsPolicyName);
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => {
+            app.UseSwaggerUI(c =>
+            {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "CryptExApi v1");
                 c.DisplayRequestDuration();
                 c.EnableValidator();

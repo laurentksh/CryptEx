@@ -1,0 +1,78 @@
+{
+    "Header": {
+        "NavBar": {
+            "Home": "Home",
+            "BuySell": "Buy / Sell",
+            "MyWallets": "My Wallets",
+            "DepositWithdraw": "Deposit / Withdraw",
+            "Contact": "Contact",
+            "OpenUserMenu": "Open user menu"
+        },
+        "UserMenu": {
+            "Login": "Login",
+            "SignUp": "Sign up",
+            "MyAccount": "My account",
+            "SignOut": "Sign out"
+        }
+    },
+    "Currencies": {
+        "USD": "US Dollar (USD)",
+        "CHF": "Swiss Franc (CHF)",
+        "EUR": "Euro (EUR)",
+        "GBP": "British Pound (GBP)",
+        "CAD": "Canadian Dollar (CAD)",
+        "AUD": "Australian Dollar (AUD)",
+        "JPY": "Japan Yen (JPY)"
+    },
+    "Footer": {
+        "LanguageAndCurrency": {
+            "Title": "Language & Currency",
+            "Language": "Language",
+            "Currency": "Currency",
+            "ChangingLang": "Changing language...",
+            "ChangingCurrency": "Changing currency..."
+        },
+        "Newsletter": {
+            "Subscribe": "Subscribe to our newsletter",
+            "Description": "The latest news, articles, and resources, sent to your inbox weekly.",
+            "Placeholder": "Enter your email",
+            "Submit": "Subscribe"
+        },
+        "Nav": {
+            "Title": "Navigations",
+            "Home": "Home",
+            "BuySell": "Buy / Sell",
+            "Contact": "Contact",
+            "DepositWithdraw": "Deposit / Withdraw"
+        },
+        "Copyright": "2021 CryptEx - All rights reserved."
+    },
+    "Auth": {
+        "Logout": {
+            "Title": "Log out",
+            "Description": "Are you sure you want to log out ?",
+            "Confirm": "Confirm",
+            "Return": "Go back"
+        }
+    },
+    "Forbidden": {
+        "Title": "Forbidden (403)",
+        "Description": "An error occured while trying to access the requested content, it may be unavailable because of one of the following reasons :",
+        "List": {
+            "Item1": "You aren't logged in.",
+            "Item2": "You do not have access to the requested content."
+        },
+        "ReturnButton": "Return home"
+    },
+    "Unauthorized": {
+        "Title": "Unauthorized (401)",
+        "Description": "You must be logged in to access this content.",
+        "ContinueButton": "Login",
+        "ReturnButton": "Return home"
+    },
+    "NotFound": {
+        "Title": "Not found (404)",
+        "Description": "The content you requested could not be found.",
+        "ReturnButton": "Return home"
+    }
+}

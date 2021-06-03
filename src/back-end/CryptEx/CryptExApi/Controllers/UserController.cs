@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CryptExApi.Authentication;
+using CryptExApi.Extensions;
 using CryptExApi.Models.DTO;
+using CryptExApi.Models.ViewModel;
 using CryptExApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +29,24 @@ namespace CryptExApi.Controllers
             this.logger = logger;
         }
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserViewModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetUser()
+        {
+            try {
+                var userId = HttpContext.GetUserId();
+                var user = await userService.GetUser(userId);
+
+                return Ok(user);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not get user.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
         [HttpPost("language")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangeLanguage([FromQuery] string lang)
         {
             try {
@@ -43,6 +61,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("currency")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangeCurrency([FromQuery] string currency)
         {
             try {
@@ -57,6 +76,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("resetPassword")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ResetPassword(RequestPasswordChangeDTO resetPasswordDto)
         {
             try {
@@ -71,11 +91,12 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("changePassword")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
         {
             try {
                 var user = await HttpContext.GetUser();
-
                 await userService.ChangePassword(user, changePasswordDTO);
 
                 return Ok();

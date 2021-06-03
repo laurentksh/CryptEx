@@ -10,6 +10,8 @@ namespace CryptExApi.Repositories
 {
     public interface IUserRepository
     {
+        Task<AppUser> GetUser(Guid id);
+
         Task ChangeLanguage(AppUser user, string language);
 
         Task ChangeCurrency(AppUser user, string currency);
@@ -22,6 +24,11 @@ namespace CryptExApi.Repositories
         public UserRepository(CryptExDbContext dbContext)
         {
             DbContext = dbContext;
+        }
+
+        public async Task<AppUser> GetUser(Guid id)
+        {
+            return await DbContext.Users.SingleAsync(x => x.Id == id);
         }
 
         public async Task ChangeLanguage(AppUser user, string language)

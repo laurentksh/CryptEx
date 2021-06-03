@@ -1,0 +1,149 @@
+<div *ngFor="let snack of SnackBars">
+    <div
+    class="min-w-40 transition-opacity duration-300"
+    [ngClass]="[
+        snack.Show ? 'opacity-100' : 'opacity-0',
+        snack.Hide ? 'opacity-0' : '',
+        snack.Severity == AlertTypeRef.Info    ? 'space-x-2 bg-blue-50 p-4 rounded flex items-start text-blue-600 my-4 shadow-lg mx-auto max-w-2xl' : '',
+        snack.Severity == AlertTypeRef.Success ? 'bg-green-50 p-4 rounded flex items-start text-green-600 my-4 shadow-lg mx-auto max-w-2xl' : '',
+        snack.Severity == AlertTypeRef.Warning ? 'bg-yellow-50 p-4 rounded flex items-start text-yellow-600 my-4 shadow-lg mx-auto max-w-2xl' : '',
+        snack.Severity == AlertTypeRef.Error   ? 'bg-red-50 p-4 rounded flex items-start text-red-600 my-4 shadow-lg mx-auto max-w-2xl' : '',
+    ]">
+        <div class="text-lg">
+            <svg *ngIf="snack.Severity == AlertTypeRef.Info"    xmlns="http://www.w3.org/2000/svg" class="fill-current w-5 pt-1" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.5 5h3l-1 10h-1l-1-10zm1.5 14.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
+            <svg *ngIf="snack.Severity == AlertTypeRef.Warning" xmlns="http://www.w3.org/2000/svg" class="fill-current w-5 pt-1" viewBox="0 0 24 24"><path d="M12 1l-12 22h24l-12-22zm-1 8h2v7h-2v-7zm1 11.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
+            <svg *ngIf="snack.Severity == AlertTypeRef.Error"   xmlns="http://www.w3.org/2000/svg" class="fill-current w-5 pt-1" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm4.597 17.954l-4.591-4.55-4.555 4.596-1.405-1.405 4.547-4.592-4.593-4.552 1.405-1.405 4.588 4.543 4.545-4.589 1.416 1.403-4.546 4.587 4.592 4.548-1.403 1.416z"/></svg>
+            <svg *ngIf="snack.Severity == AlertTypeRef.Success" xmlns="http://www.w3.org/2000/svg" class="fill-current w-5 pt-1" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.959 17l-4.5-4.319 1.395-1.435 3.08 2.937 7.021-7.183 1.422 1.409-8.418 8.591z"/></svg>
+        </div>
+        <div class="px-3">
+            <h3 [ngClass]="[
+                snack.Severity == AlertTypeRef.Info    ? 'text-blue-800 font-semibold tracking-wider' : '',
+                snack.Severity == AlertTypeRef.Success ? 'text-green-800 font-semibold tracking-wider' : '',
+                snack.Severity == AlertTypeRef.Warning ? 'text-yellow-800 font-semibold tracking-wider' : '',
+                snack.Severity == AlertTypeRef.Error   ? 'text-red-800 font-semibold tracking-wider' : '',
+            ]">
+                {{ snack.Title }}
+            </h3>
+            <p [ngClass]="[
+                snack.Severity == AlertTypeRef.Info    ? 'text-blue-700' : '',
+                snack.Severity == AlertTypeRef.Success ? 'text-green-700' : '',
+                snack.Severity == AlertTypeRef.Warning ? 'text-yellow-700' : '',
+                snack.Severity == AlertTypeRef.Error   ? 'text-red-700' : '',
+            ]">
+                {{ snack.Message }}
+            </p>
+        </div>
+        <button class="inline-flex items-center focus:outline-none rounded-full p-2 hover:cursor-pointer"
+        (click)="onClose(snack)"
+        [ngClass]="[
+            snack.Severity == AlertTypeRef.Info ? 'hover:bg-blue-100 border border-blue-50 hover:border-blue-300 hover:text-blue-900' : '',
+            snack.Severity == AlertTypeRef.Success ? 'hover:bg-green-100 border border-green-50 hover:border-green-300 hover:text-green-900' : '',
+            snack.Severity == AlertTypeRef.Warning ? 'hover:bg-yellow-100 border border-yellow-50 hover:border-yellow-300 hover:text-yellow-900' : '',
+            snack.Severity == AlertTypeRef.Error ? 'hover:bg-red-100 border border-red-50 hover:border-red-300 hover:text-red-900' : ''
+        ]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-4 h-4 pt-1" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"/></svg>
+        </button>
+    </div>
+</div>
+
+<div *ngIf="false" class="examples">
+    <!-- Warning -->
+    <div *ngIf="snack.Severity == AlertTypeRef.Warning" class="bg-yellow-50 p-4 rounded flex items-start text-yellow-600 my-4 shadow-lg mx-auto max-w-2xl">
+        <div class="text-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-5 pt-1" viewBox="0 0 24 24"><path d="M12 1l-12 22h24l-12-22zm-1 8h2v7h-2v-7zm1 11.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
+        </div>
+        <div class=" px-3">
+            <h3 class="text-yellow-800 font-semibold tracking-wider">
+                Warning
+            </h3>
+            <p class="pt-2 text-yellow-700">
+                Lorem ipsum is placeholder text commonly used in the graphic, print
+                Lorem ipsum is placeholder text commonly used in the graphic, print
+                Lorem ipsum is placeholder text commonly used in the graphic, print
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Danger -->
+    <div *ngIf="snack.Severity == AlertTypeRef.Error" class="bg-red-50 p-4 rounded flex items-start text-red-600 my-4 shadow-lg mx-auto max-w-2xl">
+        <div class="text-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-5 pt-1" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm4.597 17.954l-4.591-4.55-4.555 4.596-1.405-1.405 4.547-4.592-4.593-4.552 1.405-1.405 4.588 4.543 4.545-4.589 1.416 1.403-4.546 4.587 4.592 4.548-1.403 1.416z"/></svg>
+        </div>
+        <div class=" px-3">
+            <h3 class="text-red-800 font-semibold tracking-wider">
+                Danger 
+            </h3>
+            <ul class="list-disc list-inside">
+                <li>Lorem ipsum is placeholder text commonly used in the graphic, print </li>
+                <li>Lorem ipsum is placeholder text commonly used in the graphic, print</li>
+                <li>Lorem ipsum is placeholder text commonly used in the graphic, print</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Success -->
+    <div *ngIf="snack.Severity == AlertTypeRef.Success" class="bg-green-50 p-4 rounded flex items-start text-green-600 my-4 shadow-lg mx-auto max-w-2xl">
+        <div class="text-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-5 pt-1" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.959 17l-4.5-4.319 1.395-1.435 3.08 2.937 7.021-7.183 1.422 1.409-8.418 8.591z"/></svg>
+        </div>
+        <div class=" px-3">
+            <h3 class="text-green-800 font-semibold tracking-wider">
+                Success 
+            </h3>
+            <p class="py-2 text-green-700">
+                Lorem ipsum is placeholder text commonly used in the graphic, print
+                Lorem ipsum is placeholder text commonly used in the graphic, print
+                Lorem ipsum is placeholder text commonly used in the graphic, print
+            </p>
+            <div class="space-x-6">
+                <button class="text-green-900 font-semibold tracking-wider hover:underline focus:outline-none">View Status</button>
+                <button class="text-green-900 font-semibold tracking-wider hover:underline focus:outline-none">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Link on the right -->
+    <div class="space-x-2 bg-blue-50 p-4 rounded flex items-start text-blue-600 my-4 shadow-lg mx-auto max-w-2xl">
+        <div class="">
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-5 pt-1" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.5 5h3l-1 10h-1l-1-10zm1.5 14.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
+        </div>
+        <h3 class="text-blue-800 tracking-wider flex-1">
+            Lorem ipsum is placeholder text commonly used   
+        </h3>
+        <div class="inline-flex items-center space-x-2">
+            <button class="hover:underline hover:cursor-pointer">Details</button>
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current h-4 pt-1" viewBox="0 0 24 24"><path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"/></svg>
+        </div>
+    </div>
+
+
+    <!-- Accent Border on the left -->
+    <div class="space-x-2 bg-blue-50 rounded flex items-start text-blue-600 my-4 mx-auto max-w-2xl shadow-lg">
+        <div class="w-1 self-stretch bg-blue-800">
+            
+        </div>
+        <div class="flex  space-x-2 p-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-5 pt-1" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.5 5h3l-1 10h-1l-1-10zm1.5 14.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
+            <h3 class="text-blue-800 tracking-wider flex-1">
+                Lorem ipsum is placeholder text <a href="#" class="font-semibold underline"> commonly used </a>
+            </h3>
+        </div>
+    </div>
+
+
+
+    <!-- Link on the right -->
+    <div class="space-x-2 bg-green-50 p-4 rounded flex items-center text-green-600 my-4 shadow-lg mx-auto max-w-2xl">
+        <div class="">
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-5 pt-1" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.959 17l-4.5-4.319 1.395-1.435 3.08 2.937 7.021-7.183 1.422 1.409-8.418 8.591z"/></svg>
+        </div>
+        <h3 class="text-green-800 tracking-wider flex-1">
+            Successfull operation  
+        </h3>
+        <button (click)="onClose(snack)" class="inline-flex items-center hover:bg-green-100 border border-green-50 hover:border-green-300 hover:text-green-900 focus:outline-none rounded-full p-2 hover:cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-4 h-4 pt-1" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"/></svg>
+        </button>
+    </div>
+</div>

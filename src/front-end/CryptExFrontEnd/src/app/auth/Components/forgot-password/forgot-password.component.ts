@@ -6,10 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./forgot-password.component.scss']
 })
 export class ForgotPasswordComponent implements OnInit {
+  changingPassword: boolean = false;
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  doRequestPasswordChange(): void {
+    
+  }
 }

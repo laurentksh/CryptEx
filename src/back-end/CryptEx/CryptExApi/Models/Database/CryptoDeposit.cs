@@ -11,6 +11,10 @@ namespace CryptExApi.Models.Database
 
         public decimal Amount { get; set; }
 
+        public PaymentStatus Status { get; set; } = PaymentStatus.NotProcessed;
+
+        public string TransactionId { get; set; }
+
         public Guid WalletId { get; set; }
 
         public Wallet Wallet { get; set; }
