@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <ApplicationInsightsResourceId>/subscriptions/8a57fa24-80f2-45c2-87fe-de32519ff3d5/resourceGroups/CryptEx-Epsic/providers/microsoft.insights/components/CryptEx-Back-AppInsights</ApplicationInsightsResourceId>
+    <UserSecretsId>d7bf3710-d8d4-4a16-a9f4-47fb93c750b5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
