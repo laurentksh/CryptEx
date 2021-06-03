@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CustomHttpClientService } from 'src/app/api/custom-http-client/custom-http-client.service';
 import { ApiResult } from 'src/app/api/models/api-result';
-import { UserService } from 'src/app/user/services/user.service';
 import { AuthDto } from '../models/auth-dto';
 import { AuthViewModel } from '../models/auth-view-model';
 import { CreateUserDto } from '../models/create-user-dto';
