@@ -39,6 +39,8 @@ namespace CryptExApi.Services
                 FormatException or ArgumentException => (HttpStatusCode.BadRequest, "BadRequest", exMsg),
                 NotImplementedException => (HttpStatusCode.NotImplemented, "NotImplemented", exMsg),
                 NullReferenceException => (HttpStatusCode.InternalServerError, "InternalServerError", "Unspecified server error"),
+                NotFoundException => (HttpStatusCode.NotFound, "NotFound", exMsg),
+                CryptoApiException => (HttpStatusCode.ServiceUnavailable, "Unavailable", "The service is unavailable at the moment, please try again later"),
                 _ => (HttpStatusCode.InternalServerError, "InternalServerError", "Unspecified server error")
             };
         }

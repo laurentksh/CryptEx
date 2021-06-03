@@ -45,6 +45,62 @@ namespace CryptExApi.Controllers
             }
         }
 
+        [HttpGet("address")]
+        public async Task<IActionResult> GetAddress()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var address = await userService.GetAddress(user);
+
+                return Ok(address);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not return address.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("address")]
+        public async Task<IActionResult> SetAddress([FromBody] AddressDto dto)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await userService.SetAddress(user, dto);
+
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not return address.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("iban")]
+        public async Task<IActionResult> GetIBAN()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var iban = await userService.GetIban(user);
+
+                return Ok(iban);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not return address.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("iban")]
+        public async Task<IActionResult> SetIBAN([FromBody] IbanDto dto)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await userService.SetIban(user, dto);
+                
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not return address.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
         [HttpPost("language")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangeLanguage([FromQuery] string lang)

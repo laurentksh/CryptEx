@@ -21,5 +21,9 @@ namespace CryptExApi.Models.Database
         public Guid CountryId { get; set; }
 
         public Country Country { get; set; }
+
+        public Guid UserId { get; set; }
+
+        public AppUser User { get; set; }
     }
 }
