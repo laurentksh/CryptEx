@@ -4,6 +4,7 @@
             "Home": "Home",
             "BuySell": "Buy / Sell",
             "MyWallets": "My Wallets",
+            "Wallets": "Wallets",
             "DepositWithdraw": "Deposit / Withdraw",
             "Contact": "Contact",
             "OpenUserMenu": "Open user menu"
@@ -53,6 +54,15 @@
             "Description": "Are you sure you want to log out ?",
             "Confirm": "Confirm",
             "Return": "Go back"
+        }
+    },
+    "Contact": {
+        "ContactUs": "Contact Us",
+        "Description": "Our team is ready to hear your questions",
+        "Address": {
+            "Title": "Address",
+            "Line1": "Rue de Genève 63",
+            "Line2": "1002 Lausanne"
         }
     },
     "Forbidden": {
