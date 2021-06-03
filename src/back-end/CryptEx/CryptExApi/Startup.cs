@@ -139,7 +139,10 @@ namespace CryptExApi
                 }
             });
 
-            services.AddApplicationInsightsTelemetry(Configuration);
+            if (Environment.IsProduction())
+                services.AddApplicationInsightsTelemetry(Configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY"));
+            else
+                services.AddApplicationInsightsTelemetry();
 
             services.AddAuthorization();
 
