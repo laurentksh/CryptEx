@@ -57,7 +57,13 @@
         }
     },
     "Contact": {
-        "ContactUs": "Contact Us"
+        "ContactUs": "Contact Us",
+        "Description": "Our team is ready to hear your questions",
+        "Address": {
+            "Title": "Address",
+            "Line1": "Rue de Genève 63",
+            "Line2": "1002 Lausanne"
+        }
     },
     "Forbidden": {
         "Title": "Forbidden (403)",
