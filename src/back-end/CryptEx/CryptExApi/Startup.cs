@@ -141,8 +141,8 @@ namespace CryptExApi
 
             /*if (Environment.IsProduction())
                 services.AddApplicationInsightsTelemetry(Configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY"));
-            else*/
-            services.AddApplicationInsightsTelemetry();
+            else
+                services.AddApplicationInsightsTelemetry();*/
 
             services.AddAuthorization();
 
