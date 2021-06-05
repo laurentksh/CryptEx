@@ -129,20 +129,18 @@ namespace CryptExApi
                 x.Validate(JwtBearerDefaults.AuthenticationScheme);
             });
 
+            if (Environment.IsProduction())
+                services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+
             services.AddLogging(x =>
             {
                 if (Environment.IsDevelopment()) {
                     x.AddConsole();
                     x.SetMinimumLevel(LogLevel.Debug);
                 } else if (Environment.IsProduction()) {
-                    x.AddApplicationInsights(Configuration.GetConnectionString("AppInsights"));
+                    x.AddApplicationInsights(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
                 }
             });
-
-            /*if (Environment.IsProduction())
-                services.AddApplicationInsightsTelemetry(Configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY"));
-            else
-                services.AddApplicationInsightsTelemetry();*/
 
             services.AddAuthorization();
 
