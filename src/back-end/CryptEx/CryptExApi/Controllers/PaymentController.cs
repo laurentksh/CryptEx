@@ -18,13 +18,16 @@ namespace CryptExApi.Controllers
     {
         private readonly ILogger<PaymentController> logger;
         private readonly IPaymentService paymentService;
+        private readonly IDepositService depositService;
         private readonly IExceptionHandlerService exceptionHandler;
 
-        public PaymentController(ILogger<PaymentController> logger, IExceptionHandlerService exceptionHandler, IPaymentService paymentService)
+
+        public PaymentController(ILogger<PaymentController> logger, IExceptionHandlerService exceptionHandler, IPaymentService paymentService, IDepositService depositService)
         {
             this.logger = logger;
             this.exceptionHandler = exceptionHandler;
             this.paymentService = paymentService;
+            this.depositService = depositService;
         }
 
         [HttpPost("deposit/fiat")]
@@ -33,7 +36,7 @@ namespace CryptExApi.Controllers
             var user = await HttpContext.GetUser();
 
             try {
-                var session = await paymentService.CreatePaymentSession(amount, user);
+                var session = await paymentService.DepositFiat(amount, user);
 
                 return Ok(session);
             } catch (Exception ex) {
@@ -48,7 +51,7 @@ namespace CryptExApi.Controllers
             var user = await HttpContext.GetUser();
 
             try {
-                var address = await paymentService.GenerateDepositWallet(walletId, user);
+                var address = await paymentService.DepositCrypto(walletId, user);
                 
                 return Ok(address);
             } catch (Exception ex) {
@@ -68,6 +71,22 @@ namespace CryptExApi.Controllers
                 return Ok();
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could not generate deposit wallet address.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("deposits")]
+        public async Task<IActionResult> GetDeposits([FromQuery] bool signalR = false)
+        {
+            try {
+                if (signalR) {
+                    await depositService.UpdateDeposits(HttpContext.GetUserId());
+                    return Ok();
+                } else {
+                    return Ok(await depositService.GetDeposits(await HttpContext.GetUser()));
+                }
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not return deposits.");
                 return exceptionHandler.Handle(ex, Request);
             }
         }

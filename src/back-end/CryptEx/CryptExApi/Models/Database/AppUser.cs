@@ -23,6 +23,8 @@ namespace CryptExApi.Models.Database
 
         public string PreferedCurrency { get; set; } = "usd";
 
+        public DateTime CreationDate { get; set; }
+
         public List<BankAccount> BankAccounts { get; set; }
     }
 

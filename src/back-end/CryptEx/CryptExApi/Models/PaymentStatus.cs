@@ -23,6 +23,6 @@
         /// <summary>
         /// The transaction is pending. (Most commonly this would indicate that the transaction was made using a payment method that takes time to process, like a bank wire)
         /// </summary>
-        Pending
+        Pending = 2
     }
 }

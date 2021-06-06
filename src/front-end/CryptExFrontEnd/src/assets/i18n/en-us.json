@@ -55,6 +55,31 @@
             "Return": "Go back"
         }
     },
+    "DepositWithdraw": {
+        "Title": "Deposit/Withdraw type",
+        "Type": {
+            "Fiat": "Fiat",
+            "Crypto": "Crypto"
+        },
+        "History": {
+            "Title": "Deposit history",
+            "None": "You haven't made any deposits yet !"
+        },
+        "Fiat": {
+            "Deposit": "Deposit fiat",
+            "Withdraw": "Withdraw fiat",
+            "DepositBtn": "DEPOSIT",
+            "WithdrawBtn": "WITHDRAW"
+        },
+        "Deposit": {
+            "Status": {
+                "-1": "Not processed",
+                "0": "Failed",
+                "1": "Success",
+                "2": "Pending"
+            }
+        }
+    },
     "Forbidden": {
         "Title": "Forbidden (403)",
         "Description": "An error occured while trying to access the requested content, it may be unavailable because of one of the following reasons :",

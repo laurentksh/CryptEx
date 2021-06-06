@@ -9,6 +9,8 @@ namespace CryptExApi.Models.Database
     {
         public Guid Id { get; set; }
 
+        public DateTime CreationDate { get; set; }
+
         /// <summary>
         /// Street with street number
         /// </summary>

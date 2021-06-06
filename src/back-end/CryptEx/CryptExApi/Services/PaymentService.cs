@@ -3,73 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Models.Database;
+using CryptExApi.Models.ViewModel;
+using CryptExApi.Models.ViewModel.Payment;
+using Microsoft.Extensions.Configuration;
 using Stripe.Checkout;
 
 namespace CryptExApi.Services
 {
     public interface IPaymentService
     {
-        Task<Session> CreatePaymentSession(decimal amount, AppUser user);
+        Task<FiatDepositViewModel> DepositFiat(decimal amount, AppUser user);
 
-        Task<string> GenerateDepositWallet(Guid walletId, AppUser user);
+        Task<CryptoDepositViewModel> DepositCrypto(Guid walletId, AppUser user);
 
         Task WithdrawFiat(AppUser user, decimal amount);
     }
 
     public class PaymentService : IPaymentService
     {
-        private readonly IStripeService stripeService;
+        private readonly IDepositService depositService;
 
-        public PaymentService(IStripeService stripeService)
+        public PaymentService(IDepositService depositService)
         {
-            this.stripeService = stripeService;
+            this.depositService = depositService;
         }
 
-        public async Task<Session> CreatePaymentSession(decimal amount, AppUser user)
+        public async Task<FiatDepositViewModel> DepositFiat(decimal amount, AppUser user)
         {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            var options = new SessionCreateOptions
-            {
-                PaymentMethodTypes = new List<string> //https://stripe.com/docs/api/payment_methods/object
-                {
-                    "card",
-                    "sofort"
-                },
-                LineItems = new List<SessionLineItemOptions>
-                {
-                    new SessionLineItemOptions
-                    {
-                        PriceData = new SessionLineItemPriceDataOptions
-                        {
-                            Currency = user.PreferedCurrency.ToLower(),
-                            UnitAmountDecimal = amount,
-                            ProductData = new SessionLineItemPriceDataProductDataOptions
-                            {
-                                Name = $"Fiat {user.PreferedCurrency} Deposit",
-                            }
-                        },
-                        Quantity = 1,
-                    }
-                },
-                Mode = "payment",
-                SuccessUrl = "/checkout/success",
-                CancelUrl = "/checkout/cancel",
-                CustomerEmail = user.Email
-            };
-
-            var service = new SessionService();
-            var session = await service.CreateAsync(options);
-
-            await stripeService.CreateDeposit(session);
-
-            return session;
+            return await depositService.CreatePaymentSession(amount, user);
         }
 
-        public Task<string> GenerateDepositWallet(Guid walletId, AppUser user)
+        public async Task<CryptoDepositViewModel> DepositCrypto(Guid walletId, AppUser user)
         {
-            throw new NotImplementedException();
+            return await depositService.GenerateDepositWallet(walletId, user);
         }
 
         public Task WithdrawFiat(AppUser user, decimal amount)

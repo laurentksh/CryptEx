@@ -3,6 +3,9 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      screens: {
+        'phone': '320px'
+      },
       minHeight: {
         //'0': '0', //Already provided by Tailwind
         '1/4': '25%',

@@ -16,8 +16,6 @@ namespace CryptExApi.Services
     {
         Task HandleCheckoutCallback(string jsonBody, string stripeSignature);
 
-        Task<FiatDeposit> CreateDeposit(Session session);
-
         Task FullfillDeposit(Session session);
 
         Task SetDepositAsFailed(Session session);
@@ -27,11 +25,13 @@ namespace CryptExApi.Services
     {
         private readonly IStripeRepository repository;
         private readonly IConfiguration configuration;
+        private readonly IDepositService depositService;
 
-        public StripeService(IConfiguration configuration, IStripeRepository repository)
+        public StripeService(IConfiguration configuration, IStripeRepository repository, IDepositService depositService)
         {
             this.configuration = configuration;
             this.repository = repository;
+            this.depositService = depositService;
         }
 
         public async Task HandleCheckoutCallback(string jsonBody, string stripeSignature)
@@ -44,7 +44,7 @@ namespace CryptExApi.Services
                     session = stripeEvent.Data.Object as Session;
 
                     if (!await repository.DepositExists(session.Id)) // Save the deposit in DB, mark it as "processing".
-                        await CreateDeposit(session);
+                        throw new NotFoundException("Session does not exist.");
 
                     if (session.PaymentStatus == "paid") { // Payment successfull (probably paid with Card as success was instant)
                         await FullfillDeposit(session);
@@ -66,25 +66,13 @@ namespace CryptExApi.Services
             }
         }
 
-        public async Task<FiatDeposit> CreateDeposit(Session session)
-        {
-            if (await repository.DepositExists(session.Id))
-                throw new ArgumentException("Session already exists.");
-
-            return await repository.CreateDeposit(new FiatDeposit
-            {
-                Status = PaymentStatus.NotProcessed,
-                StripeSessionId = session.Id,
-                Amount = Convert.ToDecimal(session.AmountTotal ?? 0)
-            });
-        }
-
         public async Task FullfillDeposit(Session session)
         {
             if (!await repository.DepositExists(session.Id))
                 throw new NotFoundException($"Session with id {session.Id} does not exist.");
-
-            await repository.SetDepositStatus(session.Id, PaymentStatus.Success);
+            
+            var deposit = await repository.SetDepositStatus(session.Id, PaymentStatus.Success);
+            await depositService.UpdateDeposits(deposit.UserId);
         }
 
         public async Task SetDepositAsFailed(Session session)
@@ -92,7 +80,8 @@ namespace CryptExApi.Services
             if (!await repository.DepositExists(session.Id))
                 throw new NotFoundException($"Session with id {session.Id} does not exist.");
 
-            await repository.SetDepositStatus(session.Id, PaymentStatus.Failed);
+            var deposit = await repository.SetDepositStatus(session.Id, PaymentStatus.Failed);
+            await depositService.UpdateDeposits(deposit.UserId);
         }
 
         public async Task SetDepositAsPending(Session session)
@@ -100,7 +89,8 @@ namespace CryptExApi.Services
             if (!await repository.DepositExists(session.Id))
                 throw new NotFoundException($"Session with id {session.Id} does not exist.");
 
-            await repository.SetDepositStatus(session.Id, PaymentStatus.Pending);
+            var deposit = await repository.SetDepositStatus(session.Id, PaymentStatus.Pending);
+            await depositService.UpdateDeposits(deposit.UserId);
         }
     }
 }

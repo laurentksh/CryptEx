@@ -6,6 +6,7 @@ using CryptExApi.Data;
 using CryptExApi.Exceptions;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace CryptExApi.Repositories
 {
@@ -37,12 +38,12 @@ namespace CryptExApi.Repositories
 
         public async Task<bool> DepositExists(string sessionId)
         {
-            return DbContext.FiatDeposits.Any(x => x.StripeSessionId == sessionId);
+            return await DbContext.FiatDeposits.AnyAsync(x => x.StripeSessionId == sessionId);
         }
 
         public async Task<FiatDeposit> SetDepositStatus(string sessionId, PaymentStatus status)
         {
-            var deposit = DbContext.FiatDeposits.SingleOrDefault(x => x.StripeSessionId == sessionId);
+            var deposit = await DbContext.FiatDeposits.SingleAsync(x => x.StripeSessionId == sessionId);
             deposit.Status = status;
 
             await DbContext.SaveChangesAsync();
