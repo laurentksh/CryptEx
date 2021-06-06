@@ -134,8 +134,9 @@ namespace CryptExApi.Services
                 CreationDate = DateTime.UtcNow,
                 Amount = Convert.ToDecimal((session.AmountTotal / 100) ?? 0),
                 UserId = user.Id,
+                User = user,
                 WalletId = fiatWallet.Id,
-                Wallet = fiatWallet,
+                Wallet = fiatWallet
             });
         }
 

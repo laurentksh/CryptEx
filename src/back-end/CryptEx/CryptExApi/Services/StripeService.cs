@@ -43,7 +43,7 @@ namespace CryptExApi.Services
                 case Events.CheckoutSessionCompleted:
                     session = stripeEvent.Data.Object as Session;
 
-                    if (!await repository.DepositExists(session.Id)) // Save the deposit in DB, mark it as "processing".
+                    if (!await repository.DepositExists(session.Id))
                         throw new NotFoundException("Session does not exist.");
 
                     if (session.PaymentStatus == "paid") { // Payment successfull (probably paid with Card as success was instant)
