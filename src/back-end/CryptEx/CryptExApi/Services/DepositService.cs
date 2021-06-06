@@ -77,7 +77,7 @@ namespace CryptExApi.Services
                 case "chf":
                     paymentMethods.AddRange(new List<string>
                     {
-                        "alipay"
+                        //"alipay" //Supports CHF but doesn't support it at the same time ??
                     });
                     break;
             }
