@@ -13,7 +13,12 @@ import { DepositWithdrawService } from '../../services/deposit-withdraw.service'
   styleUrls: ['./deposit-withdraw-home.component.scss']
 })
 export class DepositWithdrawHomeComponent implements OnInit {
-  constructor(public depWithService: DepositWithdrawService, private snackbar: SnackbarService, private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    public depWithService: DepositWithdrawService,
+    private snackbar: SnackbarService,
+    private route: ActivatedRoute,
+    private router: Router
+    ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => this.handleParams(params));
