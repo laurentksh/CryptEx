@@ -31,7 +31,7 @@ export class ChangePasswordComponent implements OnInit {
   handleParams(params: Params): void {
     const resetToken = params["token"];
 
-    if (resetToken == null) {
+    if (resetToken == null && !this.IsAuthenticated()) {
       this.router.navigate(["home"]);
       this.snack.ShowSnackbar(new SnackBarCreate("Error", "Missing reset token.", AlertType.Error, 10000));
     }
@@ -52,14 +52,27 @@ export class ChangePasswordComponent implements OnInit {
       return;
     }
 
-    this.userService.ChangePassword(this.dto).then(x => {
-      this.changingPassword = false;
-      if (x.success) {
-        this.snack.ShowSnackbar(new SnackBarCreate("Password changed successfully !", "Your password has been changed.", AlertType.Success));
-      } else {
-        this.snack.ShowSnackbar(new SnackBarCreate("Error", "An error occured.", AlertType.Error))
+    this.changePasswordAsync();
+  }
+
+  async changePasswordAsync(): Promise<void> {
+    if (this.IsAuthenticated && this.dto.token == null) {
+      const changeResult = await this.userService.RequestPasswordChange({} as ChangePasswordDto);
+      if (!changeResult.success) {
+        this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not change password, please try again later.", AlertType.Error));
+        return;
       }
-    });
+
+      this.dto.token = changeResult.content.token;
+    }
+
+    const result = await this.userService.ChangePassword(this.dto);
+    this.changingPassword = false;
+    if (result.success) {
+      this.snack.ShowSnackbar(new SnackBarCreate("Password changed successfully !", "Your password has been changed.", AlertType.Success));
+    } else {
+      this.snack.ShowSnackbar(new SnackBarCreate("Error", "An error occured.", AlertType.Error))
+    }
   }
 
   stringIsNullOrEmpty(value: string): boolean {
