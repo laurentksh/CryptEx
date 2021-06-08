@@ -8,12 +8,15 @@ export interface SnackBar {
     OnCloseActionCallback: () => void;
 
     ShowContinueActionBtn: boolean;
+    ContinueActionBtnString: string;
     OnContinueActionCallback: () => void;
 
     ShowPrimaryActionBtn: boolean;
+    PrimaryActionBtnString: string;
     OnPrimaryActionCallback: () => void;
 
     ShowSecondaryActionBtn: boolean;
+    SecondaryActionBtnString: string;
     OnSecondaryActionCallback: () => void;
 }
 
@@ -27,12 +30,15 @@ export class SnackBarUI implements SnackBar {
     OnCloseActionCallback: () => void;
 
     ShowContinueActionBtn: boolean;
+    ContinueActionBtnString: string;
     OnContinueActionCallback: () => void;
 
     ShowPrimaryActionBtn: boolean;
+    PrimaryActionBtnString: string;
     OnPrimaryActionCallback: () => void;
 
     ShowSecondaryActionBtn: boolean;
+    SecondaryActionBtnString: string;
     OnSecondaryActionCallback: () => void;
 
     Show: boolean = false;
@@ -46,18 +52,28 @@ export class SnackBarCreate implements SnackBar {
         this.Severity = severity;
         this.CloseAfter = closeAfter;
     }
+    
+    
+    
 
     Title: string;
     Message: string;
     Severity: AlertType;
     CloseAfter: number;
+
     ShowCloseButton: boolean = true;
     OnCloseActionCallback: () => void = null;
+
     ShowContinueActionBtn: boolean = false;
+    ContinueActionBtnString: string = "Continue";
     OnContinueActionCallback: () => void = null;
+
     ShowPrimaryActionBtn: boolean = false;
+    PrimaryActionBtnString: string = "Primary";
     OnPrimaryActionCallback: () => void = null;
+    
     ShowSecondaryActionBtn: boolean = false;
+    SecondaryActionBtnString: string = "Secondary";
     OnSecondaryActionCallback: () => void = null;
 
 }

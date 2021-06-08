@@ -19,7 +19,7 @@ namespace CryptExApi.Services
 
         Task ChangeCurrency(AppUser user, string currency);
 
-        Task RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO);
+        Task<string> RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO);
 
         Task ChangePassword(AppUser user, ChangePasswordDTO changePasswordDTO);
     }
@@ -50,20 +50,30 @@ namespace CryptExApi.Services
             await userRepository.ChangeCurrency(user, currency);
         }
 
-        public async Task RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO)
+        public async Task<string> RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO)
         {
             if (passwordChangeDTO is null)
                 throw new ArgumentNullException(nameof(passwordChangeDTO));
 
+            
+            user ??= await userManager.FindByEmailAsync(passwordChangeDTO.Email);
+            if (user == null)
+                throw new NotFoundException("Email not found.");
+
             var token = await userManager.GeneratePasswordResetTokenAsync(user); //Send this by email
 
-            //TODO: Implement, also use a mail sender like MailChimp. Or just display the password change token on screen.
+            //We should be using a mail provider to send the token to the user but since this is a school project we won't do that.
+            return token;
         }
 
         public async Task ChangePassword(AppUser user, ChangePasswordDTO changePasswordDTO)
         {
             if (changePasswordDTO is null)
                 throw new ArgumentNullException(nameof(changePasswordDTO));
+
+            user ??= await userManager.FindByEmailAsync(changePasswordDTO.Email);
+            if (user == null)
+                throw new NotFoundException("Email not found.");
 
             var result = await userManager.ResetPasswordAsync(user, changePasswordDTO.Token, changePasswordDTO.NewPassword);
 
