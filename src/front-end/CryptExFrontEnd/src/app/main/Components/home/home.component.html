@@ -10,7 +10,8 @@
         Cryptex est une plateforme d'échange entre monnaie FIAT et Crypto
       </p>
       <button
-        class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+        [routerLink]="['/signup']"
+        class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out z-50">
         Create an account
       </button>
     </div>
@@ -62,12 +63,12 @@
         </p>
       </div>
       <div class="w-full sm:w-1/2 p-6">
-        <img src="../../../../assets/cryptoCurrency.png">
+        <img style="max-width:250px;" src="../../../../assets/cryptoCurrency.png">
       </div>
     </div>
     <div class="flex flex-wrap flex-col-reverse sm:flex-row">
       <div class="w-full sm:w-1/2 p-6 mt-6">
-
+        <img style="max-width:250px;" src="../../../../assets/images/fiat/fiat_monney.svg">
       </div>
       <div class="w-full sm:w-1/2 p-6 mt-6">
         <div class="align-middle">
@@ -88,7 +89,7 @@
 <section class="bg-white border-b py-8">
   <div class="container mx-auto flex flex-wrap pt-4 pb-12 justify-around">
     <h1 class="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
-      Best gain of the year
+      Best cryptos of the year
     </h1>
     <div class="w-full mb-4">
       <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
@@ -96,11 +97,14 @@
 
 
     <div class="flex place-items-auto bg-gray-50 dark:bg-gray-900 ">
-      <div class="container max-w-6xl mx-auto">
-        <div class="grid grid-cols-1">
+      <div class="container mx-auto">
+        <div class="flex flex-row flex-wrap justify-between">
 
-          <app-asset-card *ngFor="let asset of assets" [asset]="asset"></app-asset-card>
+          <app-asset-card *ngFor="let asset of assets; else loading" [asset]="asset"></app-asset-card>
 
+          <ng-component #loading>
+            <p>Loading...</p>
+          </ng-component>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { WalletViewModel } from 'src/app/user/models/wallet-view-model';
+import { WalletType, WalletViewModel } from 'src/app/user/models/wallet-view-model';
 import { AssetCardComponent } from 'src/app/wallet/components/asset-card/asset-card.component';
+import { WalletService } from 'src/app/wallet/services/wallet.service';
 
 
 @Component({
@@ -12,12 +13,14 @@ export class HomeComponent implements OnInit {
  
   assets: WalletViewModel[];
 
-  constructor() { }
+  constructor(private _walletService:WalletService) { }
 
   ngOnInit(): void {
-    this.assets = [
-      { fullName: "Bitcoin", id:"1", ticker:"BTC", selectedCurrencyPair:{rate:36000}} as WalletViewModel
-    ]
+    this._walletService.GetWalletList().then(x => {
+      if (x.success){
+        this.assets= x.content.filter(x => x.type == WalletType.Crypto);
+      }
+    })
   }
 
 
