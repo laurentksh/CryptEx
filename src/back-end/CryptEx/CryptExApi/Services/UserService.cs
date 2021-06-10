@@ -22,6 +22,14 @@ namespace CryptExApi.Services
         Task<string> RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO);
 
         Task ChangePassword(AppUser user, ChangePasswordDTO changePasswordDTO);
+
+        Task<AddressViewModel> GetAddress(AppUser user);
+
+        Task SetAddress(AppUser user, AddressDto dto);
+
+        Task<IbanViewModel> GetIban(AppUser user);
+
+        Task SetIban(AppUser user, IbanDto dto);
     }
 
     public class UserService : IUserService
@@ -80,6 +88,38 @@ namespace CryptExApi.Services
             if (!result.Succeeded) {
                 throw new IdentityException(result.Errors.ToList());
             }
+        }
+
+        public async Task<AddressViewModel> GetAddress(AppUser user)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            return await userRepository.GetAddress(user);
+        }
+
+        public async Task SetAddress(AppUser user, AddressDto dto)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            await userRepository.SetAddress(user, dto);
+        }
+
+        public async Task<IbanViewModel> GetIban(AppUser user)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            return await userRepository.GetIban(user);
+        }
+
+        public async Task SetIban(AppUser user, IbanDto dto)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            await userRepository.SetIban(user, dto);
         }
     }
 }
