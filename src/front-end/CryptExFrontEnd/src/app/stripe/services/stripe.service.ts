@@ -19,6 +19,6 @@ export class StripeService {
   }
 
   public async RedirectToCheckout(SessionId: string): Promise<void> {
-    this.stripe.redirectToCheckout({ sessionId: SessionId})
+    this.stripe.redirectToCheckout({ sessionId: SessionId })
   }
 }

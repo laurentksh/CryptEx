@@ -13,6 +13,8 @@ namespace CryptExApi.Models.Database
 
         public PaymentStatus Status { get; set; } = PaymentStatus.NotProcessed;
 
+        public DateTime CreationDate { get; set; }
+
         public string TransactionId { get; set; }
 
         public Guid WalletId { get; set; }

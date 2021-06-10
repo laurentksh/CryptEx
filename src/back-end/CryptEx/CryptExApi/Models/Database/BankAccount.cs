@@ -13,6 +13,8 @@ namespace CryptExApi.Models.Database
 
         public BankAccountStatus Status { get; set; }
 
+        public DateTime CreationDate { get; set; }
+
         public Guid UserId { get; set; }
 
         public AppUser User { get; set; }

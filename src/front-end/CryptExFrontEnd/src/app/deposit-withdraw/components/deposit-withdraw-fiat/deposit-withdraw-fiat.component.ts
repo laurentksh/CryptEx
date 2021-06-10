@@ -12,7 +12,6 @@ import { DepositWithdrawService } from '../../services/deposit-withdraw.service'
 })
 export class DepositWithdrawFiatComponent implements OnInit {
   amount: number = -1;
-  currentCurrency: string;
 
   constructor(
     private depWitService: DepositWithdrawService,
@@ -21,12 +20,13 @@ export class DepositWithdrawFiatComponent implements OnInit {
     private snackBarService: SnackbarService) { }
 
   ngOnInit(): void {
+    
   }
 
   onDeposit(): void {
     this.depWitService.DepositFiat(this.amount).then(x => {
       if (x.success) {
-        this.stripe.RedirectToCheckout(x.content.SessionId);
+        this.stripe.RedirectToCheckout(x.content.sessionId);
       } else {
         this.snackBarService.ShowSnackbar(new SnackBarCreate("Could not create payment session.", x.error.message, AlertType.Error));
       }
@@ -60,5 +60,4 @@ export class DepositWithdrawFiatComponent implements OnInit {
   amountChanged(amount: number): void {
     this.amount = amount;
   }
-
 }

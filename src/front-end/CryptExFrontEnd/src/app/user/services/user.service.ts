@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { ChangePasswordDto } from '../models/change-password-dto';
 import { Currency } from '../models/currency';
 import { Language } from '../models/language';
+import { PasswordChangeViewModel } from '../models/password-change-view-model';
 import { RequestPasswordChangeDto } from '../models/request-password-change-dto';
 import { UserViewModel } from '../models/user-view-model';
 import {UserUpdateDto} from "../models/user-update-dto";
@@ -89,7 +90,7 @@ export class UserService {
     this.translateService.use(user.preferedLanguage);
   }
 
-  public async RequestPasswordChange(body: RequestPasswordChangeDto): Promise<ApiResult> {
+  public async RequestPasswordChange(body: RequestPasswordChangeDto): Promise<ApiResult<PasswordChangeViewModel>> {
     return this.http.Post("User/resetPassword", body);
   }
 
@@ -99,6 +100,7 @@ export class UserService {
 
   public async UpdateLanguage(selectedLang: string): Promise<ApiResult> {
     var result = null;
+    
     if (this.authService.IsAuthenticated) {
       result = await this.http.Post("User/language", null, { params: new HttpParams().set("lang", selectedLang) });
 

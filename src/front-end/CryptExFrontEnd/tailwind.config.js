@@ -3,6 +3,9 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      screens: {
+        'phone': '320px'
+      },
       colors: {
         'blue-logo': '#167DEA',
       },

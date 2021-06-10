@@ -23,9 +23,11 @@ namespace CryptExApi.Models.Database
 
         public string PreferedCurrency { get; set; } = "usd";
 
-        public UserAddress Address { get; set; }
+        public DateTime CreationDate { get; set; }
 
-        public BankAccount BankAccount { get; set; }
+        public List<BankAccount> BankAccounts { get; set; }
+
+        public UserAddress Address { get; set; }
     }
 
     public class AppRole : IdentityRole<Guid>

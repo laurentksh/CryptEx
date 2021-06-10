@@ -1,3 +1,17 @@
-<div class="">
-    
+<div class="flex flex-col mb-3 rounded-lg shadow-sm min-h-20" [ngClass]="deposit.wallet.type == 1 ? 'bg-gray-300' : 'bg-blue-300'">
+    <div class="flex flex-row w-full h-full">
+        <h4 class="text-2xl font-semibold ml-3 mt-3 mr-auto">{{ deposit.wallet.ticker }} {{ deposit.amount }}</h4>
+
+        <div class="rounded shadow-md transition-colors ml-5 duration-300 mt-3 mb-3 mr-3" [ngClass]="[
+            deposit.status == PaymentStatusRef.notProcessed ? 'bg-gray-500' : '',
+            deposit.status == PaymentStatusRef.failed ? 'bg-red-500' : '',
+            deposit.status == PaymentStatusRef.success ? 'bg-green-500' : '',
+            deposit.status == PaymentStatusRef.pending ? 'bg-yellow-500' : ''
+        ]">
+            <p class="p-1 ml-3 mr-3 text-center">{{ 'DepositWithdraw.Deposit.Status.' + deposit.status | translate }}</p>
+        </div>
+    </div>
+    <div class="flex flex-row w-full h-full">
+        <p class="text-gray-700 ml-3 mb-3">{{ getDate().toLocaleString() }}</p>
+    </div>
 </div>

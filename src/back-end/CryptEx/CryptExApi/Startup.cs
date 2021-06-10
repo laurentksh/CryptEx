@@ -1,6 +1,7 @@
 using Coinbase;
 using CryptExApi.Data;
 using CryptExApi.Models.Database;
+using CryptExApi.Models.SignalR;
 using CryptExApi.Repositories;
 using CryptExApi.Services;
 using CryptExApi.Utilities;
@@ -42,6 +43,7 @@ namespace CryptExApi
         {
 
             services.AddControllers();
+            services.AddSignalR();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CryptExApi", Version = "v1" });
@@ -50,11 +52,11 @@ namespace CryptExApi
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.Http,
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Value format: 'Bearer %JWT_TOKEN%'"
+                    Description = "Value format: '%JWT_TOKEN%'"
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -78,7 +80,15 @@ namespace CryptExApi
                 {
                     y.AllowAnyMethod();
                     y.AllowAnyHeader();
-                    y.AllowAnyOrigin(); //We allow any origin because we aren't a real website.
+                    y.AllowCredentials();
+                    //y.AllowAnyOrigin(); //We allow any origin because we aren't a real website.
+                    y.WithOrigins(
+                        "http://localhost:5000",
+                        "https://localhost:5001",
+                        "http://localhost:4200",
+                        "https://cryptex-trade.tech",
+                        "https://www.cryptex-trade.tech"
+                    );
                   //y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
                 });
             });
@@ -129,17 +139,18 @@ namespace CryptExApi
                 x.Validate(JwtBearerDefaults.AuthenticationScheme);
             });
 
+            if (Environment.IsProduction())
+                services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+
             services.AddLogging(x =>
             {
                 if (Environment.IsDevelopment()) {
                     x.AddConsole();
                     x.SetMinimumLevel(LogLevel.Debug);
                 } else if (Environment.IsProduction()) {
-                    x.AddApplicationInsights(Configuration.GetConnectionString("AppInsights"));
+                    x.AddApplicationInsights(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
                 }
             });
-
-            services.AddApplicationInsightsTelemetry();
 
             services.AddAuthorization();
 
@@ -212,6 +223,7 @@ namespace CryptExApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<DepositHub>("/feed/deposits");
             });
         }
     }

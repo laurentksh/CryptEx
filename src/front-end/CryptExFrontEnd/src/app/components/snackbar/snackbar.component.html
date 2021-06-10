@@ -33,7 +33,7 @@
                 {{ snack.Message }}
             </p>
         </div>
-        <button class="inline-flex items-center focus:outline-none rounded-full p-2 hover:cursor-pointer"
+        <button *ngIf="snack.ShowCloseButton" class="inline-flex items-center focus:outline-none rounded-full p-2 hover:cursor-pointer"
         (click)="onClose(snack)"
         [ngClass]="[
             snack.Severity == AlertTypeRef.Info ? 'hover:bg-blue-100 border border-blue-50 hover:border-blue-300 hover:text-blue-900' : '',
@@ -43,6 +43,10 @@
         ]">
             <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-4 h-4 pt-1" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"/></svg>
         </button>
+        <div *ngIf="snack.ShowContinueActionBtn" class="inline-flex items-center space-x-2">
+            <button (click)="onContinue(snack)" class="hover:underline hover:cursor-pointer">{{ snack.ContinueActionBtnString }}</button>
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current h-4 pt-1" viewBox="0 0 24 24"><path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"/></svg>
+        </div>
     </div>
 </div>
 

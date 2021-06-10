@@ -15,6 +15,8 @@ namespace CryptExApi.Repositories
     {
         Task<AppUser> GetUser(Guid id);
 
+        Task<AppUser> GetFullUser(Guid id);
+
         Task ChangeLanguage(AppUser user, string language);
 
         Task ChangeCurrency(AppUser user, string currency);
@@ -54,12 +56,11 @@ namespace CryptExApi.Repositories
             await DbContext.SaveChangesAsync();
         }
 
-        private async Task<AppUser> GetFullUser(Guid id)
+        public async Task<AppUser> GetFullUser(Guid id)
         {
             var user = await DbContext.Users
-                //.Include(x => x...)
+                .Include(x => x.BankAccounts)
                 .Include(x => x.Address)
-                .Include(x => x.BankAccount)
                 .SingleAsync(x => x.Id == id);
 
             return user;

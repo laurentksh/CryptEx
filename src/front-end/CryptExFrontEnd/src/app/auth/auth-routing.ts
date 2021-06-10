@@ -26,13 +26,14 @@ const routes: Routes = [
   },
   {
     path: 'changePassword',
-    component: ChangePasswordComponent,
-    canActivate: [AuthenticationGuard]
+    component: ChangePasswordComponent
   },
   {
     path: 'forgotPassword',
-    component: ForgotPasswordComponent
-  }];
+    component: ForgotPasswordComponent,
+    canActivate: [UnauthenticatedGuard]
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

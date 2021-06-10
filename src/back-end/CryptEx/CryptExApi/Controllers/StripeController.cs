@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CryptExApi.Models;
 using CryptExApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -18,10 +20,9 @@ namespace CryptExApi.Controllers
     public class StripeController : ControllerBase // https://stripe.com/docs/payments/checkout/fulfill-orders
     {
         private readonly ILogger<StripeController> logger;
-        
         private readonly IStripeService stripeService;
 
-        public StripeController(ILogger<StripeController> logger, IConfiguration configuration, IStripeService stripeService)
+        public StripeController(ILogger<StripeController> logger, IStripeService stripeService)
         {
             this.logger = logger;
             this.stripeService = stripeService;
@@ -42,6 +43,29 @@ namespace CryptExApi.Controllers
                 logger.LogCritical(ex, "Error.");
                 return Problem(statusCode: StatusCodes.Status500InternalServerError, title: "StripeEventProcessError");
             }
+        }
+
+        [HttpPost("debugSetStatus")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> DebugSetStatus(string sessionId, [FromQuery] PaymentStatus status)
+        {
+            switch (status) {
+                case PaymentStatus.NotProcessed:
+                    break;
+                case PaymentStatus.Failed:
+                    await stripeService.FullfillDeposit(new Session() { Id = sessionId });
+                    break;
+                case PaymentStatus.Success:
+                    await stripeService.SetDepositAsFailed(new Session() { Id = sessionId });
+                    break;
+                case PaymentStatus.Pending:
+                    await (stripeService as StripeService).SetDepositAsPending(new Session() { Id = sessionId });
+                    break;
+                default:
+                    break;
+            }
+
+            return Ok();
         }
     }
 }

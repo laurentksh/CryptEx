@@ -56,6 +56,31 @@
             "Return": "Go back"
         }
     },
+    "DepositWithdraw": {
+        "Title": "Deposit/Withdraw type",
+        "Type": {
+            "Fiat": "Fiat",
+            "Crypto": "Crypto"
+        },
+        "History": {
+            "Title": "Deposit history",
+            "None": "You haven't made any deposits yet !"
+        },
+        "Fiat": {
+            "Deposit": "Deposit fiat",
+            "Withdraw": "Withdraw fiat",
+            "DepositBtn": "DEPOSIT",
+            "WithdrawBtn": "WITHDRAW"
+        },
+        "Deposit": {
+            "Status": {
+                "-1": "Not processed",
+                "0": "Failed",
+                "1": "Success",
+                "2": "Pending"
+            }
+        }
+    },
     "Contact": {
         "ContactUs": "Contact Us",
         "Description": "Our team is ready to hear your questions",

@@ -1,29 +1,33 @@
-<div class="flex flex-row w-1/2 mx-auto">
-    <div class="w-1/2 mr-20 mt-20">
-        <div class="shadow-md bg-white rounded-md h-40 p-5">
-            <div>
-                <input type="number" (change)="amountChanged($event.target.value)" class="w-full rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Enter any {{ currentCurrency }} amount.">
+<div class="flex flex-col w-3/4 mx-auto md:flex-row">
+    <div class="mr-20 mt-20 w-full 2xl:w-1/3">
+        <div class="shadow-md bg-white rounded-md p-5">
+            <h3 class="font-bold text-2xl">{{ 'DepositWithdraw.Fiat.Deposit' | translate }}</h3>
+            <div class="mt-5">
+                <input type="number" (change)="amountChanged($event.target.value)" class="w-full rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Enter any {{ userService.SelectedCurrency }} amount.">
                 <button
                     type="button"
                     class="block w-full max-w-xs mx-auto mt-5 bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
                     (click)="onDeposit()"
                     >
-                    DEPOSIT
+                    {{ 'DepositWithdraw.Fiat.DepositBtn' | translate }}
                 </button>
             </div>
         </div>
     </div>
     
-    <div class="w-1/2 mr-20 mt-20">
-        <div class="shadow-md bg-white rounded-md h-40 p-5">
-            <input type="number" (change)="amountChanged($event.target.value)" class="w-full rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Enter any {{ currentCurrency }} amount.">
-            <button
-                type="button"
-                class="block w-full max-w-xs mx-auto mt-5 bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
-                (click)="onWithdraw()"
-                >
-                WITHDRAW
-            </button>
+    <div class="mr-20 mt-20 w-full mb-10 2xl:w-1/3">
+        <div class="shadow-md bg-white rounded-md p-5">
+            <h3 class="font-bold text-2xl">{{ 'DepositWithdraw.Fiat.Withdraw' | translate }}</h3>
+            <div class="mt-5">
+                <input type="number" (change)="amountChanged($event.target.value)" class="w-full rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Enter any {{ userService.SelectedCurrency }} amount.">
+                <button
+                    type="button"
+                    class="block w-full max-w-xs mx-auto mt-5 bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
+                    (click)="onWithdraw()"
+                    >
+                    {{ 'DepositWithdraw.Fiat.WithdrawBtn' | translate }}
+                </button>
+            </div>
         </div>
     </div>
 </div>
