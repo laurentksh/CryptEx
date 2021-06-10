@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AssetCardComponent } from 'src/app/wallet/components/asset-card/asset-card.component';
+
 
 @Component({
   selector: 'app-home',

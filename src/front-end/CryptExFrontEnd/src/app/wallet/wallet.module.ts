@@ -14,6 +14,9 @@ import { WalletsComponent } from './components/wallets/wallets.component';
   imports: [
     CommonModule,
     WalletRoutingModule
+  ],
+  exports: [
+    AssetCardComponent
   ]
 })
 export class WalletModule { }
