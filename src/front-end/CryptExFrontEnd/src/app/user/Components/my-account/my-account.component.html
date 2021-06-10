@@ -26,25 +26,25 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-                <div *ngIf="clicked == false" class="flex">
+                <div *ngIf="clickedUser == false" class="flex">
                   <span class="ml-3">
-                      {{user.firstName}} {{user.lastName}}
+                      {{userVm.firstName}} {{userVm.lastName}}
                   </span>
                   <div class="ml-3">
-                    <a class="font-medium text-indigo-600 hover:text-indigo-500" (click)="clicked = true">
+                    <a class="font-medium text-indigo-600 hover:text-indigo-500" (click)="clickedUser = true">
                       Edit
                     </a>
                   </div>
                 </div>
-                <div *ngIf="clicked == true" class="flex -mx-0 mb-1 w-full max-w-lg">
+                <div *ngIf="clickedUser == true" class="flex -mx-0 mb-1 w-full max-w-lg">
                   <div class="w-full md:w-1/2 px-2">
-                    <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-first-name" type="text" placeholder="{{user.firstName}}">
+                    <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-first-name" type="text" placeholder="{{userVm.firstName}}" [(ngModel)]="userUpdateDto.firstName">
                   </div>
                   <div class="w-full md:w-1/2 px-2">
-                    <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="{{user.lastName}}">
+                    <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="{{userVm.lastName}}"[(ngModel)]="userUpdateDto.lastName">
                   </div>
                   <div class="w-full md:w-1/2 px-2">
-                    <a class="font-medium text-indigo-600 hover:text-indigo-500" (click)="clicked = false">
+                    <a class="font-medium text-indigo-600 hover:text-indigo-500" (click)="clickedUser = false">
                       Save
                     </a>
                   </div>
@@ -73,7 +73,7 @@
                 </div>
                 <div *ngIf="clickedPhone == true" class="flex -mx-0 mb-1 w-full max-w-lg">
                   <div class="w-full md:w-1/2 px-2">
-                    <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="phoneNumber" type="text" placeholder="+xx xxx xx xx">
+                    <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="phoneNumber" type="text" placeholder="+xx xxx xx xx" [(ngModel)]="userUpdateDto.phoneNumber">
                   </div>
                   <div class="w-full md:w-1/2 px-2">
                     <a class="font-medium text-indigo-600 hover:text-indigo-500" (click)="clickedPhone = false">
@@ -102,7 +102,7 @@
                 </div>
                 <div *ngIf="clickedEmail == true" class="flex -mx-0 mb-1 w-full max-w-lg">
                   <div class="w-full md:w-1/2 px-2">
-                    <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="email" type="text" placeholder="{{user.email}}">
+                    <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="email" type="text" placeholder="{{userVm.email}}" [(ngModel)]="userUpdateDto.email">
                   </div>
                   <div class="w-full md:w-1/2 px-2">
                     <a class="font-medium text-indigo-600 hover:text-indigo-500" (click)="clickedEmail = false">
@@ -155,7 +155,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
-              <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="street" type="text" placeholder="street + number">
+              <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="street" type="text" placeholder="street + number" [(ngModel)]="adresseDto.street">
               <div class="ml-3">
                 <a class="font-medium text-indigo-600 hover:text-indigo-500" (click)="clickedAddress = false">
                   Save
@@ -177,7 +177,7 @@
               <!-- Heroicon name: outline/phone -->
               <div class="flex-shrink-0 h-6 w-6 text-gray-400" >
               </div>
-              <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="city" type="text" placeholder="City">
+              <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="city" type="text" placeholder="City" [(ngModel)]="adresseDto.city">
             </dd>
           </div>
           <div class="mt-3">
@@ -194,7 +194,7 @@
               <!-- Heroicon name: outline/phone -->
               <div class="flex-shrink-0 h-6 w-6 text-gray-400" >
               </div>
-              <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="npa" type="text" placeholder="NPA">
+              <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="npa" type="text" placeholder="NPA" [(ngModel)]="adresseDto.postalCode">
             </dd>
           </div>
           <div class="mt-3">
@@ -218,7 +218,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="country" type="text" placeholder="Country">
+              <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="country" type="text" placeholder="Country" [(ngModel)]="adresseDto.countryId">
               <div class="ml-3">
                 <a class="font-medium text-indigo-600 hover:text-indigo-500" (click)="clickedCountry = false">
                   Save
@@ -253,7 +253,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
-              <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="iban" type="text" placeholder="Iban">
+              <input class="appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="iban" type="text" placeholder="Iban" [(ngModel)]="ibanDto.iban">
               <div class="ml-3">
                 <a class="font-medium text-indigo-600 hover:text-indigo-500" (click)="clickedIban = false">
                   Save
