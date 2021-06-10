@@ -13,14 +13,20 @@ import {UserService} from "../../services/user.service";
 export class MyAccountComponent implements OnInit {
   address: AddressViewModel;
   user: UserViewModel;
+  userAdresse: AddressViewModel;
   iban: IbanViewModel;
 
   clicked: boolean = false;
   clickedPhone: boolean = false;
+  clickedEmail: boolean = false;
+  clickedAddress: boolean = false;
+  clickedCountry: boolean = false;
+  clickedIban: boolean = false;
 
   constructor(private router: Router, private userService: UserService) {
     this.address = {} as AddressViewModel;
     this.user = {} as UserViewModel;
+    this.userAdresse = {} as AddressViewModel;
     this.iban = {} as IbanViewModel;
   }
 
@@ -29,5 +35,10 @@ export class MyAccountComponent implements OnInit {
       this.user = this.userService.User;
     })
   }
+
+  updatePhoneNumber(): void {
+
+  }
+
 
 }

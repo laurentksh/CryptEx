@@ -9,6 +9,7 @@ import { Currency } from '../models/currency';
 import { Language } from '../models/language';
 import { RequestPasswordChangeDto } from '../models/request-password-change-dto';
 import { UserViewModel } from '../models/user-view-model';
+import {UserUpdateDto} from "../models/user-update-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -97,7 +98,7 @@ export class UserService {
         this.setSelectedLang(selectedLang);
         this.translateService.use(selectedLang);
     }
-    
+
     return result;
   }
 
@@ -107,14 +108,22 @@ export class UserService {
 
       if (result.success)
         this.setSelectedCurrency(selectedCurrency);
-        
+
       await this.RefreshUser();
-      
+
       return result;
     } else {
       this.setSelectedCurrency(selectedCurrency);
 
       return { success: true } as ApiResult;
     }
+  }
+
+  public async UpdateUser(user: UserUpdateDto): Promise<ApiResult<UserViewModel>> {
+    const result = await this.http.Post<UserViewModel>("User/update", user);
+
+    localStorage.setItem("user", JSON.stringify(result.content));
+
+    return result;
   }
 }
