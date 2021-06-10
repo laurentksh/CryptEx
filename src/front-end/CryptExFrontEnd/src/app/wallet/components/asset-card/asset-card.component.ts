@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { WalletViewModel } from 'src/app/user/models/wallet-view-model';
 
 
 @Component({
@@ -7,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./asset-card.component.scss']
 })
 export class AssetCardComponent implements OnInit {
+  @Input() asset: WalletViewModel = {} as WalletViewModel;
 
   constructor() { }
 
