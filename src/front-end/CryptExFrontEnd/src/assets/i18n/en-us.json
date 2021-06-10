@@ -56,6 +56,17 @@
             "Return": "Go back"
         }
     },
+    "User": {
+        "MyAccount": {
+            "Edit": "Edit",
+            "Save": "Save",
+            "Cancel": "Cancel",
+            "BasicInfo": {
+                "NoPhoneNumber": "No phone number set",
+                "NoEmail": "No email set"
+            }
+        }
+    },
     "DepositWithdraw": {
         "Title": "Deposit/Withdraw type",
         "Type": {

@@ -16,18 +16,19 @@ import {IbanDto} from "../../models/iban-dto";
   styleUrls: ['./my-account.component.scss']
 })
 export class MyAccountComponent implements OnInit {
-  addressVm: AddressViewModel;
-  userUpdateDto: UserUpdateDto;
-  userVm : UserViewModel;
-  adresseDto: AddressDto;
-  iban: IbanViewModel;
-  ibanDto: IbanDto;
+  basePath = "User.MyAccount.";
+
+  userVm : UserViewModel = {} as UserViewModel;
+  userUpdateDto: UserUpdateDto = {} as UserUpdateDto;
+  addressVm: AddressViewModel = {} as AddressViewModel;
+  addressDto: AddressDto = {} as AddressDto;
+  iban: IbanViewModel = {} as IbanViewModel;
+  ibanDto: IbanDto = {} as IbanDto;
 
   clickedUser: boolean = false;
   clickedPhone: boolean = false;
   clickedEmail: boolean = false;
   clickedAddress: boolean = false;
-  clickedCountry: boolean = false;
   clickedIban: boolean = false;
 
   constructor(private router: Router, private userService: UserService, private snack: SnackbarService) {
@@ -35,7 +36,7 @@ export class MyAccountComponent implements OnInit {
     this.userUpdateDto = {} as UserUpdateDto;
     this.iban = {} as IbanViewModel;
     this.userVm = {} as UserViewModel;
-    this.adresseDto = {}  as AddressDto;
+    this.addressDto = {}  as AddressDto;
     this.ibanDto = {} as IbanDto;
   }
 
@@ -46,26 +47,47 @@ export class MyAccountComponent implements OnInit {
   }
 
   updateUser(): void {
-    this.userService.UpdateUser(this.userUpdateDto).then(x =>
-    {
-      if (!x.success)
-      {
+    this.userService.UpdateUser(this.userUpdateDto).then(x => {
+      if (!x.success) {
         this.snack.ShowSnackbar(new SnackBarCreate("Error", "Update user error : " + x.error.message, AlertType.Error));
       } else {
         this.snack.ShowSnackbar(new SnackBarCreate("Error", "Update succeed", AlertType.Success));
       }
-    })
+    });
+  }
+
+  updateAddress(): void {
+    this.userService.UpdateAddress(this.addressDto).then(x => {
+      if (!x.success) {
+        this.snack.ShowSnackbar(new SnackBarCreate("Error", "Update Address error : " + x.error.message, AlertType.Error));
+      } else {
+        this.snack.ShowSnackbar(new SnackBarCreate("Error", "Update succeed", AlertType.Success));
+      }
+    });
+  }
+
+  updateIban(): void {
+    this.userService.UpdateIban(this.ibanDto).then(x => {
+      if (!x.success) {
+        this.snack.ShowSnackbar(new SnackBarCreate("Error", "Update IBAN error : " + x.error.message, AlertType.Error));
+      } else {
+        this.snack.ShowSnackbar(new SnackBarCreate("Error", "Update succeed", AlertType.Success));
+      }
+    });
   }
 
   doClick(): void{
     this.clickedUser = !this.clickedUser;
     this.clickedPhone = !this.clickedPhone;
-    this.clickedCountry = !this.clickedCountry;
     this.clickedEmail = !this.clickedEmail;
     this.clickedAddress = !this.clickedAddress;
     this.clickedIban = !this.clickedIban;
 
-    this.updateUser();
+    if (this.clickedUser || this.clickedPhone || this.clickedEmail)
+      this.updateUser();
+    
+    if (this.clickedAddress)
+      this.updateAddress();
   }
 
 
