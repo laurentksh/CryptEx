@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-asset-card',
   templateUrl: './asset-card.component.html',
