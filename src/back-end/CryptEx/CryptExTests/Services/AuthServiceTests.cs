@@ -23,7 +23,7 @@ namespace CryptExTests.Services
         private const string jwtKey = "abcdef1234567890$abcdef1234567890$abcdef1234567890$abcdef1234567890$";
         private IAuthService authService;
         private AppUser fakeUser;
-        private string fakeUserPassword = "Password123$";
+        private const string fakeUserPassword = "Password123$";
 
         [TestInitialize]
         public void Setup()
@@ -69,6 +69,12 @@ namespace CryptExTests.Services
             userManager.Setup(x => x.GetRolesAsync(It.IsAny<AppUser>()))
                 .ReturnsAsync(new List<string> { "user" });
 
+            userManager.Setup(x => x.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            userManager.Setup(x => x.AddToRoleAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+
             authService = new AuthService(userManager.Object, config);
         }
 
@@ -90,7 +96,16 @@ namespace CryptExTests.Services
         [TestMethod]
         public void CreateUser()
         {
+            var user = authService.CreateUser(new CryptExApi.Models.DTO.CreateUserDTO
+            {
+                FirstName = "Laurent",
+                LastName = "Keusch",
+                BirthDay = new DateTime(2002, 03, 01),
+                Email = "email@example.com",
+                Password = "Password123$"
+            }).GetAwaiter().GetResult();
 
+            ValidateJwt(user.JWToken, null, "email@example.com");
         }
 
         [TestMethod]
@@ -140,8 +155,12 @@ namespace CryptExTests.Services
 
             var token = handler.ReadJwtToken(jwt);
 
-            Assert.IsTrue(token.Claims.Any(x => x.Type == ClaimTypes.NameIdentifier && x.Value == userId.ToString()));
-            Assert.IsTrue(token.Claims.Any(x => x.Type == JwtRegisteredClaimNames.Email && x.Value == email));
+            if (userId != null)
+                Assert.IsTrue(token.Claims.Any(x => x.Type == ClaimTypes.NameIdentifier && x.Value == userId.ToString()));
+            
+            if (email != null)
+                Assert.IsTrue(token.Claims.Any(x => x.Type == JwtRegisteredClaimNames.Email && x.Value == email));
+            
             Assert.IsTrue(token.Claims.Any(x => x.Type == ClaimTypes.Role && x.Value == "user"));
 
             return token;
