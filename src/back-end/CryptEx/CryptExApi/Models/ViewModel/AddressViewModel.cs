@@ -14,17 +14,14 @@ namespace CryptExApi.Models.ViewModel
 
         public string PostalCode { get; set; }
 
-        public Guid CountryId { get; set; }
-
-        public string ISO31661Alpha2Code { get; set; }
+        public CountryViewModel Country { get; set; }
 
         public static AddressViewModel FromAddress(UserAddress address) => new()
         {
             Street = address.Street,
             City = address.City,
             PostalCode = address.PostalCode,
-            CountryId = address.CountryId,
-            ISO31661Alpha2Code = address.Country.ISO31661Alpha2Code
+            Country = CountryViewModel.FromCountry(address.Country)
         };
     }
 }

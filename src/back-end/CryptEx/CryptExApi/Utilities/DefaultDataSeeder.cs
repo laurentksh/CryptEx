@@ -46,7 +46,7 @@ namespace CryptExApi.Utilities
             ("MATIC", "Polygon"),
             ("UNI", "Uniswap"),
             //("PAXG",  "PAX Gold"),
-            //("DOGE",  "Dogecoin"), // We wanted to list DOGE but it isn't available on Coinbase yet :(
+            ("DOGE",  "Dogecoin"), // Update: DOGE is now listed on Coinbase (10.06.2021) !!!
             ("MKR", "Maker"),
             ("XTZ", "Tezos"),
             //("CHZ",   "Chiliz"),
@@ -370,10 +370,10 @@ namespace CryptExApi.Utilities
 
             // Countries
             foreach (var countryCode in Countries) {
-                if (!dbContext.Countries.Any(x => x.ISO31661Alpha2Code == countryCode)) {
+                if (!dbContext.Countries.Any(x => x.Iso31661Alpha2Code == countryCode)) {
                     await dbContext.Countries.AddAsync(new Country
                     {
-                        ISO31661Alpha2Code = countryCode
+                        Iso31661Alpha2Code = countryCode
                     });
                 }
             }

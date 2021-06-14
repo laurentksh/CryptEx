@@ -10,6 +10,11 @@ import { Language } from '../models/language';
 import { PasswordChangeViewModel } from '../models/password-change-view-model';
 import { RequestPasswordChangeDto } from '../models/request-password-change-dto';
 import { UserViewModel } from '../models/user-view-model';
+import {UserUpdateDto} from "../models/user-update-dto";
+import { AddressDto } from '../models/address-dto';
+import { AddressViewModel } from '../models/address-view-model';
+import { IbanViewModel } from '../models/iban-view-model';
+import { IbanDto } from '../models/iban-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +41,9 @@ export class UserService {
     ];
   }
 
+  /**
+   * Cached version of the user, may not be up-to-date, use RefreshUser to get the latest data.
+   */
   public get User(): UserViewModel {
     return JSON.parse(localStorage.getItem("user")) as UserViewModel;
   }
@@ -65,15 +73,21 @@ export class UserService {
   }
 
   public async RefreshUser(): Promise<ApiResult<UserViewModel>> {
-    const user = await this.http.Get<UserViewModel>("User");
-    localStorage.setItem("user", JSON.stringify(user.content));
+    const result = await this.http.Get<UserViewModel>("User");
+    
+    if (result.success)
+      this.setUserInStorage(result.content);
 
-    this.setSelectedLang(user.content.preferedLanguage);
-    this.setSelectedCurrency(user.content.preferedCurrency);
+    return result;
+  }
 
-    this.translateService.use(user.content.preferedLanguage);
+  private setUserInStorage(user: UserViewModel): void {
+    localStorage.setItem("user", JSON.stringify(user));
 
-    return user;
+    this.setSelectedLang(user.preferedLanguage);
+    this.setSelectedCurrency(user.preferedCurrency);
+
+    this.translateService.use(user.preferedLanguage);
   }
 
   public async RequestPasswordChange(body: RequestPasswordChangeDto): Promise<ApiResult<PasswordChangeViewModel>> {
@@ -99,7 +113,7 @@ export class UserService {
         this.setSelectedLang(selectedLang);
         this.translateService.use(selectedLang);
     }
-    
+
     return result;
   }
 
@@ -109,14 +123,49 @@ export class UserService {
 
       if (result.success)
         this.setSelectedCurrency(selectedCurrency);
-        
+
       await this.RefreshUser();
-      
+
       return result;
     } else {
       this.setSelectedCurrency(selectedCurrency);
 
       return { success: true } as ApiResult;
     }
+  }
+
+  public async UpdateUser(user: UserUpdateDto): Promise<ApiResult<UserViewModel>> {
+    const result = await this.http.Post<UserViewModel>("User/update", user);
+
+    if (result.success)
+      this.setUserInStorage(result.content);
+
+    return result;
+  }
+
+  public async GetAddress(): Promise<ApiResult<AddressViewModel>> {
+    return await this.http.Get("User/address");
+  }
+
+  public async GetIban(): Promise<ApiResult<IbanViewModel>> {
+    return await this.http.Get("User/iban");
+  }
+
+  public async UpdateAddress(address: AddressDto): Promise<ApiResult<AddressViewModel>> {
+    const result = await this.http.Post("User/address", address);
+
+    if (result.success)
+      return this.GetAddress();
+    else
+      return { success: false, error: result.error, content: null };
+  }
+
+  public async UpdateIban(iban: IbanDto): Promise<ApiResult<IbanViewModel>> {
+    const result = await this.http.Post("User/iban", iban);
+
+    if (result.success)
+      return this.GetIban();
+    else
+      return { success: false, error: result.error, content: null};
   }
 }

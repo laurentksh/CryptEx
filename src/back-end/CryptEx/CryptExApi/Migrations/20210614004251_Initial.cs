@@ -57,7 +57,7 @@ namespace CryptExApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ISO31661Alpha2Code = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Iso31661Alpha2Code = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

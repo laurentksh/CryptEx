@@ -45,6 +45,20 @@ namespace CryptExApi.Controllers
             }
         }
 
+        [HttpPost("update")]
+        public async Task<IActionResult> Update([FromBody] UpdateUserDto dto)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var updatedUser = await userService.UpdateUser(user, dto);
+                
+                return Ok(updatedUser);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not update user.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
         [HttpGet("address")]
         public async Task<IActionResult> GetAddress()
         {
