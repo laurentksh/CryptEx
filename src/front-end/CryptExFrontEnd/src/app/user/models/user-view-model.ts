@@ -5,9 +5,13 @@ export interface UserViewModel {
 
     lastName: string;
 
-    birthDay: Date;
+    email: string;
+
+    birthDay: string;
 
     preferedLanguage: string;
 
     preferedCurrency: string;
+
+    phoneNumber: string;
 }

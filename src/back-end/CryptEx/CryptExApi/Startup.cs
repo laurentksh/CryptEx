@@ -159,18 +159,18 @@ namespace CryptExApi
 
             services.AddTransient<ICoinbaseClient, CoinbaseClient>();
 
-            services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
-            services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IDepositService, DepositService>();
-            services.AddTransient<IPaymentService, PaymentService>();
-            services.AddTransient<IStripeService, StripeService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IWalletService, WalletService>();
-
             services.AddTransient<IDepositRepository, DepositRepository>();
             services.AddTransient<IStripeRepository, StripeRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IWalletRepository, WalletRepository>();
+
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IDepositService, DepositService>();
+            services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
+            services.AddTransient<IPaymentService, PaymentService>();
+            services.AddTransient<IStripeService, StripeService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IWalletService, WalletService>();
 
             if (Environment.IsDevelopment())
                 services.AddTransient<IDataSeeder, DevelopmentDataSeeder>();

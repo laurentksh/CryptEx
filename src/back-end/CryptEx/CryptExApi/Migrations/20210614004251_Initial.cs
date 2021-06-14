@@ -57,7 +57,7 @@ namespace CryptExApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ISO31661Alpha2Code = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Iso31661Alpha2Code = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -185,7 +185,7 @@ namespace CryptExApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BankAccount",
+                name: "BankAccounts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -196,9 +196,9 @@ namespace CryptExApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankAccount", x => x.Id);
+                    table.PrimaryKey("PK_BankAccounts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BankAccount_AspNetUsers_UserId",
+                        name: "FK_BankAccounts_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -214,11 +214,18 @@ namespace CryptExApi.Migrations
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserAddresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserAddresses_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserAddresses_Countries_CountryId",
                         column: x => x.CountryId,
@@ -232,7 +239,7 @@ namespace CryptExApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(9,2)", precision: 9, scale: 2, nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TransactionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -261,7 +268,7 @@ namespace CryptExApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(9,2)", precision: 9, scale: 2, nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StripeSessionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -290,7 +297,7 @@ namespace CryptExApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(9,2)", precision: 9, scale: 2, nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BankAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -307,9 +314,9 @@ namespace CryptExApi.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FiatWithdrawals_BankAccount_BankAccountId",
+                        name: "FK_FiatWithdrawals_BankAccounts_BankAccountId",
                         column: x => x.BankAccountId,
-                        principalTable: "BankAccount",
+                        principalTable: "BankAccounts",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_FiatWithdrawals_Wallets_WalletId",
@@ -359,8 +366,8 @@ namespace CryptExApi.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BankAccount_UserId",
-                table: "BankAccount",
+                name: "IX_BankAccounts_UserId",
+                table: "BankAccounts",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -402,6 +409,12 @@ namespace CryptExApi.Migrations
                 name: "IX_UserAddresses_CountryId",
                 table: "UserAddresses",
                 column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAddresses_UserId",
+                table: "UserAddresses",
+                column: "UserId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -437,7 +450,7 @@ namespace CryptExApi.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "BankAccount");
+                name: "BankAccounts");
 
             migrationBuilder.DropTable(
                 name: "Wallets");

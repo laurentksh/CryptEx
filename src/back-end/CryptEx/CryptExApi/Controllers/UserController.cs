@@ -45,6 +45,76 @@ namespace CryptExApi.Controllers
             }
         }
 
+        [HttpPost("update")]
+        public async Task<IActionResult> Update([FromBody] UpdateUserDto dto)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var updatedUser = await userService.UpdateUser(user, dto);
+                
+                return Ok(updatedUser);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not update user.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("address")]
+        public async Task<IActionResult> GetAddress()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var address = await userService.GetAddress(user);
+
+                return Ok(address);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not return address.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("address")]
+        public async Task<IActionResult> SetAddress([FromBody] AddressDto dto)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await userService.SetAddress(user, dto);
+
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not return address.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("iban")]
+        public async Task<IActionResult> GetIBAN()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var iban = await userService.GetIban(user);
+
+                return Ok(iban);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not return address.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("iban")]
+        public async Task<IActionResult> SetIBAN([FromBody] IbanDto dto)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await userService.SetIban(user, dto);
+                
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not return address.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
         [HttpPost("language")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -78,15 +148,17 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("resetPassword")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ResetPassword(RequestPasswordChangeDTO resetPasswordDto)
         {
             try {
                 var user = await HttpContext.GetUser();
-                var token = await userService.RequestPasswordChange(user, resetPasswordDto);
 
-                return Ok(token);
+                var result = await userService.RequestPasswordChange(user, resetPasswordDto);
+
+                return Ok(new { Token = result });
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could not request password change.");
                 return exceptionHandler.Handle(ex, Request);
@@ -94,6 +166,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("changePassword")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

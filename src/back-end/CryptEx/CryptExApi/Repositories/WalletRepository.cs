@@ -8,6 +8,7 @@ using CryptExApi.Exceptions;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.ViewModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace CryptExApi.Repositories
 {
@@ -89,7 +90,10 @@ namespace CryptExApi.Repositories
         public async Task<List<UserWalletViewModel>> GetFiatWallets(AppUser user)
         {
             var result = new List<UserWalletViewModel>();
-            var fiatDeposits = dbContext.FiatDeposits.Where(x => x.UserId == user.Id);
+            var fiatDeposits = dbContext.FiatDeposits
+                .Include(x => x.User)
+                .Include(x => x.Wallet)
+                .Where(x => x.UserId == user.Id);
 
             foreach (var deposit in fiatDeposits) {
                 var wallet = result.Find(x => x.Id == deposit.WalletId);
@@ -116,7 +120,10 @@ namespace CryptExApi.Repositories
         public async Task<List<UserWalletViewModel>> GetCryptoWallets(AppUser user)
         {
             var result = new List<UserWalletViewModel>();
-            var cryptoDeposits = dbContext.CryptoDeposits.Where(x => x.UserId == user.Id);
+            var cryptoDeposits = dbContext.CryptoDeposits
+                .Include(x => x.User)
+                .Include(x => x.Wallet)
+                .Where(x => x.UserId == user.Id);
 
             foreach (var deposit in cryptoDeposits) {
                 var wallet = result.Find(x => x.Id == deposit.WalletId);

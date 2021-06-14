@@ -15,6 +15,8 @@ namespace CryptExApi.Services
     {
         Task<UserViewModel> GetUser(Guid id);
 
+        Task<UserViewModel> UpdateUser(AppUser user, UpdateUserDto dto);
+
         Task ChangeLanguage(AppUser user, string language);
 
         Task ChangeCurrency(AppUser user, string currency);
@@ -22,6 +24,14 @@ namespace CryptExApi.Services
         Task<string> RequestPasswordChange(AppUser user, RequestPasswordChangeDTO passwordChangeDTO);
 
         Task ChangePassword(AppUser user, ChangePasswordDTO changePasswordDTO);
+
+        Task<AddressViewModel> GetAddress(AppUser user);
+
+        Task SetAddress(AppUser user, AddressDto dto);
+
+        Task<IbanViewModel> GetIban(AppUser user);
+
+        Task SetIban(AppUser user, IbanDto dto);
     }
 
     public class UserService : IUserService
@@ -40,6 +50,27 @@ namespace CryptExApi.Services
             return UserViewModel.FromAppUser(await userRepository.GetUser(id));
         }
 
+        public async Task<UserViewModel> UpdateUser(AppUser user, UpdateUserDto dto)
+        {
+            if (!string.IsNullOrWhiteSpace(dto.FirstName))
+                user.FirstName = dto.FirstName.Trim();
+            if (!string.IsNullOrWhiteSpace(dto.LastName))
+                user.LastName = dto.LastName.Trim();
+            if (!string.IsNullOrWhiteSpace(dto.Email))
+                user.Email = dto.Email.Trim();
+            if (dto.BirthDay.HasValue && dto.BirthDay != default)
+                user.BirthDay = dto.BirthDay.Value;
+            if (!string.IsNullOrWhiteSpace(dto.PhoneNumber))
+                user.PhoneNumber = dto.PhoneNumber.Replace(" ", string.Empty);
+
+            var result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+                throw new IdentityException(result.Errors.ToList());
+
+            return UserViewModel.FromAppUser(user);
+        }
+
         public async Task ChangeLanguage(AppUser user, string language)
         {
             await userRepository.ChangeLanguage(user, language);
@@ -55,9 +86,14 @@ namespace CryptExApi.Services
             if (passwordChangeDTO is null)
                 throw new ArgumentNullException(nameof(passwordChangeDTO));
 
+            
+            user ??= await userManager.FindByEmailAsync(passwordChangeDTO.Email);
+            if (user == null)
+                throw new NotFoundException("Email not found.");
+
             var token = await userManager.GeneratePasswordResetTokenAsync(user); //Send this by email
 
-            //TODO: Implement, also use a mail sender like MailChimp. Or just display the password change token on screen.
+            //We should be using a mail provider to send the token to the user but since this is a school project we won't do that.
             return token;
         }
 
@@ -66,11 +102,47 @@ namespace CryptExApi.Services
             if (changePasswordDTO is null)
                 throw new ArgumentNullException(nameof(changePasswordDTO));
 
+            user ??= await userManager.FindByEmailAsync(changePasswordDTO.Email);
+            if (user == null)
+                throw new NotFoundException("Email not found.");
+
             var result = await userManager.ResetPasswordAsync(user, changePasswordDTO.Token, changePasswordDTO.NewPassword);
 
             if (!result.Succeeded) {
                 throw new IdentityException(result.Errors.ToList());
             }
+        }
+
+        public async Task<AddressViewModel> GetAddress(AppUser user)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            return await userRepository.GetAddress(user);
+        }
+
+        public async Task SetAddress(AppUser user, AddressDto dto)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            await userRepository.SetAddress(user, dto);
+        }
+
+        public async Task<IbanViewModel> GetIban(AppUser user)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            return await userRepository.GetIban(user);
+        }
+
+        public async Task SetIban(AppUser user, IbanDto dto)
+        {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            await userRepository.SetIban(user, dto);
         }
     }
 }

@@ -2,10 +2,15 @@ export interface ChangePasswordDto {
     /**
      * Reset token, obtained by email after calling /resetPassword
      */
-    Token: string;
+    token: string;
+
+    /**
+     * The user's email, provide only if unauthenticated.
+     */
+    email: string;
 
     /**
      * The new password
      */
-    NewPassword: string;
+    newPassword: string;
 }

@@ -12,6 +12,6 @@ namespace CryptExApi.Models.Database
         /// <summary>
         /// ISO 3166-1 Alpha 2 Country identifier, e.g: CH, SE, NE
         /// </summary>
-        public string ISO31661Alpha2Code { get; set; }
+        public string Iso31661Alpha2Code { get; set; }
     }
 }
