@@ -87,7 +87,8 @@ namespace CryptExApi
                         "https://localhost:5001",
                         "http://localhost:4200",
                         "https://cryptex-trade.tech",
-                        "https://www.cryptex-trade.tech"
+                        "https://www.cryptex-trade.tech",
+                        "https://api.cryptex-trade.tech"
                     );
                   //y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
                 });
@@ -97,7 +98,7 @@ namespace CryptExApi
             {
                 x.UseSqlServer(Configuration.GetConnectionString("Database"), options =>
                 {
-                    options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+                    options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
                 });
             });
 

@@ -15,8 +15,8 @@
           <div class="flex-shrink-0 flex items-center">
             <img class="hidden lg:block h-8 w-auto cursor-pointer" src="/assets/CryptEx_Trans.png" alt="Logo" routerLink="/home">
           </div>
-          <div class="hidden sm:block sm:ml-6">
-            <div class="flex space-x-4">
+          <div class="hidden sm:block sm:ml-6 w-full">
+            <div class="flex space-x-4 w-full">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
               <a routerLink="home" routerLinkActive="bg-gray-900" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">{{ 'Header.NavBar.Home' | translate }}</a>
 
@@ -27,6 +27,8 @@
               <a routerLink="deposit-withdraw" routerLinkActive="bg-gray-900" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">{{ 'Header.NavBar.DepositWithdraw' | translate}}</a>
 
               <a routerLink="contact" routerLinkActive="bg-gray-900" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">{{ 'Header.NavBar.Contact' | translate }}</a>
+
+              <a routerLink="admin" routerLinkActive="bg-yellow-900" *ngIf="IsAdmin()" class="text-white bg-yellow-400 hover:bg-yellow-500 px-3 py-2 rounded-md text-sm font-medium place-self-end ml-auto mr-0 right-0">{{ 'Header.NavBar.Admin' | translate }}</a>
             </div>
           </div>
         </div>

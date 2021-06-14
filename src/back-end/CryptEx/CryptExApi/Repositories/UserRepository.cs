@@ -28,7 +28,7 @@ namespace CryptExApi.Repositories
 
         public async Task<AppUser> GetUser(Guid id)
         {
-            return await DbContext.Users.SingleAsync(x => x.Id == id);
+            return await DbContext.Users.SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task ChangeLanguage(AppUser user, string language)
@@ -46,6 +46,7 @@ namespace CryptExApi.Repositories
         private async Task<AppUser> GetFullUser(Guid id)
         {
             var user = await DbContext.Users
+                .Include(x => x.BankAccounts)
                 //.Include(x => x...)
                 .SingleAsync(x => x.Id == id);
 

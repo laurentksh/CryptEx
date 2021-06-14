@@ -35,6 +35,16 @@ export class AuthService {
     localStorage.setItem("accesstoken", value);
   }
 
+  public IsInRole(role: string): boolean {
+    if (!this.IsAuthenticated) {
+      return false;
+    }
+    
+    const roles = this.JWTokenParsed["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] as string[];
+
+    return roles.includes(role);
+  }
+
   public async Authenticate(auth: AuthDto): Promise<ApiResult<AuthViewModel>> {
     const result = await this.http.Post<AuthViewModel>("Auth", auth);
 

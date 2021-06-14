@@ -46,6 +46,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("language")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangeLanguage([FromQuery] string lang)
         {
@@ -61,6 +62,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("currency")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangeCurrency([FromQuery] string currency)
         {
@@ -76,14 +78,15 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("resetPassword")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ResetPassword(RequestPasswordChangeDTO resetPasswordDto)
         {
             try {
                 var user = await HttpContext.GetUser();
-                await userService.RequestPasswordChange(user, resetPasswordDto);
+                var token = await userService.RequestPasswordChange(user, resetPasswordDto);
 
-                return Ok();
+                return Ok(token);
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could not request password change.");
                 return exceptionHandler.Handle(ex, Request);
@@ -91,6 +94,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("changePassword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)

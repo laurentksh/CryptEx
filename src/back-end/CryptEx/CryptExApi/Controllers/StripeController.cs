@@ -44,28 +44,5 @@ namespace CryptExApi.Controllers
                 return Problem(statusCode: StatusCodes.Status500InternalServerError, title: "StripeEventProcessError");
             }
         }
-
-        [HttpPost("debugSetStatus")]
-        [Authorize(Roles = "admin")]
-        public async Task<IActionResult> DebugSetStatus(string sessionId, [FromQuery] PaymentStatus status)
-        {
-            switch (status) {
-                case PaymentStatus.NotProcessed:
-                    break;
-                case PaymentStatus.Failed:
-                    await stripeService.FullfillDeposit(new Session() { Id = sessionId });
-                    break;
-                case PaymentStatus.Success:
-                    await stripeService.SetDepositAsFailed(new Session() { Id = sessionId });
-                    break;
-                case PaymentStatus.Pending:
-                    await (stripeService as StripeService).SetDepositAsPending(new Session() { Id = sessionId });
-                    break;
-                default:
-                    break;
-            }
-
-            return Ok();
-        }
     }
 }
