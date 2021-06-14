@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CryptExApi.Migrations
 {
     [DbContext(typeof(CryptExDbContext))]
-    [Migration("20210610075233_Initial")]
+    [Migration("20210614004251_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,7 +164,7 @@ namespace CryptExApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ISO31661Alpha2Code")
+                    b.Property<string>("Iso31661Alpha2Code")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

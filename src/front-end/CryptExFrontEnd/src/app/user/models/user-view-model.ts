@@ -7,7 +7,7 @@ export interface UserViewModel {
 
     email: string;
 
-    birthDay: Date;
+    birthDay: string;
 
     preferedLanguage: string;
 

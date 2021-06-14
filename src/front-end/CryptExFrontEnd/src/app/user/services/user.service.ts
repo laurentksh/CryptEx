@@ -137,7 +137,8 @@ export class UserService {
   public async UpdateUser(user: UserUpdateDto): Promise<ApiResult<UserViewModel>> {
     const result = await this.http.Post<UserViewModel>("User/update", user);
 
-    this.setUserInStorage(result.content);
+    if (result.success)
+      this.setUserInStorage(result.content);
 
     return result;
   }

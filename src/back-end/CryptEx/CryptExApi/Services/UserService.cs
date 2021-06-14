@@ -15,6 +15,8 @@ namespace CryptExApi.Services
     {
         Task<UserViewModel> GetUser(Guid id);
 
+        Task<UserViewModel> UpdateUser(AppUser user, UpdateUserDto dto);
+
         Task ChangeLanguage(AppUser user, string language);
 
         Task ChangeCurrency(AppUser user, string currency);
@@ -46,6 +48,27 @@ namespace CryptExApi.Services
         public async Task<UserViewModel> GetUser(Guid id)
         {
             return UserViewModel.FromAppUser(await userRepository.GetUser(id));
+        }
+
+        public async Task<UserViewModel> UpdateUser(AppUser user, UpdateUserDto dto)
+        {
+            if (!string.IsNullOrWhiteSpace(dto.FirstName))
+                user.FirstName = dto.FirstName.Trim();
+            if (!string.IsNullOrWhiteSpace(dto.LastName))
+                user.LastName = dto.LastName.Trim();
+            if (!string.IsNullOrWhiteSpace(dto.Email))
+                user.Email = dto.Email.Trim();
+            if (dto.BirthDay.HasValue && dto.BirthDay != default)
+                user.BirthDay = dto.BirthDay.Value;
+            if (!string.IsNullOrWhiteSpace(dto.PhoneNumber))
+                user.PhoneNumber = dto.PhoneNumber.Replace(" ", string.Empty);
+
+            var result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+                throw new IdentityException(result.Errors.ToList());
+
+            return UserViewModel.FromAppUser(user);
         }
 
         public async Task ChangeLanguage(AppUser user, string language)

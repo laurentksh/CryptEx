@@ -162,7 +162,7 @@ namespace CryptExApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ISO31661Alpha2Code")
+                    b.Property<string>("Iso31661Alpha2Code")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

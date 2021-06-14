@@ -44,6 +44,16 @@ namespace CryptExApi.Repositories
             return await DbContext.Users.SingleAsync(x => x.Id == id);
         }
 
+        public async Task<AppUser> GetFullUser(Guid id)
+        {
+            var user = await DbContext.Users
+                .Include(x => x.BankAccounts)
+                .Include(x => x.Address)
+                .SingleAsync(x => x.Id == id);
+
+            return user;
+        }
+
         public async Task ChangeLanguage(AppUser user, string language)
         {
             user.PreferedLanguage = language;
@@ -54,16 +64,6 @@ namespace CryptExApi.Repositories
         {
             user.PreferedCurrency = currency;
             await DbContext.SaveChangesAsync();
-        }
-
-        public async Task<AppUser> GetFullUser(Guid id)
-        {
-            var user = await DbContext.Users
-                .Include(x => x.BankAccounts)
-                .Include(x => x.Address)
-                .SingleAsync(x => x.Id == id);
-
-            return user;
         }
 
         public async Task<AddressViewModel> GetAddress(AppUser user)
@@ -117,14 +117,14 @@ namespace CryptExApi.Repositories
             if (bankAccount == null) {
                 var newBankAccount = new BankAccount
                 {
-                    Iban = dto.Iban,
+                    Iban = dto.Iban.Replace(" ", ""),
                     Status = BankAccountStatus.NotProcessed,
                     UserId = user.Id,
                 };
 
                 await DbContext.BankAccounts.AddAsync(newBankAccount);
             } else {
-                bankAccount.Iban = dto.Iban;
+                bankAccount.Iban = dto.Iban.Replace(" ", "");
                 bankAccount.Status = BankAccountStatus.NotProcessed;
             }
 
