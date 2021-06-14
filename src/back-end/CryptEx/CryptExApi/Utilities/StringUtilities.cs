@@ -85,16 +85,15 @@ namespace CryptExApi.Utilities
             hashAlgorithm = hashAlgorithm.HasValue ? hashAlgorithm : HashAlgorithmName.SHA256;
 
             // Create a hash algorithm instance
-            using (HashAlgorithm hashAlgorithmInstance = HashAlgorithm.Create(hashAlgorithm.Value.Name)) {
+            using (var hashAlgorithmInstance = HashAlgorithm.Create(hashAlgorithm.Value.Name)) {
                 // ComputeHash - returns byte array
                 byte[] bytes = hashAlgorithmInstance.ComputeHash(Encoding.UTF8.GetBytes(rawData));
 
                 // Convert byte array to a string
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
 
-                for (int i = 0; i < bytes.Length; i++) {
+                for (int i = 0; i < bytes.Length; i++)
                     builder.Append(bytes[i].ToString("x2"));
-                }
 
                 return builder.ToString();
             }
