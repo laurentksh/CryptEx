@@ -98,7 +98,7 @@ namespace CryptExApi
             {
                 x.UseSqlServer(Configuration.GetConnectionString("Database"), options =>
                 {
-                    options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
                 });
             });
 

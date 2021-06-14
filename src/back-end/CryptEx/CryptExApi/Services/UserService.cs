@@ -29,7 +29,7 @@ namespace CryptExApi.Services
 
         Task SetAddress(AppUser user, AddressDto dto);
 
-        Task<IbanViewModel> GetIban(AppUser user);
+        Task<BankAccountViewModel> GetIban(AppUser user);
 
         Task SetIban(AppUser user, IbanDto dto);
     }
@@ -129,7 +129,7 @@ namespace CryptExApi.Services
             await userRepository.SetAddress(user, dto);
         }
 
-        public async Task<IbanViewModel> GetIban(AppUser user)
+        public async Task<BankAccountViewModel> GetIban(AppUser user)
         {
             if (user is null)
                 throw new ArgumentNullException(nameof(user));

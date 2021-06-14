@@ -34,10 +34,10 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetUser([FromQuery] Guid? userId)
+        public async Task<IActionResult> GetUser([FromQuery] Guid userId)
         {
             try {
-                var user = await userService.GetUser(userId.Value);
+                var user = await userService.GetUser(userId);
 
                 return Ok(user);
             } catch (Exception ex) {
@@ -72,6 +72,40 @@ namespace CryptExApi.Controllers
         {
             try {
                 await adminService.SetPaymentStatus(sessionId, status);
+
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Couldn't set payment status");
+                return exHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("pendingBankAccounts")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetPendingBankAccounts()
+        {
+            try {
+                var result = await adminService.GetPendingBankAccounts();
+
+                return Ok(result);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Couldn't set payment status");
+                return exHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("setBankAccountStatus")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SetBankAccountStatus([FromQuery] Guid bankAccountId, [FromQuery] BankAccountStatus status)
+        {
+            try {
+                await adminService.SetBankAccountStatus(bankAccountId, status);
 
                 return Ok();
             } catch (Exception ex) {

@@ -1,5 +1,8 @@
 export interface IbanViewModel{
+  id: string;
   iban: string;
+  creationDate: string;
+  decisionDate: string;
   status: BankAccountStatus;
 }
 

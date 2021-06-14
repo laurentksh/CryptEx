@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
+using CryptExApi.Models.ViewModel;
 using CryptExApi.Models.ViewModel.Payment;
 using CryptExApi.Repositories;
 
@@ -14,6 +15,10 @@ namespace CryptExApi.Services
         Task<List<DepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat);
 
         Task SetPaymentStatus(string sessionId, PaymentStatus status);
+
+        Task<List<BankAccountViewModel>> GetPendingBankAccounts();
+
+        Task SetBankAccountStatus(Guid id, BankAccountStatus status);
     }
 
     public class AdminService : IAdminService
@@ -34,6 +39,16 @@ namespace CryptExApi.Services
         public async Task SetPaymentStatus(string sessionId, PaymentStatus status)
         {
             await stripeRepo.SetDepositStatus(sessionId, status);
+        }
+
+        public async Task<List<BankAccountViewModel>> GetPendingBankAccounts()
+        {
+            return await adminRepo.GetPendingBankAccounts();
+        }
+
+        public async Task SetBankAccountStatus(Guid id, BankAccountStatus status)
+        {
+            await adminRepo.SetBankAccountStatus(id, status);
         }
     }
 }
