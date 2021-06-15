@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressViewModel } from "../../models/address-view-model";
-import { IbanViewModel } from "../../models/iban-view-model";
 import { Router } from "@angular/router";
 import { UserService } from "../../services/user.service";
 import { UserUpdateDto } from "../../models/user-update-dto";
@@ -11,6 +10,7 @@ import { AddressDto } from "../../models/address-dto";
 import { IbanDto } from "../../models/iban-dto";
 import { CountryViewModel } from 'src/app/api/models/country-view-model';
 import { GlobalApiService } from 'src/app/api/global-api/global-api.service';
+import { BankAccountViewModel } from 'src/app/deposit-withdraw/models/bank-account-view-model';
 
 @Component({
   selector: 'app-my-account',
@@ -29,7 +29,7 @@ export class MyAccountComponent implements OnInit {
   userUpdateDto: UserUpdateDto = {} as UserUpdateDto;
   addressVm: AddressViewModel;
   addressDto: AddressDto = {} as AddressDto;
-  ibanVm: IbanViewModel = {} as IbanViewModel;
+  ibanVm: BankAccountViewModel = {} as BankAccountViewModel;
   ibanDto: IbanDto = {} as IbanDto;
 
   clickedName: boolean = false;

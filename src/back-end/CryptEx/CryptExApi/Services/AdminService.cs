@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.ViewModel;
+using CryptExApi.Models.ViewModel.Admin;
 using CryptExApi.Models.ViewModel.Payment;
 using CryptExApi.Repositories;
 
@@ -12,6 +13,10 @@ namespace CryptExApi.Services
 {
     public interface IAdminService
     {
+        Task<List<UserViewModel>> SearchUser(string query);
+
+        Task<StatsViewModel> GetStats();
+
         Task<List<DepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat);
 
         Task SetPaymentStatus(string sessionId, PaymentStatus status);
@@ -26,9 +31,20 @@ namespace CryptExApi.Services
         private readonly IStripeRepository stripeRepo;
         private readonly IAdminRepository adminRepo;
 
-        public AdminService(IStripeRepository stripeRepo)
+        public AdminService(IStripeRepository stripeRepo, IAdminRepository adminRepo)
         {
             this.stripeRepo = stripeRepo;
+            this.adminRepo = adminRepo;
+        }
+
+        public async Task<List<UserViewModel>> SearchUser(string query)
+        {
+            return await adminRepo.SearchUser(query);
+        }
+
+        public async Task<StatsViewModel> GetStats()
+        {
+            return await adminRepo.GetStats();
         }
 
         public async Task<List<DepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat)

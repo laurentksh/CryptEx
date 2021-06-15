@@ -3,11 +3,15 @@ export interface BankAccountViewModel {
 
     iban: string;
 
+    creationDate: string;
+
+    decisionDate: string;
+
     status: BankAccountStatus;
 }
 
 export enum BankAccountStatus {
-    NotProcessed = -1,
-    Approved = 1,
-    Refused = 0
+    notProcessed = -1,
+    approved = 1,
+    refused = 0
 }

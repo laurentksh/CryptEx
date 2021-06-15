@@ -7,6 +7,7 @@ using CryptExApi.Exceptions;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.ViewModel;
+using CryptExApi.Models.ViewModel.Admin;
 using CryptExApi.Models.ViewModel.Payment;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,10 @@ namespace CryptExApi.Repositories
 {
     public interface IAdminRepository
     {
+        Task<List<UserViewModel>> SearchUser(string query);
+
+        Task<StatsViewModel> GetStats();
+
         Task<List<DepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat);
 
         Task<List<BankAccountViewModel>> GetPendingBankAccounts();
@@ -27,6 +32,58 @@ namespace CryptExApi.Repositories
         public AdminRepository(CryptExDbContext dbContext)
         {
             this.dbContext = dbContext;
+        }
+
+        public async Task<List<UserViewModel>> SearchUser(string query)
+        {
+            var users = dbContext.Users
+                .Include(x => x.Address)
+                    .ThenInclude(x => x.Country)
+                .Where(x => x.FirstName.Contains(query) || x.LastName.Contains(query) || x.Email.Contains(query) || x.Address.ToString().Contains(query))
+                .Take(25)
+                .Select(x => UserViewModel.FromAppUser(x));
+
+            return users.ToList();
+        }
+
+        public async Task<StatsViewModel> GetStats()
+        {
+            //This method is quite resource intensive, in a real world application we would use tools like caching to reduce the performance impact.
+            var result = new StatsViewModel();
+
+            result.TotalUsers = await GetTotalUsers();
+            result.TotalTradedAmount = await GetTotalTraded();
+
+            result.NewUsers24h = await GetTotalUsers(x => x > DateTime.UtcNow.AddHours(-24));
+            result.NewUsers7d = await GetTotalUsers(x => x > DateTime.UtcNow.AddDays(-7));
+            result.NewUsers30d = await GetTotalUsers(x => x > DateTime.UtcNow.AddDays(-30));
+
+            result.TradedAmount24h = await GetTotalTraded(x => x > DateTime.UtcNow.AddHours(-24));
+            result.TradedAmount7d = await GetTotalTraded(x => x > DateTime.UtcNow.AddDays(-7));
+            result.TradedAmount30d = await GetTotalTraded(x => x > DateTime.UtcNow.AddDays(-30));
+
+            return result;
+        }
+
+        private async Task<long> GetTotalUsers(Func<DateTime, bool> time = null)
+        {
+            return (await dbContext.Users
+                .ToListAsync())
+                .Where(x => time == null || time(x.CreationDate)).LongCount();
+        }
+
+        private async Task<decimal> GetTotalTraded(Func<DateTime, bool> time = null)
+        {
+            decimal total = 0;
+
+            foreach (var deposit in (await dbContext.FiatDeposits.ToListAsync()).Where(x => time == null || time(x.CreationDate)).ToList())
+                total += deposit.Amount;
+            foreach (var deposit in (await dbContext.CryptoDeposits.ToListAsync()).Where(x => time == null || time(x.CreationDate)).ToList())
+                total += deposit.Amount;
+            foreach (var withdraw in (await dbContext.FiatWithdrawals.ToListAsync()).Where(x => time == null || time(x.CreationDate)))
+                total += withdraw.Amount;
+
+            return total;
         }
 
         public async Task<List<DepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat)

@@ -11,6 +11,8 @@ namespace CryptExApi.Models.Database
 
         public DateTime CreationDate { get; set; }
 
+        public DateTime LastEditDate { get; set; }
+
         /// <summary>
         /// Street with street number
         /// </summary>
@@ -27,5 +29,15 @@ namespace CryptExApi.Models.Database
         public Guid UserId { get; set; }
 
         public AppUser User { get; set; }
+
+        public override string ToString()
+        {
+            var address = $"{Street} {PostalCode} {City}";
+
+            if (Country != null)
+                address += $" {Country.Iso31661Alpha2Code}";
+
+            return address;
+        }
     }
 }

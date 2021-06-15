@@ -3,12 +3,24 @@ import { CommonModule } from '@angular/common';
 import { AdminRoutingModule } from './admin-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { DepositComponent } from './components/deposit/deposit.component';
+import { BankAccountComponent } from './components/bank-account/bank-account.component';
+import { PendingBankAccountsComponent } from './components/pending-bank-accounts/pending-bank-accounts.component';
+import { SearchUserComponent } from './components/search-user/search-user.component';
+import { DepositsComponent } from './components/deposits/deposits.component';
+import { HomeComponent } from './components/home/home.component';
 
 
 
 @NgModule({
   declarations: [
-    AdminDashboardComponent
+    AdminDashboardComponent,
+    DepositComponent,
+    BankAccountComponent,
+    PendingBankAccountsComponent,
+    SearchUserComponent,
+    DepositsComponent,
+    HomeComponent
   ],
   imports: [
     CommonModule,

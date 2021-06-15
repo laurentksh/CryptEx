@@ -1,0 +1,16 @@
+<h2>Welcome {{ getUser().firstName }} {{ getUser().lastName }}.</h2>
+
+<div>
+    <p *ngIf="loading">Fetching statistics...</p>
+    <ul class="ml-5 list-disc" *ngIf="stats != null">
+        <li class="mt-2">Total users: {{ stats.totalUsers }}</li>
+        <li>News users (24h): {{ stats.newUsers24h }}</li>
+        <li>News users (7d): {{ stats.newUsers7d }}</li>
+        <li>News users (30d): {{ stats.newUsers30d }}</li>
+
+        <li class="mt-4">Total traded: {{ stats.totalTradedAmount }}</li>
+        <li>Total Traded (24h): {{ stats.tradedAmount24h }}</li>
+        <li>Total Traded (7d): {{ stats.tradedAmount7d }}</li>
+        <li>Total Traded (30d): {{ stats.tradedAmount30d }}</li>
+    </ul>
+</div>

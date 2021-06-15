@@ -25,7 +25,7 @@ namespace CryptExApi.Repositories
 
         Task SetAddress(AppUser user, AddressDto dto);
 
-        Task<IbanViewModel> GetIban(AppUser user);
+        Task<BankAccountViewModel> GetIban(AppUser user);
 
         Task SetIban(AppUser user, IbanDto dto);
     }
@@ -88,6 +88,8 @@ namespace CryptExApi.Repositories
                     Street = dto.Street,
                     City = dto.City,
                     PostalCode = dto.PostalCode,
+                    CreationDate = DateTime.UtcNow,
+                    LastEditDate = DateTime.UtcNow,
                     CountryId = dto.CountryId,
                     UserId = user.Id,
                 };
@@ -97,17 +99,18 @@ namespace CryptExApi.Repositories
                 address.Street = dto.Street;
                 address.City = dto.City;
                 address.PostalCode = dto.PostalCode;
+                address.LastEditDate = DateTime.UtcNow;
                 address.CountryId = dto.CountryId;
             }
 
             await DbContext.SaveChangesAsync();
         }
 
-        public async Task<IbanViewModel> GetIban(AppUser user)
+        public async Task<BankAccountViewModel> GetIban(AppUser user)
         {
             var bankAccount = await DbContext.BankAccounts.SingleOrDefaultAsync(x => x.UserId == user.Id);
 
-            return bankAccount != null ? IbanViewModel.FromBankAccount(bankAccount) : null;
+            return bankAccount != null ? BankAccountViewModel.FromBankAccount(bankAccount) : null;
         }
 
         public async Task SetIban(AppUser user, IbanDto dto)

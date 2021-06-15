@@ -140,6 +140,9 @@ namespace CryptExApi.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DecisionDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Iban")
                         .HasColumnType("nvarchar(max)");
 
@@ -287,6 +290,9 @@ namespace CryptExApi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastEditDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PostalCode")

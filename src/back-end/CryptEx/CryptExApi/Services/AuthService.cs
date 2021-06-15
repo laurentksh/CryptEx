@@ -71,7 +71,8 @@ namespace CryptExApi.Services
                 UserName = StringUtilities.SecureRandom(16, StringUtilities.AllowedChars.AlphabetNumbers), // We do not use usernames, so we generate a random one so that Identity doesn't throw errors.
                 FirstName = createUserDTO.FirstName,
                 LastName = createUserDTO.LastName,
-                BirthDay = createUserDTO.BirthDay
+                BirthDay = createUserDTO.BirthDay,
+                CreationDate = DateTime.UtcNow
             };
 
             var result = await userManager.CreateAsync(user, createUserDTO.Password);

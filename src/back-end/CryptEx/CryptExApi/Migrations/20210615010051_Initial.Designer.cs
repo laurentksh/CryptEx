@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CryptExApi.Migrations
 {
     [DbContext(typeof(CryptExDbContext))]
-    [Migration("20210614004251_Initial")]
+    [Migration("20210615010051_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,6 +140,9 @@ namespace CryptExApi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DecisionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Iban")
@@ -289,6 +292,9 @@ namespace CryptExApi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastEditDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PostalCode")
