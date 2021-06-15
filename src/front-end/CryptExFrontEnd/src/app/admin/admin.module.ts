@@ -9,6 +9,10 @@ import { PendingBankAccountsComponent } from './components/pending-bank-accounts
 import { SearchUserComponent } from './components/search-user/search-user.component';
 import { DepositsComponent } from './components/deposits/deposits.component';
 import { HomeComponent } from './components/home/home.component';
+import { SearchUserResultComponent } from './components/search-user-result/search-user-result.component';
+import { UserPageComponent } from './components/user-page/user-page.component';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 
 
 
@@ -20,10 +24,14 @@ import { HomeComponent } from './components/home/home.component';
     PendingBankAccountsComponent,
     SearchUserComponent,
     DepositsComponent,
-    HomeComponent
+    HomeComponent,
+    SearchUserResultComponent,
+    UserPageComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    BrowserModule,
     AdminRoutingModule,
     TranslateModule
   ]

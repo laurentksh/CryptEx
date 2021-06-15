@@ -1,16 +1,16 @@
-<h2>Welcome {{ getUser().firstName }} {{ getUser().lastName }}.</h2>
+<h2 class="text-2xl">{{ 'Admin.Home.Welcome' | translate }}, {{ getUser().firstName }} {{ getUser().lastName }}.</h2>
 
 <div>
-    <p *ngIf="loading">Fetching statistics...</p>
+    <p *ngIf="loading">{{ 'Admin.Home.FetchingStats' | translate }}</p>
     <ul class="ml-5 list-disc" *ngIf="stats != null">
-        <li class="mt-2">Total users: {{ stats.totalUsers }}</li>
-        <li>News users (24h): {{ stats.newUsers24h }}</li>
-        <li>News users (7d): {{ stats.newUsers7d }}</li>
-        <li>News users (30d): {{ stats.newUsers30d }}</li>
+        <li class="mt-2"><span>{{ 'Admin.Home.TotalUsers' | translate }}</span> {{ stats.totalUsers }}</li>
+        <li><span>{{ 'Admin.Home.NewUsers24h' | translate }}</span> {{ stats.newUsers24h }}</li>
+        <li><span>{{ 'Admin.Home.NewUsers7d' | translate }}</span> {{ stats.newUsers7d }}</li>
+        <li><span>{{ 'Admin.Home.NewUsers30d' | translate }}</span> {{ stats.newUsers30d }}</li>
 
-        <li class="mt-4">Total traded: {{ stats.totalTradedAmount }}</li>
-        <li>Total Traded (24h): {{ stats.tradedAmount24h }}</li>
-        <li>Total Traded (7d): {{ stats.tradedAmount7d }}</li>
-        <li>Total Traded (30d): {{ stats.tradedAmount30d }}</li>
+        <li class="mt-4"><span>{{ 'Admin.Home.TotalTraded' | translate }}</span> {{ stats.totalTradedAmount }}</li>
+        <li><span>{{ 'Admin.Home.TotalTraded24h' | translate }}</span> {{ stats.tradedAmount24h }}</li>
+        <li><span>{{ 'Admin.Home.TotalTraded7d' | translate }}</span> {{ stats.tradedAmount7d }}</li>
+        <li><span>{{ 'Admin.Home.TotalTraded30d' | translate }}</span> {{ stats.tradedAmount30d }}</li>
     </ul>
 </div>

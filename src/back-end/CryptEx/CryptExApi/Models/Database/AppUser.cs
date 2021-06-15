@@ -25,7 +25,7 @@ namespace CryptExApi.Models.Database
 
         public DateTime CreationDate { get; set; }
 
-        public List<BankAccount> BankAccounts { get; set; }
+        public BankAccount BankAccount { get; set; }
 
         public UserAddress Address { get; set; }
     }

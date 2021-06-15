@@ -1,1 +1,18 @@
-<p>search-user works!</p>
+<h2 class="text-2xl">{{ 'Admin.SearchUser.Title' | translate }}</h2>
+
+<div class="mt-5 w-full">
+    <input
+        type="text"
+        placeholder="{{ 'Admin.SearchUser.InputPlaceholder' | translate }}"
+        [(ngModel)]="searchInput"
+        (keydown)="onChange()"
+        [ngClass]="[typing ? 'bg-gray-200' : '']"
+        class="block w-1/4 shadow-sm py-3 px-4 transition-colors duration-200 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+    />
+</div>
+
+<div class="mt-5 w-full md:w-1/2 lg:w-1/3" *ngIf="searchResults != null">
+    <app-search-user-result *ngFor="let user of searchResults" [user]="user" (redirectTo)="redirectTo($event)"></app-search-user-result>
+</div>
+
+<h4 *ngIf="searchResults != null && searchResults.length == 0" class="text-xl">{{ 'Admin.SearchUser.NoneFound' | translate }}</h4>

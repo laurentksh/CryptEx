@@ -24,22 +24,23 @@ namespace CryptExApi.Controllers
         private readonly IAdminService adminService;
         private readonly IUserService userService;
 
-        public AdminController(ILogger<AdminController> logger, IExceptionHandlerService exHandler, IAdminService adminService)
+        public AdminController(ILogger<AdminController> logger, IExceptionHandlerService exHandler, IAdminService adminService, IUserService userService)
         {
             this.logger = logger;
             this.exHandler = exHandler;
             this.adminService = adminService;
+            this.userService = userService;
         }
 
         [HttpGet("user")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FullUserViewModel))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetUser([FromQuery] Guid userId)
+        public async Task<IActionResult> GetFullUser([FromQuery] Guid userId)
         {
             try {
-                var user = await userService.GetUser(userId);
+                var user = await userService.GetFullUser(userId);
 
                 return Ok(user);
             } catch (Exception ex) {

@@ -80,7 +80,7 @@ namespace CryptExTests.Services
                 }));
 
             userRepo.Setup(x => x.GetIban(It.IsAny<AppUser>()))
-                .ReturnsAsync(new IbanViewModel
+                .ReturnsAsync(new BankAccountViewModel
                 {
                     Iban = "ApprovedIban",
                     Status = BankAccountStatus.Approved

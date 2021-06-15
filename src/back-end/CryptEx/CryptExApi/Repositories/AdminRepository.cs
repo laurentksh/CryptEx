@@ -36,10 +36,21 @@ namespace CryptExApi.Repositories
 
         public async Task<List<UserViewModel>> SearchUser(string query)
         {
-            var users = dbContext.Users
+            var users = (await dbContext.Users
                 .Include(x => x.Address)
                     .ThenInclude(x => x.Country)
-                .Where(x => x.FirstName.Contains(query) || x.LastName.Contains(query) || x.Email.Contains(query) || x.Address.ToString().Contains(query))
+                .ToListAsync())
+                .Where(x =>
+                {
+                    var match = false;
+                    match = x.FirstName.Contains(query);
+                    match = x.LastName.Contains(query);
+                    match = x.Email.Contains(query);
+                    if (x.Address != null)
+                        match = x.Address.ToString().Contains(query);
+
+                    return match;
+                })
                 .Take(25)
                 .Select(x => UserViewModel.FromAppUser(x));
 

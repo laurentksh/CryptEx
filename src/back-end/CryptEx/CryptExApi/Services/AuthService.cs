@@ -21,6 +21,8 @@ namespace CryptExApi.Services
     {
         Task<AuthViewModel> Authenticate(AuthDTO authDTO);
 
+        Task<AuthViewModel> RefreshAccessToken(AppUser user);
+
         Task<AuthViewModel> CreateUser(CreateUserDTO createUserDTO);
 
         Task<string> BuildJWT(AppUser user, bool prolongedSession = false, IEnumerable<Claim> claims = null, IEnumerable<string> roles = null);
@@ -56,6 +58,19 @@ namespace CryptExApi.Services
             var roles = await userManager.GetRolesAsync(user);
 
             var token = await BuildJWT(user, authDTO.ExtendSession, claims, roles);
+
+            return new AuthViewModel(token);
+        }
+
+        public async Task<AuthViewModel> RefreshAccessToken(AppUser user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            var claims = await userManager.GetClaimsAsync(user);
+            var roles = await userManager.GetRolesAsync(user);
+
+            var token = await BuildJWT(user, true, claims, roles);
 
             return new AuthViewModel(token);
         }

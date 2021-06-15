@@ -47,7 +47,7 @@ namespace CryptExApi.Repositories
         public async Task<AppUser> GetFullUser(Guid id)
         {
             var user = await DbContext.Users
-                .Include(x => x.BankAccounts)
+                .Include(x => x.BankAccount)
                 .Include(x => x.Address)
                 .SingleAsync(x => x.Id == id);
 

@@ -34,18 +34,41 @@ export class AuthService {
     localStorage.setItem("accesstoken", value);
   }
 
-  public IsInRole(role: string): boolean {
-    if (!this.IsAuthenticated) {
+  public HasClaim(claimName: string): boolean { //TODO: Test
+    if (!this.IsAuthenticated)
       return false;
-    }
+
+    const claim = this.JWTokenParsed[claimName];
+
+    if (claim == null)
+      return false;
+    
+    return true;
+  }
+
+  public IsInRole(role: string): boolean {
+    if (!this.IsAuthenticated)
+      return false;
     
     const roles = this.JWTokenParsed["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] as string[];
 
+    if (roles == null)
+      return false;
+    
     return roles.includes(role);
   }
 
   public async Authenticate(auth: AuthDto): Promise<ApiResult<AuthViewModel>> {
     const result = await this.http.Post<AuthViewModel>("Auth", auth);
+
+    if (result.success)
+      this.JWToken = result.content.jwToken;
+
+    return result;
+  }
+
+  public async RefreshAccessToken(): Promise<ApiResult<AuthViewModel>> {
+    const result = await this.http.Post<AuthViewModel>("Auth/refresh", null);
 
     if (result.success)
       this.JWToken = result.content.jwToken;

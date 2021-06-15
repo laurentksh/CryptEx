@@ -15,6 +15,8 @@ namespace CryptExApi.Services
     {
         Task<UserViewModel> GetUser(Guid id);
 
+        Task<FullUserViewModel> GetFullUser(Guid id);
+
         Task<UserViewModel> UpdateUser(AppUser user, UpdateUserDto dto);
 
         Task ChangeLanguage(AppUser user, string language);
@@ -48,6 +50,11 @@ namespace CryptExApi.Services
         public async Task<UserViewModel> GetUser(Guid id)
         {
             return UserViewModel.FromAppUser(await userRepository.GetUser(id));
+        }
+
+        public async Task<FullUserViewModel> GetFullUser(Guid id)
+        {
+            return FullUserViewModel.FromAppUser(await userRepository.GetFullUser(id));
         }
 
         public async Task<UserViewModel> UpdateUser(AppUser user, UpdateUserDto dto)

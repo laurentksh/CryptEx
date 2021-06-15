@@ -10,9 +10,7 @@ import { TranslateService } from '@ngx-translate/core'
 export class AppComponent {
   title = 'CryptEx';
 
-  constructor(private userService: UserService, private translateService: TranslateService) {
-
-  }
+  constructor(private userService: UserService, private translateService: TranslateService) { }
 
   ngOnInit(): void {
     if (!this.userService.IsLangSet) {

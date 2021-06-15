@@ -5,6 +5,7 @@ import { ApiResult } from 'src/app/api/models/api-result';
 import { BankAccountStatus, BankAccountViewModel } from 'src/app/deposit-withdraw/models/bank-account-view-model';
 import { DepositViewModel, PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-model';
 import { UserViewModel } from 'src/app/user/models/user-view-model';
+import { FullUserViewModel } from '../models/full-user-view-model';
 import { StatsViewModel } from '../models/stats-view-model';
 
 @Injectable({
@@ -14,7 +15,7 @@ export class AdminService {
 
   constructor(private http: CustomHttpClientService) { }
 
-  public async GetUser(id: string): Promise<ApiResult<UserViewModel>> {
+  public async GetFullUser(id: string): Promise<ApiResult<FullUserViewModel>> {
     return this.http.Get("Admin/user", { params: new HttpParams().set("userId", id) });
   }
 

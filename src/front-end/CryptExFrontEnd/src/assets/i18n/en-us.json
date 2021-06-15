@@ -123,6 +123,25 @@
       "Submit": "Submit"
     }
   },
+  "Admin": {
+    "Home": {
+      "Welcome": "Welcome",
+      "FetchingStats": "Fetching statistics...",
+      "TotalUsers": "Total users:",
+      "NewUsers24h": "New users (24h):",
+      "NewUsers7d": "New users (7d):",
+      "NewUsers30d": "New users (30d):",
+      "TotalTraded": "Total traded:",
+      "TotalTraded24h": "Total Traded (24h):",
+      "TotalTraded7d": "Total Traded (7d):",
+      "TotalTraded30d": "Total Traded (30d):"
+    },
+    "SearchUser": {
+      "Title": "Search for a user",
+      "InputPlaceholder": "Enter a search query...",
+      "NoneFound": "No result found."
+    }
+  },
   "Forbidden": {
     "Title": "Forbidden (403)",
     "Description": "An error occured while trying to access the requested content, it may be unavailable because of one of the following reasons :",
