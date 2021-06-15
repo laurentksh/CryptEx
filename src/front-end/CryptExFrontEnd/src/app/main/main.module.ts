@@ -11,6 +11,7 @@ import { NotFoundComponent } from './Components/not-found/not-found.component';
 import { ForbiddenComponent } from './Components/forbidden/forbidden.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { UnauthorizedComponent } from './Components/unauthorized/unauthorized.component';
+import { WalletModule } from '../wallet/wallet.module';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { UnauthorizedComponent } from './Components/unauthorized/unauthorized.co
     FormsModule,
     BrowserModule,
     MainRouting,
-    TranslateModule
+    TranslateModule,
+    WalletModule
   ],
   exports:[
     ContactComponent,
