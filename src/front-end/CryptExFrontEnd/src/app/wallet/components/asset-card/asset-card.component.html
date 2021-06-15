@@ -1,76 +1,8 @@
-<div class="relative bg-gray-500">
-    <div class="absolute inset-0">
-      <div class="absolute inset-y-0 left-0 w-1/2 bg-gray-500"></div>
+
+<div class="mb-3  bg-gray-800 p-3 rounded shadow-sm hover:ring-4 hover:ring-offset-2 hover:ring-blue-logo cursor-pointer">
+    <div class="flex justify-start">
+        <img class="rounded-full h-10 w-10 mr-2 " src="/assets/images/{{ asset.type == 1 ? 'fiat' : 'crypto' }}/{{asset.ticker}}.svg">
+        <div class="text-white my-auto text-base w-20">{{ asset.fullName }}</div>
+        <div class="text-base font-bold text-white my-auto ml-auto w-auto">{{ asset.selectedCurrencyPair.right.ticker }} {{ asset.selectedCurrencyPair.rate }}</div>
     </div>
-    <div class="relative max-w-7xl mx-auto lg:grid lg:grid-cols-5">
-      <div class="bg-gray-50 py-16 px-4 sm:px-6 lg:col-span-2 lg:px-8 lg:py-24 xl:pr-12">
-        <div class="max-w-lg mx-auto">
-            
-          <dl class="mt-8 text-base text-white-500">       
-            <div class="flex items-center bg-gray-50 dark:bg-gray-900">
-                <div class="container max-w-6xl mx-auto">
-                    <div class="grid grid-cols-1">
-
-                        <div class="mb-3  bg-gray-800 p-3 rounded shadow-sm hover:ring-4 hover:ring-offset-2 hover:ring-green-500 ">
-                            <div class="text-base text-white ">Account total</div>
-                            <div class="flex items-center pt-1">
-                                <div class="text-2xl font-bold text-white ">$7820.50</div>
-                                <span class="flex items-center px-2 py-0.5 mx-2 text-sm text-green-600 bg-green-100 rounded-full">
-                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M18 15L12 9L6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                    <span>5.2%</span>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="mb-3 bg-gray-800 p-3 padding rounded shadow-sm hover:ring-4 hover:ring-offset-2 hover:ring-green-500 ">
-                            <div class="text-base text-white ">Total Fiat</div>
-                            <div class="flex items-center pt-1">
-                                <div class="text-2xl font-bold text-white ">$300</div>
-                                <span class="flex items-center px-2 py-0.5 mx-2 text-sm text-green-600 bg-green-100 rounded-full">
-                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M18 15L12 9L6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                    <span>1.8%</span>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="mb-3  bg-gray-800 p-3 rounded shadow-sm hover:ring-4 hover:ring-offset-2 hover:ring-green-500 ">
-                            <div class="text-base text-white ">Total Crypto</div>
-                            <div class="flex items-center pt-1">
-                                <div class="text-2xl font-bold text-white ">$7520.50</div>
-                                <span class="flex items-center px-2 py-0.5 mx-2 text-sm text-red-600 bg-red-100 rounded-full">
-                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                    <span>2.5%</span>
-                                </span>
-                            </div>
-                        </div>
-
-                        <h2 class="focus-within:text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl my-8 ">
-                            Performances
-                          </h2>
-                        <div class="mb-3  bg-red-800 p-3 rounded shadow-sm hover:ring-4 hover:ring-offset-2 hover:ring-red-500 ">
-                            <div class="text-base text-white ">Gain / Loss <span class="text-xs">24 hours</span></div>
-                            <div class="flex items-center pt-1">
-                                <div class="text-2xl font-bold text-white ">- $465.55</div>
-                                <!-- <span class="flex items-center px-2 py-0.5 mx-2 text-sm text-red-600 bg-red-100 rounded-full">
-                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                    <span>2.5%</span>
-                                </span> -->
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-          </dl>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
