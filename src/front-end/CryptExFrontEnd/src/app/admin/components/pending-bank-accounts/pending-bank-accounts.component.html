@@ -1,1 +1,9 @@
-<p>pending-bank-accounts works!</p>
+<h1 class="text-2xl">{{ 'Admin.BankAccount.Title' | translate }}</h1>
+
+<div class="mt-5 w-full md:w-1/2 lg:w-1/2" *ngIf="bankAccounts != null">
+    <app-bank-account *ngFor="let account of bankAccounts" [bankAccount]="account" (redirectTo)="redirectTo($event)"></app-bank-account>
+</div>
+
+<h3 class="text-xl" *ngIf="bankAccounts != null && bankAccounts.length == 0">
+    {{ 'Admin.BankAccount.NoResult' | translate }}
+</h3>

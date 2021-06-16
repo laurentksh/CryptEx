@@ -21,7 +21,7 @@ namespace CryptExApi.Services
 
         Task SetPaymentStatus(string sessionId, PaymentStatus status);
 
-        Task<List<BankAccountViewModel>> GetPendingBankAccounts();
+        Task<List<FullBankAccountViewModel>> GetPendingBankAccounts();
 
         Task SetBankAccountStatus(Guid id, BankAccountStatus status);
     }
@@ -57,7 +57,7 @@ namespace CryptExApi.Services
             await stripeRepo.SetDepositStatus(sessionId, status);
         }
 
-        public async Task<List<BankAccountViewModel>> GetPendingBankAccounts()
+        public async Task<List<FullBankAccountViewModel>> GetPendingBankAccounts()
         {
             return await adminRepo.GetPendingBankAccounts();
         }

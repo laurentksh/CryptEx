@@ -17,7 +17,7 @@
     </div>
     <!--Right Col-->
     <div class="w-1/2 md:w-1/3 py-6 text-center">
-      <img class="w-full md:w-4/5 z-50" src="../../../../assets/CryptEx_NoText.png" />
+      <img class="w-full md:w-4/5 z-50" src="/assets/CryptEx_NoText.png" />
     </div>
   </div>
 </div>
@@ -63,12 +63,12 @@
         </p>
       </div>
       <div class="w-full sm:w-1/2 p-6">
-        <img style="max-width:250px;" src="../../../../assets/cryptoCurrency.png">
+        <img style="max-width:250px;" src="/assets/cryptoCurrency.svg">
       </div>
     </div>
     <div class="flex flex-wrap flex-col-reverse sm:flex-row">
       <div class="w-full sm:w-1/2 p-6 mt-6">
-        <img style="max-width:250px;" src="../../../../assets/images/fiat/fiat_monney.svg">
+        <img style="max-width:250px;" src="/assets/images/fiat/fiat_monney.svg">
       </div>
       <div class="w-full sm:w-1/2 p-6 mt-6">
         <div class="align-middle">
@@ -100,9 +100,9 @@
       <div class="container mx-auto">
         <div class="flex flex-row flex-wrap justify-between">
 
-          <app-asset-card *ngFor="let asset of assets; else loading" [asset]="asset"></app-asset-card>
+          <app-asset-card *ngFor="let asset of assets" [asset]="asset"></app-asset-card>
 
-          <ng-component #loading>
+          <ng-component *ngIf="assets == null">
             <p>Loading...</p>
           </ng-component>
         </div>

@@ -93,7 +93,7 @@ namespace CryptExApi.Repositories
                     CreationDate = DateTime.UtcNow,
                     LastEditDate = DateTime.UtcNow,
                     CountryId = dto.CountryId,
-                    UserId = user.Id,
+                    UserId = user.Id
                 };
 
                 await DbContext.UserAddresses.AddAsync(newAddress);
@@ -125,12 +125,14 @@ namespace CryptExApi.Repositories
                     Iban = dto.Iban.Replace(" ", ""),
                     Status = BankAccountStatus.NotProcessed,
                     UserId = user.Id,
+                    CreationDate = DateTime.UtcNow
                 };
 
                 await DbContext.BankAccounts.AddAsync(newBankAccount);
             } else {
                 bankAccount.Iban = dto.Iban.Replace(" ", "");
                 bankAccount.Status = BankAccountStatus.NotProcessed;
+                bankAccount.CreationDate = DateTime.UtcNow;
             }
 
             await DbContext.SaveChangesAsync();

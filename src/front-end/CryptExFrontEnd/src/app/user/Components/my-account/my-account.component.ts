@@ -25,11 +25,11 @@ export class MyAccountComponent implements OnInit {
   loading = true;
   hidePage = false;
 
-  userVm: UserViewModel = {} as UserViewModel;
+  userVm: UserViewModel;
   userUpdateDto: UserUpdateDto = {} as UserUpdateDto;
   addressVm: AddressViewModel;
   addressDto: AddressDto = {} as AddressDto;
-  ibanVm: BankAccountViewModel = {} as BankAccountViewModel;
+  ibanVm: BankAccountViewModel;
   ibanDto: IbanDto = {} as IbanDto;
 
   clickedName: boolean = false;

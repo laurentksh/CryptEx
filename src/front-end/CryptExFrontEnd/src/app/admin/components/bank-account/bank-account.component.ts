@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { BankAccountViewModel } from 'src/app/deposit-withdraw/models/bank-account-view-model';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FullBankAccountViewModel } from '../../models/full-bank-account-view-model';
 
 @Component({
   selector: 'app-bank-account',
@@ -7,11 +7,19 @@ import { BankAccountViewModel } from 'src/app/deposit-withdraw/models/bank-accou
   styleUrls: ['./bank-account.component.scss']
 })
 export class BankAccountComponent implements OnInit {
-  @Input() bankAccount: BankAccountViewModel;
-  
+  @Input() bankAccount: FullBankAccountViewModel;
+  @Output() redirectTo = new EventEmitter<string>();
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  redirectToUserPage(): void {
+    this.redirectTo.emit(this.bankAccount.userId);
+  }
+
+  getCreationDate(): string {
+    return new Date(Date.parse(this.bankAccount.creationDate)).toLocaleString([], { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
+  }
 }

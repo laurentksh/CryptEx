@@ -35,7 +35,7 @@ export class AdminService {
     return this.http.Post("Admin/setPaymentStatus", null, { params: new HttpParams().set("sessionId", sessionId).set("status", status.toString()) });
   }
 
-  public async GetPendingBankAccounts(): Promise<ApiResult<BankAccountViewModel>> {
+  public async GetPendingBankAccounts(): Promise<ApiResult<BankAccountViewModel[]>> {
     return this.http.Get("Admin/pendingBankAccounts");
   }
 

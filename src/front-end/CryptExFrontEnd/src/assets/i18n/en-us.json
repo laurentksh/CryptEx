@@ -159,6 +159,10 @@
         "1": "Active",
         "-1": "Inactive"
       }
+    },
+    "BankAccount": {
+      "Title": "Bank accounts pending approval",
+      "NoResult": "No bank accounts are pending approval."
     }
   },
   "Forbidden": {

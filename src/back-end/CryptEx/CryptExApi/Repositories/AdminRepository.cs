@@ -21,7 +21,7 @@ namespace CryptExApi.Repositories
 
         Task<List<DepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat);
 
-        Task<List<BankAccountViewModel>> GetPendingBankAccounts();
+        Task<List<FullBankAccountViewModel>> GetPendingBankAccounts();
 
         Task SetBankAccountStatus(Guid id, BankAccountStatus status);
     }
@@ -126,11 +126,13 @@ namespace CryptExApi.Repositories
             return result;
         }
 
-        public async Task<List<BankAccountViewModel>> GetPendingBankAccounts()
+        public async Task<List<FullBankAccountViewModel>> GetPendingBankAccounts()
         {
-            var bankAccounts = dbContext.BankAccounts.Where(x => x.Status == BankAccountStatus.NotProcessed).ToList();
+            var bankAccounts = dbContext.BankAccounts
+                .Include(x => x.User)
+                .Where(x => x.Status == BankAccountStatus.NotProcessed).ToList();
 
-            return bankAccounts.Select(x => BankAccountViewModel.FromBankAccount(x)).ToList();
+            return bankAccounts.Select(x => FullBankAccountViewModel.FromBankAccount(x)).ToList();
         }
 
         public async Task SetBankAccountStatus(Guid id, BankAccountStatus status)
@@ -141,6 +143,7 @@ namespace CryptExApi.Repositories
                 throw new NotFoundException("Bank account not found.");
 
             account.Status = status;
+            account.DecisionDate = DateTime.UtcNow;
 
             await dbContext.SaveChangesAsync();
         }
