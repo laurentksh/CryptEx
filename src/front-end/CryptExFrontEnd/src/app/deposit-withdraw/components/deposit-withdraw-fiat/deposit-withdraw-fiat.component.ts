@@ -3,6 +3,7 @@ import { SnackBar, SnackBarCreate, AlertType } from 'src/app/components/snackbar
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { StripeService } from 'src/app/stripe/services/stripe.service';
 import { UserService } from 'src/app/user/services/user.service';
+import { BankAccountStatus, BankAccountViewModel } from '../../models/bank-account-view-model';
 import { DepositWithdrawService } from '../../services/deposit-withdraw.service';
 
 @Component({
@@ -12,6 +13,8 @@ import { DepositWithdrawService } from '../../services/deposit-withdraw.service'
 })
 export class DepositWithdrawFiatComponent implements OnInit {
   amount: number = -1;
+  bankAccount: BankAccountViewModel;
+  bankAccountStatusRef = BankAccountStatus;
 
   constructor(
     private depWitService: DepositWithdrawService,
@@ -20,7 +23,13 @@ export class DepositWithdrawFiatComponent implements OnInit {
     private snackBarService: SnackbarService) { }
 
   ngOnInit(): void {
-    
+    this.userService.GetIban().then(x => {
+      if (x.success) {
+        this.bankAccount = x.content;
+      } else {
+        this.snackBarService.ShowSnackbar(new SnackBarCreate("Error", "Could not get bank account information.", AlertType.Error));
+      }
+    })
   }
 
   onDeposit(): void {
@@ -47,10 +56,17 @@ export class DepositWithdrawFiatComponent implements OnInit {
             "You do not have enough funds to withdraw that amount.",
             AlertType.Error
           ));
+        } else if (x.error.status == 403) {
+          this.snackBarService.ShowSnackbar(new SnackBarCreate(
+            "Bank account not approved",
+            "Your bank account hasn't been approved yet or has been refused. Please try again later",
+            AlertType.Error
+          ));
         } else {
           this.snackBarService.ShowSnackbar(new SnackBarCreate(
             "An error occured",
-            `An unknown error occured. Please try again later. (${x.error.status})`
+            `An unknown error occured. Please try again later. (${x.error.status})`,
+            AlertType.Error
           ))
         }
       }

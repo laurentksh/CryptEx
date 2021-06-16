@@ -63,14 +63,14 @@ namespace CryptExApi.Controllers
         [HttpPost("withdraw")]
         public async Task<IActionResult> WithdrawFiat([FromQuery] decimal amount)
         {
-            var user = await HttpContext.GetUser();
+            var userId = HttpContext.GetUserId();
 
             try {
-                await paymentService.WithdrawFiat(user, amount);
+                await paymentService.WithdrawFiat(userId, amount);
 
                 return Ok();
             } catch (Exception ex) {
-                logger.LogWarning(ex, "Could not generate deposit wallet address.");
+                logger.LogWarning(ex, "Could not withdraw fiat.");
                 return exceptionHandler.Handle(ex, Request);
             }
         }

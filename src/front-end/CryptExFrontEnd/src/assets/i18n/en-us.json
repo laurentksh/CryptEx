@@ -97,7 +97,13 @@
       "Deposit": "Deposit fiat",
       "Withdraw": "Withdraw fiat",
       "DepositBtn": "DEPOSIT",
-      "WithdrawBtn": "WITHDRAW"
+      "WithdrawBtn": "WITHDRAW",
+      "EnterAny": "Enter any",
+      "Amount": "amount.",
+      "Destination": "Transfer destination :",
+      "NoAccount": "You do not have any bank account linked, please go to 'My Account' and link one to withdraw fiat assets.",
+      "Refused": "Your bank account has been refused. Please contact our support.",
+      "NotProcessed": "Your bank account hasn't been processed yet, please try again later."
     }
   },
   "PaymentStatus": {

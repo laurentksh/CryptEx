@@ -14,11 +14,17 @@
             <div class="container max-w-6xl mx-auto">
               <div class="grid grid-cols-1">
 
-                <div
-                  class="mb-3  bg-gray-800 p-3 rounded shadow-sm  ">
+                <div class="mb-3  bg-gray-800 p-3 rounded shadow-sm  ">
                   <div class="text-base text-white ">Account total</div>
                   <div class="flex items-center pt-1">
-                    <div class="text-2xl font-bold text-white ">$7820.50</div>
+                    <div class="text-2xl font-bold text-white">
+                      <p *ngIf="total != null; else totalNull">
+                        {{ total.reference.ticker }} {{ total.amount }}
+                      </p>
+                      <ng-template #totalNull>
+                        -
+                      </ng-template>
+                    </div>
                     <span class="flex items-center px-2 py-0.5 mx-2 text-sm text-green-600 bg-green-100 rounded-full">
                       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18 15L12 9L6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -29,11 +35,17 @@
                   </div>
                 </div>
 
-                <div
-                  class="mb-3 bg-gray-800 p-3 padding rounded shadow-sm  ">
+                <div class="mb-3 bg-gray-800 p-3 padding rounded shadow-sm  ">
                   <div class="text-base text-white ">Total Fiat</div>
                   <div class="flex items-center pt-1">
-                    <div class="text-2xl font-bold text-white ">$300</div>
+                    <div class="text-2xl font-bold text-white ">
+                      <p *ngIf="totalFiat != null; else totalFiatNull">
+                        {{ totalFiat.reference.ticker }} {{ totalFiat.amount }}
+                      </p>
+                      <ng-template #totalFiatNull>
+                        -
+                      </ng-template>
+                    </div>
                     <span class="flex items-center px-2 py-0.5 mx-2 text-sm text-green-600 bg-green-100 rounded-full">
                       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18 15L12 9L6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -44,11 +56,17 @@
                   </div>
                 </div>
 
-                <div
-                  class="mb-3  bg-gray-800 p-3 rounded shadow-sm  ">
+                <div class="mb-3  bg-gray-800 p-3 rounded shadow-sm  ">
                   <div class="text-base text-white ">Total Crypto</div>
                   <div class="flex items-center pt-1">
-                    <div class="text-2xl font-bold text-white ">$7520.50</div>
+                    <div class="text-2xl font-bold text-white ">
+                      <p *ngIf="totalCrypto != null; else totalCryptoNull">
+                        {{ totalCrypto.reference.ticker }} {{ totalCrypto.amount }}
+                      </p>
+                      <ng-template #totalCryptoNull>
+                        -
+                      </ng-template>
+                    </div>
                     <span class="flex items-center px-2 py-0.5 mx-2 text-sm text-red-600 bg-red-100 rounded-full">
                       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -61,11 +79,11 @@
                 <h2 class="focus-within:text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl my-8 ">
                   Performances
                 </h2>
-                <div
-                  class="mb-3  bg-red-800 p-3 rounded shadow-sm">
+                <div class="mb-3  bg-red-800 p-3 rounded shadow-sm">
                   <div class="text-base text-white ">Gain / Loss <span class="text-xs">24 hours</span></div>
                   <div class="flex items-center pt-1">
-                    <div class="text-2xl font-bold text-white ">- $465.55</div></div>
+                    <div class="text-2xl font-bold text-white ">-</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -83,29 +101,12 @@
           <div class="flex place-items-auto bg-gray-50 dark:bg-gray-900">
             <div class="container max-w-6xl mx-auto">
               <div class="grid grid-cols-1">
-
-                <div class="mb-3  bg-gray-800 p-3 rounded shadow-sm hover:ring-4 hover:ring-offset-2 hover:ring-blue-logo cursor-pointer">
-                <!-- <div class="mb-3 p-3 rounded shadow-sm ring ring-purple-600 ring-offset-4 ring-offset-purple-100"> -->
-                  
-                    <div class="flex justify-start">
-                      <img class="rounded-full h-10 w-10 mr-2 " src="/assets/flag_switzerland.svg">
-                      <div class="text-base text-white my-auto">Swiss Franc</div>
-                      <div class="text-2xl font-bold text-white my-auto ml-auto">820.50</div>
-                    </div>
-                    
-
-                </div>
-                <div class="mb-3  bg-gray-800 p-3 rounded shadow-sm hover:ring-4 hover:ring-offset-2 hover:ring-blue-logo cursor-pointer">
-                  <!-- <div class="mb-3 p-3 rounded shadow-sm ring ring-purple-600 ring-offset-4 ring-offset-purple-100"> -->
-                    
-                      <div class="flex justify-start">
-                        <img class="rounded-full h-10 w-10 mr-2" src="/assets/flag_usa.png">
-                        <div class="text-base text-white my-auto">US Dollar</div>
-                        <div class="text-2xl font-bold text-white my-auto ml-auto">1820,50</div>
-                      </div>
-                      
-  
-                  </div>
+                <app-user-asset-card *ngFor="let wallet of wallets" [asset]="wallet"></app-user-asset-card>
               </div>
             </div>
           </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>

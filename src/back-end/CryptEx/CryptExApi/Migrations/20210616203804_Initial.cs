@@ -238,6 +238,39 @@ namespace CryptExApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AssetConversions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    LeftId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RightId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExchangeRate = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AssetConversions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AssetConversions_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AssetConversions_Wallets_LeftId",
+                        column: x => x.LeftId,
+                        principalTable: "Wallets",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AssetConversions_Wallets_RightId",
+                        column: x => x.RightId,
+                        principalTable: "Wallets",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CryptoDeposits",
                 columns: table => new
                 {
@@ -369,6 +402,21 @@ namespace CryptExApi.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AssetConversions_LeftId",
+                table: "AssetConversions",
+                column: "LeftId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssetConversions_RightId",
+                table: "AssetConversions",
+                column: "RightId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssetConversions_UserId",
+                table: "AssetConversions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BankAccounts_UserId",
                 table: "BankAccounts",
                 column: "UserId",
@@ -437,6 +485,9 @@ namespace CryptExApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "AssetConversions");
 
             migrationBuilder.DropTable(
                 name: "CryptoDeposits");

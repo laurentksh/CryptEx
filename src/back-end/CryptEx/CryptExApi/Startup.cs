@@ -160,12 +160,15 @@ namespace CryptExApi
             services.AddTransient<ICoinbaseClient, CoinbaseClient>();
 
             services.AddTransient<IAdminRepository, AdminRepository>();
+            services.AddTransient<IAssetConvertRepository, AssetConvertRepository>();
             services.AddTransient<IDepositRepository, DepositRepository>();
+            services.AddTransient<IPaymentRepository, PaymentRepository>();
             services.AddTransient<IStripeRepository, StripeRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IWalletRepository, WalletRepository>();
 
             services.AddTransient<IAdminService, AdminService>();
+            services.AddTransient<IAssetConvertService, AssetConvertService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IDepositService, DepositService>();
             services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();

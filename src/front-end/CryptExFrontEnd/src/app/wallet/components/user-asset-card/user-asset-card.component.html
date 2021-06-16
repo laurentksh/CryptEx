@@ -2,6 +2,6 @@
     <div class="flex justify-start">
         <img class="rounded-full h-10 w-10 mr-2 " src="/assets/images/{{ asset.type == 1 ? 'fiat' : 'crypto' }}/{{asset.ticker}}.svg">
         <div class="text-white my-auto text-base w-20">{{ asset.fullName }}</div>
-        <div class="text-base font-bold text-white my-auto ml-auto w-auto">{{ asset.selectedCurrencyPair.right.ticker }} {{ asset.selectedCurrencyPair.rate }}</div>
+        <div class="text-base font-bold text-white my-auto ml-auto w-auto">{{ asset.selectedCurrencyPair.right.ticker }} {{ asset.amount }}</div>
     </div>
 </div>

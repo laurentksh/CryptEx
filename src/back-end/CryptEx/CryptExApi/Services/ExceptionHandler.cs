@@ -37,6 +37,7 @@ namespace CryptExApi.Services
                 UnauthorizedException => (HttpStatusCode.Unauthorized, "Unauthorized", exMsg),
                 ForbiddenException => (HttpStatusCode.Forbidden, "Forbidden", exMsg),
                 BadRequestException => (HttpStatusCode.BadRequest, "BadRequest", exMsg),
+                InsufficientFundsException => (HttpStatusCode.BadRequest, "InsufficientFunds", exMsg),
                 FormatException or ArgumentException => (HttpStatusCode.BadRequest, "BadRequest", exMsg),
                 NotImplementedException => (HttpStatusCode.NotImplemented, "NotImplemented", exMsg),
                 NullReferenceException => (HttpStatusCode.InternalServerError, "InternalServerError", "Unspecified server error"),

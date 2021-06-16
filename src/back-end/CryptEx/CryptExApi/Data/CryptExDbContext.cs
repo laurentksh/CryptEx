@@ -11,6 +11,8 @@ namespace CryptExApi.Data
 
         public DbSet<CryptoDeposit> CryptoDeposits { get; set; }
 
+        public DbSet<AssetConversion> AssetConversions { get; set; }
+
         public DbSet<FiatWithdrawal> FiatWithdrawals { get; set; }
 
         public DbSet<Wallet> Wallets { get; set; }
@@ -46,6 +48,24 @@ namespace CryptExApi.Data
             builder.Entity<CryptoDeposit>()
                 .Property(x => x.Amount)
                 .HasPrecision(12, 2);
+
+            builder.Entity<AssetConversion>()
+                .Property(x => x.Amount)
+                .HasPrecision(12, 2);
+
+            builder.Entity<AssetConversion>()
+                .Property(x => x.ExchangeRate)
+                .HasPrecision(12, 2);
+
+            builder.Entity<AssetConversion>()
+                .HasOne(x => x.Left)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<AssetConversion>()
+                .HasOne(x => x.Right)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

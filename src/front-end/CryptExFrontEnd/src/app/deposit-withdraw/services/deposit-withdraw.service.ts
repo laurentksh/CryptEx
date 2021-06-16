@@ -59,7 +59,6 @@ export class DepositWithdrawService {
   constructor(private http: CustomHttpClientService, private env: EnvironmentService, private auth: AuthService) { }
 
   private refreshData(data: DepositViewModel[]): void {
-    debugger;
     data.forEach(newElement => {
       var index = this.deposits.findIndex(x => x.id == element.id)
 

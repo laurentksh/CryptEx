@@ -134,6 +134,43 @@ namespace CryptExApi.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("CryptExApi.Models.Database.AssetConversion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("decimal(12,2)");
+
+                    b.Property<decimal>("ExchangeRate")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("decimal(12,2)");
+
+                    b.Property<Guid>("LeftId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RightId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LeftId");
+
+                    b.HasIndex("RightId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AssetConversions");
+                });
+
             modelBuilder.Entity("CryptExApi.Models.Database.BankAccount", b =>
                 {
                     b.Property<Guid>("Id")
@@ -437,6 +474,33 @@ namespace CryptExApi.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("CryptExApi.Models.Database.AssetConversion", b =>
+                {
+                    b.HasOne("CryptExApi.Models.Database.Wallet", "Left")
+                        .WithMany()
+                        .HasForeignKey("LeftId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CryptExApi.Models.Database.Wallet", "Right")
+                        .WithMany()
+                        .HasForeignKey("RightId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CryptExApi.Models.Database.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Left");
+
+                    b.Navigation("Right");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CryptExApi.Models.Database.BankAccount", b =>

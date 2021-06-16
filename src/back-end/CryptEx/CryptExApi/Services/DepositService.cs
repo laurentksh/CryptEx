@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CryptExApi.Data;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.SignalR;
 using CryptExApi.Models.ViewModel;
