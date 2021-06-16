@@ -49,6 +49,9 @@ namespace CryptExApi.Services
             if (user == null)
                 throw new NotFoundException();
 
+            if (user.Status != AccountStatus.Active)
+                throw new ForbiddenException("Your account has been disabled. Please contact our support.");
+
             var loggedIn = await userManager.CheckPasswordAsync(user, authDTO.Password);
             
             if (!loggedIn)
@@ -66,6 +69,9 @@ namespace CryptExApi.Services
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
+
+            if (user.Status != AccountStatus.Active)
+                throw new ForbiddenException("Your account has been disabled. Please contact our support.");
 
             var claims = await userManager.GetClaimsAsync(user);
             var roles = await userManager.GetRolesAsync(user);

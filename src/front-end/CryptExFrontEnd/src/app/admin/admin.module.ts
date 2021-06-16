@@ -13,6 +13,7 @@ import { SearchUserResultComponent } from './components/search-user-result/searc
 import { UserPageComponent } from './components/user-page/user-page.component';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { MainModule } from '../main/main.module';
 
 
 
@@ -33,7 +34,8 @@ import { BrowserModule } from '@angular/platform-browser';
     FormsModule,
     BrowserModule,
     AdminRoutingModule,
-    TranslateModule
+    TranslateModule,
+    MainModule
   ]
 })
 export class AdminModule { }

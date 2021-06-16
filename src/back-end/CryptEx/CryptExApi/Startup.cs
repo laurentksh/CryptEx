@@ -186,18 +186,10 @@ namespace CryptExApi
             using (var scope = app.ApplicationServices.CreateScope()) {
                 Task.Run(async () =>
                 {
-                    if (env.IsProduction()) {
-                        var dbContext = scope.ServiceProvider.GetRequiredService<CryptExDbContext>();
-
-                        var pending = await dbContext.Database.GetPendingMigrationsAsync();
-                        if (pending.Count() == 1 && pending.Contains("Initial")) //Means we deleted all existing migrations.
-                            await dbContext.Database.EnsureDeletedAsync();
-
-                        await dbContext.Database.MigrateAsync();
-                    }
+                    var dbContext = scope.ServiceProvider.GetRequiredService<CryptExDbContext>();
+                    await dbContext.Database.MigrateAsync();
 
                     await DefaultDataSeeder.Seed(scope.ServiceProvider);
-
                     await scope.ServiceProvider.GetService<IDataSeeder>()?.Seed(scope.ServiceProvider);
                 }).Wait();
             }
@@ -227,6 +219,7 @@ namespace CryptExApi
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<DepositHub>("/feed/deposits");
+                endpoints.MapHub<AssetConversionHub>("/feed/assetconversion");
             });
         }
     }

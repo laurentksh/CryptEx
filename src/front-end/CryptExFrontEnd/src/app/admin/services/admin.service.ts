@@ -5,7 +5,7 @@ import { ApiResult } from 'src/app/api/models/api-result';
 import { BankAccountStatus, BankAccountViewModel } from 'src/app/deposit-withdraw/models/bank-account-view-model';
 import { DepositViewModel, PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-model';
 import { UserViewModel } from 'src/app/user/models/user-view-model';
-import { FullUserViewModel } from '../models/full-user-view-model';
+import { AccountStatus, FullUserViewModel } from '../models/full-user-view-model';
 import { StatsViewModel } from '../models/stats-view-model';
 
 @Injectable({
@@ -32,7 +32,7 @@ export class AdminService {
   }
 
   public async SetPaymentStatus(sessionId: string, status: PaymentStatus): Promise<ApiResult> {
-    return this.http.Post("Admin/setPaymentStatus", null, { params: new HttpParams().set("sessionId", sessionId).set("status", status.toString()) })
+    return this.http.Post("Admin/setPaymentStatus", null, { params: new HttpParams().set("sessionId", sessionId).set("status", status.toString()) });
   }
 
   public async GetPendingBankAccounts(): Promise<ApiResult<BankAccountViewModel>> {
@@ -40,6 +40,10 @@ export class AdminService {
   }
 
   public async SetBankAccountStatus(bankAccountId: string, status: BankAccountStatus): Promise<ApiResult> {
-    return this.http.Post("Admin/setPaymentStatus", null, { params: new HttpParams().set("bankAccountId", bankAccountId).set("status", status.toString()) })
+    return this.http.Post("Admin/setBankAccountStatus", null, { params: new HttpParams().set("bankAccountId", bankAccountId).set("status", status.toString()) });
+  }
+
+  public async SetAccountStatus(id: string, accountStatus: AccountStatus): Promise<ApiResult> {
+    return this.http.Post("Admin/setAccountStatus", null, { params: new HttpParams().set("userId", id).set("status", accountStatus.toString()) });
   }
 }

@@ -111,6 +111,9 @@ namespace CryptExApi.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -154,7 +157,8 @@ namespace CryptExApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("BankAccounts");
                 });
@@ -438,8 +442,8 @@ namespace CryptExApi.Migrations
             modelBuilder.Entity("CryptExApi.Models.Database.BankAccount", b =>
                 {
                     b.HasOne("CryptExApi.Models.Database.AppUser", "User")
-                        .WithMany("BankAccounts")
-                        .HasForeignKey("UserId")
+                        .WithOne("BankAccount")
+                        .HasForeignKey("CryptExApi.Models.Database.BankAccount", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -585,7 +589,7 @@ namespace CryptExApi.Migrations
                 {
                     b.Navigation("Address");
 
-                    b.Navigation("BankAccounts");
+                    b.Navigation("BankAccount");
                 });
 #pragma warning restore 612, 618
         }

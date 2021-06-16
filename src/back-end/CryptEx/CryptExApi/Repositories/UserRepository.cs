@@ -28,6 +28,8 @@ namespace CryptExApi.Repositories
         Task<BankAccountViewModel> GetIban(AppUser user);
 
         Task SetIban(AppUser user, IbanDto dto);
+
+        Task SetAccountStatus(Guid userId, AccountStatus status);
     }
 
     public class UserRepository : IUserRepository
@@ -130,6 +132,18 @@ namespace CryptExApi.Repositories
                 bankAccount.Iban = dto.Iban.Replace(" ", "");
                 bankAccount.Status = BankAccountStatus.NotProcessed;
             }
+
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task SetAccountStatus(Guid userId, AccountStatus status)
+        {
+            var user = await DbContext.Users.SingleOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+                throw new NotFoundException("User does not exist.");
+
+            user.Status = status;
 
             await DbContext.SaveChangesAsync();
         }

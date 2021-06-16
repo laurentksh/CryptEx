@@ -34,6 +34,8 @@ namespace CryptExApi.Services
         Task<BankAccountViewModel> GetIban(AppUser user);
 
         Task SetIban(AppUser user, IbanDto dto);
+
+        Task SetAccountStatus(Guid userId, AccountStatus status);
     }
 
     public class UserService : IUserService
@@ -150,6 +152,11 @@ namespace CryptExApi.Services
                 throw new ArgumentNullException(nameof(user));
 
             await userRepository.SetIban(user, dto);
+        }
+
+        public async Task SetAccountStatus(Guid userId, AccountStatus status)
+        {
+            await userRepository.SetAccountStatus(userId, status);
         }
     }
 }

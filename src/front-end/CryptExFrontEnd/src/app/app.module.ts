@@ -17,6 +17,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AdminModule } from './admin/admin.module';
 import { WalletModule } from './wallet/wallet.module';
+import { StatusBadgeComponent } from './main/Components/status-badge/status-badge.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -26,7 +27,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
-    SnackbarComponent,
+    SnackbarComponent
   ],
   imports: [
     HttpClientModule,

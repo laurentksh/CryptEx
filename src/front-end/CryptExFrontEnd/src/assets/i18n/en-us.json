@@ -68,6 +68,7 @@
       "ChangePassword": "Change password",
       "BankAccount": "Bank account",
       "Address": "Address",
+      "Joined": "Joined CryptEx",
       "Actions": {
         "Save": "Save",
         "Edit": "Edit",
@@ -97,15 +98,20 @@
       "Withdraw": "Withdraw fiat",
       "DepositBtn": "DEPOSIT",
       "WithdrawBtn": "WITHDRAW"
-    },
-    "Deposit": {
-      "Status": {
-        "-1": "Not processed",
-        "0": "Failed",
-        "1": "Success",
-        "2": "Pending"
-      }
     }
+  },
+  "PaymentStatus": {
+    "Status": {
+      "-1": "Not processed",
+      "0": "Failed",
+      "1": "Success",
+      "2": "Pending"
+    }
+  },
+  "BankAccountStatus": {
+    "-1": "Not processed",
+    "1": "Approved",
+    "0": "Refused"
   },
   "Contact": {
     "ContactUs": "Contact Us",
@@ -140,6 +146,19 @@
       "Title": "Search for a user",
       "InputPlaceholder": "Enter a search query...",
       "NoneFound": "No result found."
+    },
+    "UserPage": {
+      "Title": "Admin page",
+      "ActivateUser": "Activate user account",
+      "DeactivateUser": "Deactivate user account",
+      "NoIban": "This user does not have a bank account linked.",
+      "ApproveBankAccount": "Approve bank account",
+      "DisapproveBankAccount": "Disapprove bank account",
+      "Status": {
+        "0": "Status not set",
+        "1": "Active",
+        "-1": "Inactive"
+      }
     }
   },
   "Forbidden": {

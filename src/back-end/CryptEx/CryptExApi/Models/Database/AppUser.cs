@@ -19,6 +19,8 @@ namespace CryptExApi.Models.Database
 
         public DateTime BirthDay { get; set; }
 
+        public AccountStatus Status { get; set; } = AccountStatus.Active;
+
         public string PreferedLanguage { get; set; } = "en-us";
 
         public string PreferedCurrency { get; set; } = "usd";
@@ -41,5 +43,11 @@ namespace CryptExApi.Models.Database
         {
 
         }
+    }
+
+    public enum AccountStatus
+    {
+        Active = 1,
+        Inactive = -1
     }
 }

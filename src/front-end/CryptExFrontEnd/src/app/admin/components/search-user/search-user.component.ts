@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 import { UserViewModel } from 'src/app/user/models/user-view-model';
 import { AdminService } from '../../services/admin.service';
 
@@ -14,7 +16,7 @@ export class SearchUserComponent implements OnInit {
   timer: NodeJS.Timeout;
   typing: boolean;
 
-  constructor(private admin: AdminService, private router: Router, private activatedRoute: ActivatedRoute) { }
+  constructor(private admin: AdminService, private router: Router, private activatedRoute: ActivatedRoute, private snack: SnackbarService) { }
 
   ngOnInit(): void {
   }
@@ -26,11 +28,13 @@ export class SearchUserComponent implements OnInit {
   }
 
   async doSearch(): Promise<void> {
-    this.typing = false;
     const result = await this.admin.SearchUser(this.searchInput);
-
+    this.typing = false;
+    
     if (result.success)
       this.searchResults = result.content;
+    else
+      this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not load search results.", AlertType.Error));
   }
 
   redirectTo(id: string): void {

@@ -9,6 +9,8 @@ export interface UserViewModel {
 
     birthDay: string;
 
+    creationDate: string;
+
     preferedLanguage: string;
 
     preferedCurrency: string;

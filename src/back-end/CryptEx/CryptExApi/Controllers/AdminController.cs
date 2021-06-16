@@ -134,7 +134,7 @@ namespace CryptExApi.Controllers
             }
         }
 
-        [HttpGet("setBankAccountStatus")]
+        [HttpPost("setBankAccountStatus")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -147,6 +147,19 @@ namespace CryptExApi.Controllers
                 return Ok();
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Couldn't set bank account status");
+                return exHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("setAccountStatus")]
+        public async Task<IActionResult> SetAccountStatus([FromQuery] Guid userId, [FromQuery] AccountStatus status)
+        {
+            try {
+                await userService.SetAccountStatus(userId, status);
+                
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not set accoutn status");
                 return exHandler.Handle(ex, Request);
             }
         }

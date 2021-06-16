@@ -10,6 +10,8 @@ export interface FullUserViewModel {
 
     birthDay: string;
 
+    status: AccountStatus;
+
     preferedLanguage: string;
 
     preferedCurrency: string;
@@ -19,4 +21,9 @@ export interface FullUserViewModel {
     bankAccount: BankAccountViewModel;
 
     address: AddressViewModel;
+}
+
+export enum AccountStatus {
+    active = 1,
+    inactive = -1
 }
