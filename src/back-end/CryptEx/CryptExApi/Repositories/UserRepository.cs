@@ -25,9 +25,11 @@ namespace CryptExApi.Repositories
 
         Task SetAddress(AppUser user, AddressDto dto);
 
-        Task<IbanViewModel> GetIban(AppUser user);
+        Task<BankAccountViewModel> GetIban(AppUser user);
 
         Task SetIban(AppUser user, IbanDto dto);
+
+        Task SetAccountStatus(Guid userId, AccountStatus status);
     }
 
     public class UserRepository : IUserRepository
@@ -41,13 +43,13 @@ namespace CryptExApi.Repositories
 
         public async Task<AppUser> GetUser(Guid id)
         {
-            return await DbContext.Users.SingleAsync(x => x.Id == id);
+            return await DbContext.Users.SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<AppUser> GetFullUser(Guid id)
         {
             var user = await DbContext.Users
-                .Include(x => x.BankAccounts)
+                .Include(x => x.BankAccount)
                 .Include(x => x.Address)
                 .SingleAsync(x => x.Id == id);
 
@@ -88,8 +90,10 @@ namespace CryptExApi.Repositories
                     Street = dto.Street,
                     City = dto.City,
                     PostalCode = dto.PostalCode,
+                    CreationDate = DateTime.UtcNow,
+                    LastEditDate = DateTime.UtcNow,
                     CountryId = dto.CountryId,
-                    UserId = user.Id,
+                    UserId = user.Id
                 };
 
                 await DbContext.UserAddresses.AddAsync(newAddress);
@@ -97,17 +101,18 @@ namespace CryptExApi.Repositories
                 address.Street = dto.Street;
                 address.City = dto.City;
                 address.PostalCode = dto.PostalCode;
+                address.LastEditDate = DateTime.UtcNow;
                 address.CountryId = dto.CountryId;
             }
 
             await DbContext.SaveChangesAsync();
         }
 
-        public async Task<IbanViewModel> GetIban(AppUser user)
+        public async Task<BankAccountViewModel> GetIban(AppUser user)
         {
             var bankAccount = await DbContext.BankAccounts.SingleOrDefaultAsync(x => x.UserId == user.Id);
 
-            return bankAccount != null ? IbanViewModel.FromBankAccount(bankAccount) : null;
+            return bankAccount != null ? BankAccountViewModel.FromBankAccount(bankAccount) : null;
         }
 
         public async Task SetIban(AppUser user, IbanDto dto)
@@ -120,13 +125,27 @@ namespace CryptExApi.Repositories
                     Iban = dto.Iban.Replace(" ", ""),
                     Status = BankAccountStatus.NotProcessed,
                     UserId = user.Id,
+                    CreationDate = DateTime.UtcNow
                 };
 
                 await DbContext.BankAccounts.AddAsync(newBankAccount);
             } else {
                 bankAccount.Iban = dto.Iban.Replace(" ", "");
                 bankAccount.Status = BankAccountStatus.NotProcessed;
+                bankAccount.CreationDate = DateTime.UtcNow;
             }
+
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task SetAccountStatus(Guid userId, AccountStatus status)
+        {
+            var user = await DbContext.Users.SingleOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+                throw new NotFoundException("User does not exist.");
+
+            user.Status = status;
 
             await DbContext.SaveChangesAsync();
         }

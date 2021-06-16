@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressViewModel } from "../../models/address-view-model";
-import { IbanViewModel } from "../../models/iban-view-model";
 import { Router } from "@angular/router";
 import { UserService } from "../../services/user.service";
 import { UserUpdateDto } from "../../models/user-update-dto";
@@ -11,6 +10,7 @@ import { AddressDto } from "../../models/address-dto";
 import { IbanDto } from "../../models/iban-dto";
 import { CountryViewModel } from 'src/app/api/models/country-view-model';
 import { GlobalApiService } from 'src/app/api/global-api/global-api.service';
+import { BankAccountStatus, BankAccountViewModel } from 'src/app/deposit-withdraw/models/bank-account-view-model';
 
 @Component({
   selector: 'app-my-account',
@@ -25,11 +25,11 @@ export class MyAccountComponent implements OnInit {
   loading = true;
   hidePage = false;
 
-  userVm : UserViewModel = {} as UserViewModel;
+  userVm: UserViewModel;
   userUpdateDto: UserUpdateDto = {} as UserUpdateDto;
   addressVm: AddressViewModel;
   addressDto: AddressDto = {} as AddressDto;
-  ibanVm: IbanViewModel = {} as IbanViewModel;
+  ibanVm: BankAccountViewModel;
   ibanDto: IbanDto = {} as IbanDto;
 
   clickedName: boolean = false;
@@ -49,26 +49,26 @@ export class MyAccountComponent implements OnInit {
     var loadError = false;
 
     var user = await this.userService.RefreshUser();
-    
+
     if (user.success)
       this.userVm = user.content;
     else
       loadError = true;
-    
+
     if (loadError) {
       this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not load user data.", AlertType.Error));
       this.hidePage = true;
       this.loading = false;
       return;
     }
-    
+
     var address = await this.userService.GetAddress();
 
     if (address.success && address.content != null)
       this.addressVm = address.content;
     if (!address.success)
       loadError = true;
-    
+
     if (loadError) {
       this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not load user data.", AlertType.Error));
       this.hidePage = true;
@@ -80,11 +80,10 @@ export class MyAccountComponent implements OnInit {
 
     if (countries.success) {
       this.countries = countries.content;
-      console.log(countries.content);
     } else {
       loadError = true;
     }
-    
+
     if (loadError) {
       this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not load user data.", AlertType.Error));
       this.hidePage = true;
@@ -160,7 +159,7 @@ export class MyAccountComponent implements OnInit {
   doUpdatePhone(): void {
     if (this.clickedPhone)
       this.updateUser();
-    
+
     this.clickedPhone = !this.clickedPhone;
   }
 
@@ -181,7 +180,7 @@ export class MyAccountComponent implements OnInit {
   doAddress(): void {
     if (this.clickedAddress)
       this.updateAddress();
-    
+
     this.clickedAddress = !this.clickedAddress;
   }
 
@@ -198,5 +197,22 @@ export class MyAccountComponent implements OnInit {
 
   getBirthDayDate(): string {
     return new Date(Date.parse(this.userVm.birthDay)).toLocaleString([], { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  getCreationDate(): string {
+    return new Date(Date.parse(this.userVm.creationDate)).toLocaleString([], { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  getIbanStatusColor(): string {
+    switch (this.ibanVm.status) {
+      case BankAccountStatus.approved:
+        return "green-500";
+      case BankAccountStatus.refused:
+        return "red-500";
+      case BankAccountStatus.notProcessed:
+        return "gray-500";
+      default:
+        break;
+    }
   }
 }

@@ -87,7 +87,8 @@ namespace CryptExApi
                         "https://localhost:5001",
                         "http://localhost:4200",
                         "https://cryptex-trade.tech",
-                        "https://www.cryptex-trade.tech"
+                        "https://www.cryptex-trade.tech",
+                        "https://api.cryptex-trade.tech"
                     );
                   //y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
                 });
@@ -158,11 +159,13 @@ namespace CryptExApi
 
             services.AddTransient<ICoinbaseClient, CoinbaseClient>();
 
+            services.AddTransient<IAdminRepository, AdminRepository>();
             services.AddTransient<IDepositRepository, DepositRepository>();
             services.AddTransient<IStripeRepository, StripeRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IWalletRepository, WalletRepository>();
 
+            services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IDepositService, DepositService>();
             services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
@@ -183,18 +186,10 @@ namespace CryptExApi
             using (var scope = app.ApplicationServices.CreateScope()) {
                 Task.Run(async () =>
                 {
-                    if (env.IsProduction()) {
-                        var dbContext = scope.ServiceProvider.GetRequiredService<CryptExDbContext>();
-
-                        var pending = await dbContext.Database.GetPendingMigrationsAsync();
-                        if (pending.Count() == 1 && pending.Contains("Initial")) //Means we deleted all existing migrations.
-                            await dbContext.Database.EnsureDeletedAsync();
-
-                        await dbContext.Database.MigrateAsync();
-                    }
+                    var dbContext = scope.ServiceProvider.GetRequiredService<CryptExDbContext>();
+                    await dbContext.Database.MigrateAsync();
 
                     await DefaultDataSeeder.Seed(scope.ServiceProvider);
-
                     await scope.ServiceProvider.GetService<IDataSeeder>()?.Seed(scope.ServiceProvider);
                 }).Wait();
             }
@@ -224,6 +219,7 @@ namespace CryptExApi
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<DepositHub>("/feed/deposits");
+                endpoints.MapHub<AssetConversionHub>("/feed/assetconversion");
             });
         }
     }

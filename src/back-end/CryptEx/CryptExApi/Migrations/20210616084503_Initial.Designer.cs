@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CryptExApi.Migrations
 {
     [DbContext(typeof(CryptExDbContext))]
-    [Migration("20210614004251_Initial")]
+    [Migration("20210616084503_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -113,6 +113,9 @@ namespace CryptExApi.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -142,6 +145,9 @@ namespace CryptExApi.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DecisionDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Iban")
                         .HasColumnType("nvarchar(max)");
 
@@ -153,7 +159,8 @@ namespace CryptExApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("BankAccounts");
                 });
@@ -289,6 +296,9 @@ namespace CryptExApi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastEditDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PostalCode")
@@ -434,8 +444,8 @@ namespace CryptExApi.Migrations
             modelBuilder.Entity("CryptExApi.Models.Database.BankAccount", b =>
                 {
                     b.HasOne("CryptExApi.Models.Database.AppUser", "User")
-                        .WithMany("BankAccounts")
-                        .HasForeignKey("UserId")
+                        .WithOne("BankAccount")
+                        .HasForeignKey("CryptExApi.Models.Database.BankAccount", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -581,7 +591,7 @@ namespace CryptExApi.Migrations
                 {
                     b.Navigation("Address");
 
-                    b.Navigation("BankAccounts");
+                    b.Navigation("BankAccount");
                 });
 #pragma warning restore 612, 618
         }

@@ -23,6 +23,10 @@ export class HeaderComponent implements OnInit {
     return this.authService.IsAuthenticated;
   }
 
+  IsAdmin(): boolean {
+    return this.authService.IsInRole("admin")
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     var el = event.target as HTMLElement;

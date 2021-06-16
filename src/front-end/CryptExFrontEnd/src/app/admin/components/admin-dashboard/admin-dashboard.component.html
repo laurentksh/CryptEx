@@ -1,0 +1,21 @@
+<div class="w-full h-full">
+    <div class="flex flex-row mx-auto mt-5 ml-20">
+        <div class="flex flex-col lg:max-w-7xl ml-80">
+            <a routerLink="./"
+                class="mb-5 block bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
+                >Home</a>
+            <a routerLink="./search-user"
+                class="mb-5 block bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
+                >SearchUser</a>
+            <a routerLink="./deposits"
+                class="mb-5 block bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
+                >Deposits</a>
+            <a routerLink="./bank-accounts"
+                class="mb-5 block bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
+                >Pending bank accounts</a>
+        </div>
+        <div class="ml-10 mr-auto w-full">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

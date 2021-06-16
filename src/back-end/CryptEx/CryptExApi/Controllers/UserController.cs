@@ -116,6 +116,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("language")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangeLanguage([FromQuery] string lang)
         {
@@ -131,6 +132,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("currency")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangeCurrency([FromQuery] string currency)
         {

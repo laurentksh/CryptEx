@@ -15,6 +15,9 @@ namespace CryptExApi.Models.Database
 
         public DateTime CreationDate { get; set; }
 
+        /// <summary>When the bank account was approved/refused.</summary>
+        public DateTime DecisionDate { get; set; }
+
         public Guid UserId { get; set; }
 
         public AppUser User { get; set; }

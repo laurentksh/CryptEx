@@ -34,7 +34,14 @@ export class LoginComponent implements OnInit {
         this.snackService.ShowSnackbar(new SnackBarCreate("Successfully logged in", "Welcome back !", AlertType.Success, 5000));
       } else {
         this.loggingIn = false;
-        this.snackService.ShowSnackbar(new SnackBarCreate("Could not login into your account", "Please check your credentials are correct.", AlertType.Error, 5000));
+        
+        if (x.error.status == 401) {
+          this.snackService.ShowSnackbar(new SnackBarCreate("Could not login into your account", "Please check your credentials are correct.", AlertType.Error, 5000));
+        } else if (x.error.status == 403) {
+          this.snackService.ShowSnackbar(new SnackBarCreate("Could not login into your account", "Your account has been disabled. Please contact our support.", AlertType.Error, 5000));
+        } else {
+          this.snackService.ShowSnackbar(new SnackBarCreate("Could not login into your account", "An unknown error occured.", AlertType.Error, 5000));
+        }
       }
     })
   }

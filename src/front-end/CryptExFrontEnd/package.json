@@ -12,14 +12,14 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~11.2.12",
-    "@angular/common": "~11.2.12",
-    "@angular/compiler": "~11.2.12",
-    "@angular/core": "~11.2.12",
-    "@angular/forms": "~11.2.12",
-    "@angular/platform-browser": "~11.2.12",
-    "@angular/platform-browser-dynamic": "~11.2.12",
-    "@angular/router": "~11.2.12",
+    "@angular/animations": "~12.0.4",
+    "@angular/common": "~12.0.4",
+    "@angular/compiler": "~12.0.4",
+    "@angular/core": "~12.0.4",
+    "@angular/forms": "~12.0.4",
+    "@angular/platform-browser": "~12.0.4",
+    "@angular/platform-browser-dynamic": "~12.0.4",
+    "@angular/router": "~12.0.4",
     "@auth0/angular-jwt": "^5.0.2",
     "@microsoft/signalr": "^5.0.6",
     "@ngx-translate/core": "^13.0.0",
@@ -30,14 +30,14 @@
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "url-polyfill": "^1.1.12",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^11.1.1",
-    "@angular-devkit/build-angular": "~0.1102.11",
-    "@angular/cli": "~11.2.11",
-    "@angular/compiler-cli": "~11.2.12",
-    "@angular/localize": "^12.0.2",
+    "@angular-devkit/build-angular": "~12.0.4",
+    "@angular/cli": "~12.0.4",
+    "@angular/compiler-cli": "~12.0.4",
+    "@angular/localize": "^12.0.4",
     "@tailwindcss/forms": "^0.3.3",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
@@ -58,9 +58,9 @@
     "postcss-loader": "^4.3.0",
     "postcss-scss": "^3.0.4",
     "protractor": "~7.0.0",
-    "tailwindcss": "^2.1.2",
+    "tailwindcss": "^2.1.4",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.0.2"
+    "typescript": "~4.2.4"
   }
 }

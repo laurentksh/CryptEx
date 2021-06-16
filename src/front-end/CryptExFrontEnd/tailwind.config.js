@@ -1,6 +1,7 @@
 module.exports = {
   purge: ['./src/**/*.{html,ts,scss}'],
   darkMode: false, // or 'media' or 'class'
+  mode: 'jit', //JIT compilation, disable if any styling issue occurs.
   theme: {
     extend: {
       screens: {
@@ -9,7 +10,7 @@ module.exports = {
       colors: {
         'blue-logo': '#167DEA',
       },
-      minHeight: {
+      /*minHeight: {
         //'0': '0', //Already provided by Tailwind
         '1/4': '25%',
         '1/2': '50%',
@@ -168,7 +169,7 @@ module.exports = {
         '72': '18rem',
         '80': '20rem',
         '96': '24rem',
-      },
+      },*/
       keyframes: {
         'fade-in': {
           '0%': {
@@ -193,14 +194,14 @@ module.exports = {
       }
     },
   },
-  variants: {
+  /*variants: {
     extend: {
       ringOffsetWidth: ['hover', 'active'],
       ringOffsetColor: ['hover', 'active'],
       ringColor: ['hover', 'active'],
       ringWidth: ['hover', 'active'],
     },
-  },
+  },*/
   plugins: [
     require('@tailwindcss/forms')
   ],

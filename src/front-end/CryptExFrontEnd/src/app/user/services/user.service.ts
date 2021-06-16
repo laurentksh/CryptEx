@@ -10,11 +10,11 @@ import { Language } from '../models/language';
 import { PasswordChangeViewModel } from '../models/password-change-view-model';
 import { RequestPasswordChangeDto } from '../models/request-password-change-dto';
 import { UserViewModel } from '../models/user-view-model';
-import {UserUpdateDto} from "../models/user-update-dto";
+import { UserUpdateDto } from "../models/user-update-dto";
 import { AddressDto } from '../models/address-dto';
 import { AddressViewModel } from '../models/address-view-model';
-import { IbanViewModel } from '../models/iban-view-model';
 import { IbanDto } from '../models/iban-dto';
+import { BankAccountViewModel } from 'src/app/deposit-withdraw/models/bank-account-view-model';
 
 @Injectable({
   providedIn: 'root'
@@ -147,7 +147,7 @@ export class UserService {
     return await this.http.Get("User/address");
   }
 
-  public async GetIban(): Promise<ApiResult<IbanViewModel>> {
+  public async GetIban(): Promise<ApiResult<BankAccountViewModel>> {
     return await this.http.Get("User/iban");
   }
 
@@ -160,7 +160,7 @@ export class UserService {
       return { success: false, error: result.error, content: null };
   }
 
-  public async UpdateIban(iban: IbanDto): Promise<ApiResult<IbanViewModel>> {
+  public async UpdateIban(iban: IbanDto): Promise<ApiResult<BankAccountViewModel>> {
     const result = await this.http.Post("User/iban", iban);
 
     if (result.success)

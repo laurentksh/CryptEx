@@ -21,6 +21,8 @@ namespace CryptExApi.Services
     {
         Task<AuthViewModel> Authenticate(AuthDTO authDTO);
 
+        Task<AuthViewModel> RefreshAccessToken(AppUser user);
+
         Task<AuthViewModel> CreateUser(CreateUserDTO createUserDTO);
 
         Task<string> BuildJWT(AppUser user, bool prolongedSession = false, IEnumerable<Claim> claims = null, IEnumerable<string> roles = null);
@@ -47,6 +49,9 @@ namespace CryptExApi.Services
             if (user == null)
                 throw new NotFoundException();
 
+            if (user.Status != AccountStatus.Active)
+                throw new ForbiddenException("Your account has been disabled. Please contact our support.");
+
             var loggedIn = await userManager.CheckPasswordAsync(user, authDTO.Password);
             
             if (!loggedIn)
@@ -56,6 +61,22 @@ namespace CryptExApi.Services
             var roles = await userManager.GetRolesAsync(user);
 
             var token = await BuildJWT(user, authDTO.ExtendSession, claims, roles);
+
+            return new AuthViewModel(token);
+        }
+
+        public async Task<AuthViewModel> RefreshAccessToken(AppUser user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            if (user.Status != AccountStatus.Active)
+                throw new ForbiddenException("Your account has been disabled. Please contact our support.");
+
+            var claims = await userManager.GetClaimsAsync(user);
+            var roles = await userManager.GetRolesAsync(user);
+
+            var token = await BuildJWT(user, true, claims, roles);
 
             return new AuthViewModel(token);
         }
@@ -71,7 +92,8 @@ namespace CryptExApi.Services
                 UserName = StringUtilities.SecureRandom(16, StringUtilities.AllowedChars.AlphabetNumbers), // We do not use usernames, so we generate a random one so that Identity doesn't throw errors.
                 FirstName = createUserDTO.FirstName,
                 LastName = createUserDTO.LastName,
-                BirthDay = createUserDTO.BirthDay
+                BirthDay = createUserDTO.BirthDay,
+                CreationDate = DateTime.UtcNow
             };
 
             var result = await userManager.CreateAsync(user, createUserDTO.Password);

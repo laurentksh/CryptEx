@@ -5,6 +5,7 @@ import { UserRouting } from './user-routing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
+import { MainModule } from '../main/main.module';
 
 
 
@@ -17,7 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
     UserRouting,
     FormsModule,
     BrowserModule,
-    TranslateModule
+    TranslateModule,
+    MainModule
   ]
 })
 export class UserModule { }

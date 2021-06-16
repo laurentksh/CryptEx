@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CryptExApi.Extensions;
 using CryptExApi.Models.DTO;
 using CryptExApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -35,6 +37,22 @@ namespace CryptExApi.Controllers
                 return Ok(result);
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could not authenticate user.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("refresh")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RefreshAccessToken()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var result = await authService.RefreshAccessToken(user);
+
+                return Ok(result);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not refresh access token.");
                 return exceptionHandler.Handle(ex, Request);
             }
         }

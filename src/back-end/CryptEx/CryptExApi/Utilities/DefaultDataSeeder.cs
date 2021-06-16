@@ -332,7 +332,8 @@ namespace CryptExApi.Utilities
                     LastName = "Admin",
                     BirthDay = DateTime.UnixEpoch,
                     PreferedCurrency = "CHF",
-                    PreferedLanguage = "fr-fr"
+                    PreferedLanguage = "fr-fr",
+                    CreationDate = DateTime.UnixEpoch
                 };
 
                 var result = await userManager.CreateAsync(user, "Password123$");

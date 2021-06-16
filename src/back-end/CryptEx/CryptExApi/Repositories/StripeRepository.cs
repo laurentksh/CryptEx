@@ -43,7 +43,10 @@ namespace CryptExApi.Repositories
 
         public async Task<FiatDeposit> SetDepositStatus(string sessionId, PaymentStatus status)
         {
-            var deposit = await DbContext.FiatDeposits.SingleAsync(x => x.StripeSessionId == sessionId);
+            var deposit = await DbContext.FiatDeposits.SingleOrDefaultAsync(x => x.StripeSessionId == sessionId);
+            if (deposit == null)
+                throw new NotFoundException($"Session {sessionId} not found.");
+
             deposit.Status = status;
 
             await DbContext.SaveChangesAsync();

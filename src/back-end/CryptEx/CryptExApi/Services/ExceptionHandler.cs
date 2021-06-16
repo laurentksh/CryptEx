@@ -35,6 +35,7 @@ namespace CryptExApi.Services
             return exception switch
             {
                 UnauthorizedException => (HttpStatusCode.Unauthorized, "Unauthorized", exMsg),
+                ForbiddenException => (HttpStatusCode.Forbidden, "Forbidden", exMsg),
                 BadRequestException => (HttpStatusCode.BadRequest, "BadRequest", exMsg),
                 FormatException or ArgumentException => (HttpStatusCode.BadRequest, "BadRequest", exMsg),
                 NotImplementedException => (HttpStatusCode.NotImplemented, "NotImplemented", exMsg),
