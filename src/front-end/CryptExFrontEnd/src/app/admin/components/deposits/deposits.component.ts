@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { DepositViewModel } from 'src/app/deposit-withdraw/models/deposit-view-model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { FullDepositViewModel } from '../../models/full-deposit-view-model';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-deposits',
@@ -7,11 +11,21 @@ import { DepositViewModel } from 'src/app/deposit-withdraw/models/deposit-view-m
   styleUrls: ['./deposits.component.scss']
 })
 export class DepositsComponent implements OnInit {
-  deposits: DepositViewModel[];
+  deposits: FullDepositViewModel[];
 
-  constructor() { }
+  constructor(private adminService: AdminService, private snack: SnackbarService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.adminService.GetDeposits().then(x => {
+      if (x.success) {
+        this.deposits = x.content;
+      } else {
+        this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not load deposits.", AlertType.Error));
+      }
+    })
   }
 
+  redirectTo(id: string): void {
+    this.router.navigate(["../user", id], { relativeTo: this.activatedRoute });
+  }
 }

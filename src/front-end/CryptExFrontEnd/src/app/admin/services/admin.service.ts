@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { CustomHttpClientService } from 'src/app/api/custom-http-client/custom-http-client.service';
 import { ApiResult } from 'src/app/api/models/api-result';
 import { BankAccountStatus, BankAccountViewModel } from 'src/app/deposit-withdraw/models/bank-account-view-model';
-import { DepositViewModel, PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-model';
+import { PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-model';
 import { UserViewModel } from 'src/app/user/models/user-view-model';
+import { FullDepositViewModel } from '../models/full-deposit-view-model';
 import { AccountStatus, FullUserViewModel } from '../models/full-user-view-model';
 import { StatsViewModel } from '../models/stats-view-model';
 
@@ -27,7 +28,7 @@ export class AdminService {
     return this.http.Get("Admin/stats");
   }
 
-  public async GetDeposits(): Promise<ApiResult<DepositViewModel[]>> {
+  public async GetDeposits(): Promise<ApiResult<FullDepositViewModel[]>> {
     return this.http.Get("Admin/deposits");
   }
 

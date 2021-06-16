@@ -17,7 +17,7 @@ namespace CryptExApi.Services
 
         Task<StatsViewModel> GetStats();
 
-        Task<List<DepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat);
+        Task<List<FullDepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat);
 
         Task SetPaymentStatus(string sessionId, PaymentStatus status);
 
@@ -47,7 +47,7 @@ namespace CryptExApi.Services
             return await adminRepo.GetStats();
         }
 
-        public async Task<List<DepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat)
+        public async Task<List<FullDepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat)
         {
             return await adminRepo.GetAllDeposits(userId, status, type);
         }

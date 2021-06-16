@@ -19,7 +19,7 @@ namespace CryptExApi.Repositories
 
         Task<StatsViewModel> GetStats();
 
-        Task<List<DepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat);
+        Task<List<FullDepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat);
 
         Task<List<FullBankAccountViewModel>> GetPendingBankAccounts();
 
@@ -97,13 +97,14 @@ namespace CryptExApi.Repositories
             return total;
         }
 
-        public async Task<List<DepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat)
+        public async Task<List<FullDepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat)
         {
             var fiatDeposits = new List<FiatDeposit>();
 
             if (type == WalletType.Fiat) {
                 fiatDeposits = dbContext.FiatDeposits
                     .Include(x => x.Wallet)
+                    .Include(x => x.User)
                     .Where(x => !userId.HasValue || x.UserId == userId.Value)
                     .Where(x => !status.HasValue || x.Status == status.Value)
                     .ToList();
@@ -114,14 +115,15 @@ namespace CryptExApi.Repositories
             if (type == WalletType.Crypto) {
                 cryptoDeposits = dbContext.CryptoDeposits
                     .Include(x => x.Wallet)
+                    .Include(x => x.User)
                     .Where(x => !userId.HasValue || x.UserId == userId.Value)
                     .Where(x => !status.HasValue || x.Status == status.Value)
                     .ToList();
             }
 
-            var result = new List<DepositViewModel>(fiatDeposits.Count + cryptoDeposits.Count);
-            result.AddRange(fiatDeposits.Select(x => FiatDepositViewModel.FromFiatDeposit(x)));
-            result.AddRange(cryptoDeposits.Select(x => CryptoDepositViewModel.FromCryptoDeposit(x)));
+            var result = new List<FullDepositViewModel>(fiatDeposits.Count + cryptoDeposits.Count);
+            result.AddRange(fiatDeposits.Select(x => FullDepositViewModel.FromDeposit(x)));
+            result.AddRange(cryptoDeposits.Select(x => FullDepositViewModel.FromDeposit(x)));
 
             return result;
         }
