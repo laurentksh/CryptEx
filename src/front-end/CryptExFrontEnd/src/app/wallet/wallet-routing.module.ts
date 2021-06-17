@@ -6,7 +6,8 @@ import { AuthenticationGuard } from '../guards/authentication.guard';
 const routes: Routes = [
   {
     path: 'wallets',
-    component: WalletsComponent
+    component: WalletsComponent,
+    canActivate: [AuthenticationGuard]
   }
 ];
 
