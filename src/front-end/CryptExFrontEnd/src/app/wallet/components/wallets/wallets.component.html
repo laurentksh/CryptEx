@@ -19,7 +19,7 @@
                   <div class="flex items-center pt-1">
                     <div class="text-2xl font-bold text-white">
                       <p *ngIf="total != null; else totalNull">
-                        {{ total.reference.ticker }} {{ total.amount }}
+                        {{ total.reference.ticker }} {{ total.amount.toLocaleString() }}
                       </p>
                       <ng-template #totalNull>
                         -
@@ -40,7 +40,7 @@
                   <div class="flex items-center pt-1">
                     <div class="text-2xl font-bold text-white ">
                       <p *ngIf="totalFiat != null; else totalFiatNull">
-                        {{ totalFiat.reference.ticker }} {{ totalFiat.amount }}
+                        {{ totalFiat.reference.ticker }} {{ totalFiat.amount.toLocaleString() }}
                       </p>
                       <ng-template #totalFiatNull>
                         -
@@ -61,7 +61,7 @@
                   <div class="flex items-center pt-1">
                     <div class="text-2xl font-bold text-white ">
                       <p *ngIf="totalCrypto != null; else totalCryptoNull">
-                        {{ totalCrypto.reference.ticker }} {{ totalCrypto.amount }}
+                        {{ totalCrypto.reference.ticker }} {{ totalCrypto.amount.toLocaleString() }}
                       </p>
                       <ng-template #totalCryptoNull>
                         -

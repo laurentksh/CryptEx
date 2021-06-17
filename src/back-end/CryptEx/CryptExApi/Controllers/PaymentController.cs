@@ -33,9 +33,8 @@ namespace CryptExApi.Controllers
         [HttpPost("deposit/fiat")]
         public async Task<IActionResult> DepositFiat([FromQuery] decimal amount)
         {
-            var user = await HttpContext.GetUser();
-
             try {
+                var user = await HttpContext.GetUser();
                 var session = await paymentService.DepositFiat(amount, user);
 
                 return Ok(session);
@@ -48,9 +47,8 @@ namespace CryptExApi.Controllers
         [HttpPost("deposit/crypto")]
         public async Task<IActionResult> DepositCrypto([FromQuery] Guid walletId)
         {
-            var user = await HttpContext.GetUser();
-
             try {
+                var user = await HttpContext.GetUser();
                 var address = await paymentService.DepositCrypto(walletId, user);
                 
                 return Ok(address);
@@ -63,9 +61,8 @@ namespace CryptExApi.Controllers
         [HttpPost("withdraw")]
         public async Task<IActionResult> WithdrawFiat([FromQuery] decimal amount)
         {
-            var userId = HttpContext.GetUserId();
-
             try {
+                var userId = HttpContext.GetUserId();
                 await paymentService.WithdrawFiat(userId, amount);
 
                 return Ok();

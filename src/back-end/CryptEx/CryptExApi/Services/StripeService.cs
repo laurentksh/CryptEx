@@ -6,6 +6,7 @@ using CryptExApi.Exceptions;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
 using CryptExApi.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Stripe;
 using Stripe.Checkout;
@@ -26,12 +27,14 @@ namespace CryptExApi.Services
         private readonly IStripeRepository repository;
         private readonly IConfiguration configuration;
         private readonly IDepositService depositService;
+        private readonly UserManager<AppUser> userManager;
 
-        public StripeService(IConfiguration configuration, IStripeRepository repository, IDepositService depositService)
+        public StripeService(IConfiguration configuration, IStripeRepository repository, IDepositService depositService, UserManager<AppUser> userManager)
         {
             this.configuration = configuration;
             this.repository = repository;
             this.depositService = depositService;
+            this.userManager = userManager;
         }
 
         public async Task HandleCheckoutCallback(string jsonBody, string stripeSignature)
@@ -72,6 +75,10 @@ namespace CryptExApi.Services
                 throw new NotFoundException($"Session with id {session.Id} does not exist.");
             
             var deposit = await repository.SetDepositStatus(session.Id, PaymentStatus.Success);
+
+            if (deposit.Amount > 5000)
+                await userManager.AddClaimAsync(deposit.User, new System.Security.Claims.Claim("premium", true.ToString()));
+
             await depositService.UpdateDeposits(deposit.UserId);
         }
 

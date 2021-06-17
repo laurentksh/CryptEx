@@ -9,6 +9,7 @@ using CryptExApi.Models.ViewModel;
 using CryptExApi.Models.ViewModel.Payment;
 using CryptExApi.Repositories;
 using CryptExApi.Utilities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Stripe.Checkout;
@@ -143,16 +144,11 @@ namespace CryptExApi.Services
 
         public async Task<CryptoDepositViewModel> GenerateDepositWallet(Guid walletId, AppUser user)
         {
+            var result = await repository.DepositCrypto(user, walletId);
+
             await UpdateDeposits(user.Id);
 
-            return new CryptoDepositViewModel
-            {
-                Id = Guid.NewGuid(),
-                Amount = -1,
-                Date = DateTime.UtcNow,
-                WalletAddress = StringUtilities.ComputeHash(StringUtilities.SecureRandom(32)),
-                WalletId = walletId
-            };
+            return result;
         }
 
         public async Task<List<DepositViewModel>> GetDeposits(AppUser user)

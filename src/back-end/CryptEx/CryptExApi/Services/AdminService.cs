@@ -19,7 +19,11 @@ namespace CryptExApi.Services
 
         Task<List<FullDepositViewModel>> GetAllDeposits(Guid? userId, PaymentStatus? status = null, WalletType type = WalletType.Fiat);
 
+        Task SetPaymentStatus(Guid id, PaymentStatus status);
+
         Task SetPaymentStatus(string sessionId, PaymentStatus status);
+
+        Task SetPaymentAmount(Guid id, decimal amount);
 
         Task<List<FullBankAccountViewModel>> GetPendingBankAccounts();
 
@@ -52,9 +56,19 @@ namespace CryptExApi.Services
             return await adminRepo.GetAllDeposits(userId, status, type);
         }
 
+        public async Task SetPaymentStatus(Guid sessionId, PaymentStatus status)
+        {
+            await adminRepo.SetCryptoDepositStatus(sessionId, status);
+        }
+
         public async Task SetPaymentStatus(string sessionId, PaymentStatus status)
         {
             await stripeRepo.SetDepositStatus(sessionId, status);
+        }
+
+        public async Task SetPaymentAmount(Guid id, decimal amount)
+        {
+            await adminRepo.SetDepositAmount(id, amount);
         }
 
         public async Task<List<FullBankAccountViewModel>> GetPendingBankAccounts()

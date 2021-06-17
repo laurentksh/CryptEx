@@ -24,6 +24,10 @@ namespace CryptExApi.Repositories
         Task<List<FullBankAccountViewModel>> GetPendingBankAccounts();
 
         Task SetBankAccountStatus(Guid id, BankAccountStatus status);
+
+        Task SetCryptoDepositStatus(Guid sessionId, PaymentStatus status);
+
+        Task SetDepositAmount(Guid id, decimal amount);
     }
     public class AdminRepository : IAdminRepository
     {
@@ -146,6 +150,29 @@ namespace CryptExApi.Repositories
 
             account.Status = status;
             account.DecisionDate = DateTime.UtcNow;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SetCryptoDepositStatus(Guid sessionId, PaymentStatus status)
+        {
+            var deposit = await dbContext.CryptoDeposits.SingleOrDefaultAsync(x => x.Id == sessionId);
+            deposit.Status = status;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SetDepositAmount(Guid id, decimal amount)
+        {
+            var fiatDeposit = await dbContext.FiatDeposits.SingleOrDefaultAsync(x => x.Id == id);
+            var cryptoDeposit = await dbContext.CryptoDeposits.SingleOrDefaultAsync(x => x.Id == id);
+
+            if (fiatDeposit != null)
+                fiatDeposit.Amount = amount;
+            if (cryptoDeposit != null)
+                cryptoDeposit.Amount = amount;
+            if (fiatDeposit == null && cryptoDeposit == null)
+                throw new NotFoundException("No deposit with the specified id found.");
 
             await dbContext.SaveChangesAsync();
         }

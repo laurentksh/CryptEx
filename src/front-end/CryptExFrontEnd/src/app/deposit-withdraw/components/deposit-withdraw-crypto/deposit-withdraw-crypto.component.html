@@ -1,1 +1,36 @@
-<p>deposit-withdraw-crypto works!</p>
+<h3 *ngIf="cryptos == null">
+    {{ 'Global.Loading' | translate }}
+</h3>
+
+<div *ngIf="cryptos != null" class="flex flex-col w-3/4 mx-auto">
+    <div class="mr-auto ml-auto 2xl:w-1/3 mt-20">
+        <div class="shadow-md bg-white rounded-md p-5">
+            <h3 class="font-bold text-2xl">{{ 'DepositWithdraw.Crypto.Deposit' | translate }}</h3>
+            <p>{{ 'DepositWithdraw.Crypto.Desc' | translate }}</p>
+            <select
+                (change)="cryptoChanged($event)"
+                class="w-48 mt-3 appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                >
+                  <option *ngFor="let crypto of cryptos" [value]="crypto.id">{{ crypto.fullName }} ({{ crypto.ticker }})</option>
+                </select>
+            <div class="mt-5">
+                <button
+                    type="button"
+                    class="block w-full max-w-xs mx-auto mt-5 bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
+                    (click)="onDeposit()"
+                    >
+                    {{ 'DepositWithdraw.Both.DepositBtn' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="depositVm != null" class="mr-auto ml-auto 2xl:w-1/3 mt-20">
+        <div class="shadow-md bg-white rounded-md p-5">
+            <h3 class="font-semibold text-xl">{{ 'DepositWithdraw.Crypto.Address' | translate }} {{ depositVm.wallet.ticker }} {{ 'DepositWithdraw.Crypto.Address2' | translate }}</h3>
+            
+            <ngx-qrcode [value]="depositVm.walletAddress" [elementType]="elementType" [errorCorrectionLevel]="correctionLevel"></ngx-qrcode>
+
+            <i class="text-lg text-yellow-400">{{ 'DepositWithdraw.Crypto.Warning' | translate }} {{ depositVm.wallet.ticker }} {{ 'DepositWithdraw.Crypto.Warning2' | translate }} </i>
+        </div>
+    </div>
+</div>

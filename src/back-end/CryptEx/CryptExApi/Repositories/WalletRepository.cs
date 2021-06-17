@@ -8,6 +8,7 @@ using CryptExApi.Exceptions;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.ViewModel;
+using CryptExApi.Models.ViewModel.Payment;
 using CryptExApi.Models.ViewModel.Wallets;
 using CryptExApi.Utilities;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,12 @@ namespace CryptExApi.Repositories
         /// </summary>
         /// <returns></returns>
         Task<List<Wallet>> GetCryptoWallets();
+
+        Task<List<FiatDepositViewModel>> GetFiatDeposits(AppUser user, Guid walletId);
+
+        Task<List<CryptoDepositViewModel>> GetCryptoDeposits(AppUser user, Guid walletId);
+
+        Task<decimal> GetWalletAmount(AppUser user, Guid walletId);
 
         /// <summary>
         /// Get Fiat wallets and the user's data (amount, performance, etc).
@@ -124,6 +131,11 @@ namespace CryptExApi.Repositories
                 .Include(x => x.User)
                 .Include(x => x.Wallet)
                 .Where(x => x.UserId == user.Id);
+            var assetConversions = dbContext.AssetConversions
+                .Include(x => x.User)
+                .Include(x => x.Left)
+                .Include(x => x.Right)
+                .Where(x => x.UserId == user.Id);
             var fiatWithdrawals = dbContext.FiatWithdrawals
                 .Include(x => x.User)
                 .Include(x => x.Wallet)
@@ -147,6 +159,19 @@ namespace CryptExApi.Repositories
 
                 var wallet = result.Single(x => x.Id == deposit.WalletId);
                 wallet.Amount += deposit.Amount;
+            }
+
+            foreach (var conversion in assetConversions) {
+                var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.LeftId);
+                var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.RightId);
+
+                if (conversion.Status == PaymentStatus.Failed)
+                    continue;
+
+                if (decreaseWallet != null)
+                    decreaseWallet.Amount -= conversion.Amount;
+                if (increaseWallet != null)
+                    increaseWallet.Amount += conversion.Amount * conversion.ExchangeRate;
             }
 
             foreach (var withdraw in fiatWithdrawals) {
@@ -194,15 +219,56 @@ namespace CryptExApi.Repositories
             }
 
             foreach (var conversion in assetConversions) {
-                var decreaseWallet = result.Single(x => x.Id == conversion.LeftId);
-                var increaseWallet = result.Single(x => x.Id == conversion.RightId);
+                var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.LeftId);
+                var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.RightId);
 
                 if (conversion.Status == PaymentStatus.Failed)
                     continue;
 
-                decreaseWallet.Amount -= conversion.Amount;
-                increaseWallet.Amount += conversion.Amount * conversion.ExchangeRate;
+                if (decreaseWallet != null)
+                    decreaseWallet.Amount -= conversion.Amount;
+                if (increaseWallet != null)
+                    increaseWallet.Amount += conversion.Amount * conversion.ExchangeRate;
             }
+
+            return result;
+        }
+
+        public async Task<List<FiatDepositViewModel>> GetFiatDeposits(AppUser user, Guid walletId)
+        {
+            var result = await dbContext.FiatDeposits
+                .Include(x => x.User)
+                .Include(x => x.Wallet)
+                .Where(x => x.UserId == user.Id && x.WalletId == walletId)
+                .Select(x => FiatDepositViewModel.FromFiatDeposit(x))
+                .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<List<CryptoDepositViewModel>> GetCryptoDeposits(AppUser user, Guid walletId)
+        {
+            var result = await dbContext.CryptoDeposits
+                .Include(x => x.User)
+                .Include(x => x.Wallet)
+                .Where(x => x.UserId == user.Id && x.WalletId == walletId)
+                .Select(x => CryptoDepositViewModel.FromCryptoDeposit(x))
+                .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<decimal> GetWalletAmount(AppUser user, Guid walletId)
+        {
+            var result = 0m;
+            var fiatDeposits = await dbContext.FiatDeposits.Where(x => x.UserId == user.Id && x.WalletId == walletId).ToListAsync();
+            var cryptoDeposits = await dbContext.CryptoDeposits.Where(x => x.UserId == user.Id && x.WalletId == walletId).ToListAsync();
+
+            foreach (var deposit in fiatDeposits)
+                result += deposit.Amount;
+
+            foreach (var deposit in cryptoDeposits)
+                result += deposit.Amount;
 
             return result;
         }
@@ -213,17 +279,13 @@ namespace CryptExApi.Repositories
             var wallets = new List<UserWalletViewModel>();
             decimal total = 0m;
 
-            if (type == WalletType.Fiat)
+            if (type == WalletType.Fiat || type == WalletType.Both)
                 wallets.AddRange(await GetFiatWallets(user));
-            if (type == WalletType.Crypto)
+            if (type == WalletType.Crypto || type == WalletType.Both)
                 wallets.AddRange(await GetCryptoWallets(user));
 
             foreach (var wallet in wallets) {
-                if (wallet.Type == WalletType.Fiat) {
-                    total += wallet.Amount * wallet.SelectedCurrencyPair.Rate;
-                } else {
-                    total += wallet.Amount * wallet.SelectedCurrencyPair.Rate;
-                }
+                total += wallet.Amount * wallet.SelectedCurrencyPair.Rate;
             }
 
             return new TotalViewModel

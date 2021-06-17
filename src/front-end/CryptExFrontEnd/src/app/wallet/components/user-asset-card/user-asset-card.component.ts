@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UserWalletViewModel } from 'src/app/wallet/models/wallet-view-model';
+import { UserWalletViewModel } from '../../models/user-wallet-view-model';
 
 
 @Component({
@@ -13,6 +13,7 @@ export class UserAssetCardComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    
   }
 
 }

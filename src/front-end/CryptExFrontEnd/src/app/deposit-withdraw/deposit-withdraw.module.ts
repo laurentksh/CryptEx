@@ -6,6 +6,7 @@ import { DepositWithdrawCryptoComponent } from './components/deposit-withdraw-cr
 import { DepositWithdrawHomeComponent } from './components/deposit-withdraw-home/deposit-withdraw-home.component';
 import { DepositComponent } from './components/deposit/deposit.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 
 
 
@@ -19,6 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     DepositWithdrawRoutingModule,
+    NgxQRCodeModule,
     TranslateModule
   ]
 })
