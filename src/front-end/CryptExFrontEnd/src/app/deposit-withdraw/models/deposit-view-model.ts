@@ -1,4 +1,4 @@
-import { WalletViewModel } from "src/app/user/models/wallet-view-model";
+import { WalletViewModel } from "src/app/wallet/models/wallet-view-model";
 
 export interface DepositViewModel {
     id: string;

@@ -5,6 +5,20 @@ using System.Threading.Tasks;
 
 namespace CryptExApi.Models.Database
 {
+    /// <summary>
+    /// Represents a crypto currency transaction between two assets.
+    /// </summary>
+    /// <example>
+    /// Usage example:
+    /// 
+    /// User wants to convert 100 CHSB to USDC.
+    /// Amount: 100
+    /// Left: CHSB
+    /// Right: USDC
+    /// ExchangeRate: 0.667~
+    /// 
+    /// If we want to get the amount in USDC, we do Amount * ExchangeRate
+    /// </example>
     public class AssetConversion
     {
         public Guid Id { get; set; }
@@ -23,6 +37,11 @@ namespace CryptExApi.Models.Database
         public Wallet Right { get; set; }
         
         public Guid RightId { get; set; }
+
+        /// <summary>
+        /// Exchange rate at the time of the transaction
+        /// </summary>
+        public decimal ExchangeRate { get; set; }
         
         public AppUser User { get; set; }
         

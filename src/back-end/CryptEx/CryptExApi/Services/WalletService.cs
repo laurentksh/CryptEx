@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Coinbase;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.ViewModel;
+using CryptExApi.Models.ViewModel.Wallets;
 using CryptExApi.Repositories;
 
 namespace CryptExApi.Services
@@ -24,6 +25,8 @@ namespace CryptExApi.Services
         Task<List<UserWalletViewModel>> GetFiatWallets(AppUser user);
 
         Task<List<UserWalletViewModel>> GetCryptoWallets(AppUser user);
+
+        Task<TotalViewModel> GetTotal(AppUser user, WalletType type);
 
         Task<WalletViewModel> GetCryptoFull(Guid id, string currency);
     }
@@ -73,6 +76,11 @@ namespace CryptExApi.Services
         public async Task<List<UserWalletViewModel>> GetCryptoWallets(AppUser user)
         {
             return await walletsRepository.GetCryptoWallets(user);
+        }
+
+        public async Task<TotalViewModel> GetTotal(AppUser user, WalletType type)
+        {
+            return await walletsRepository.GetTotal(user, type);
         }
 
         public async Task<WalletViewModel> GetCryptoFull(Guid id, string currency)

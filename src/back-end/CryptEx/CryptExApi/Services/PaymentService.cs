@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.ViewModel;
 using CryptExApi.Models.ViewModel.Payment;
+using CryptExApi.Repositories;
 using Microsoft.Extensions.Configuration;
 using Stripe.Checkout;
 
@@ -16,16 +17,18 @@ namespace CryptExApi.Services
 
         Task<CryptoDepositViewModel> DepositCrypto(Guid walletId, AppUser user);
 
-        Task WithdrawFiat(AppUser user, decimal amount);
+        Task WithdrawFiat(Guid userId, decimal amount);
     }
 
     public class PaymentService : IPaymentService
     {
         private readonly IDepositService depositService;
+        private readonly IPaymentRepository paymentRepository;
 
-        public PaymentService(IDepositService depositService)
+        public PaymentService(IDepositService depositService, IPaymentRepository paymentRepository)
         {
             this.depositService = depositService;
+            this.paymentRepository = paymentRepository;
         }
 
         public async Task<FiatDepositViewModel> DepositFiat(decimal amount, AppUser user)
@@ -38,9 +41,9 @@ namespace CryptExApi.Services
             return await depositService.GenerateDepositWallet(walletId, user);
         }
 
-        public Task WithdrawFiat(AppUser user, decimal amount)
+        public async Task WithdrawFiat(Guid userId, decimal amount)
         {
-            throw new NotImplementedException();
+            await paymentRepository.WithdrawFiat(userId, amount);
         }
     }
 }

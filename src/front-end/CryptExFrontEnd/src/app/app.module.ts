@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CryptoModule } from './crypto/crypto.module';
+import { CryptoModule } from './asset-convert/asset-convert.module';
 import { AuthModule } from './auth/auth.module';
 import { MainModule } from './main/main.module';
 import { UserModule } from './user/user.module';
@@ -17,7 +17,6 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AdminModule } from './admin/admin.module';
 import { WalletModule } from './wallet/wallet.module';
-import { StatusBadgeComponent } from './main/Components/status-badge/status-badge.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {

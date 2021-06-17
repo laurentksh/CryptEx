@@ -15,6 +15,66 @@ namespace CryptExApi.Utilities
     /// </summary>
     public static class DefaultDataSeeder
     {
+        public static readonly List<(string leftTicker, string rightTicker, decimal exchangeRate)> FiatExchangeRates = new()
+        {
+            //As of 16.06.2021 23:21
+            ("USD", "USD", 1m),
+            ("USD", "CHF", 0.91m),
+            ("USD", "EUR", 0.83m),
+            ("USD", "GBP", 0.71m),
+            ("USD", "CAD", 1.23m),
+            ("USD", "AUD", 1.31m),
+            ("USD", "JPY", 110.66m),
+
+            ("CHF", "CHF", 1m),
+            ("CHF", "USD", 1.10m),
+            ("CHF", "EUR", 0.92m),
+            ("CHF", "GBP", 0.79m),
+            ("CHF", "CAD", 1.35m),
+            ("CHF", "AUD", 1.45m),
+            ("CHF", "JPY", 121.78m),
+
+            ("EUR", "EUR", 1m),
+            ("EUR", "USD", 1.20m),
+            ("EUR", "CHF", 1.09m),
+            ("EUR", "GBP", 0.86m),
+            ("EUR", "CAD", 1.47m),
+            ("EUR", "AUD", 1.58m),
+            ("EUR", "JPY", 132.75m),
+
+            ("GBP", "GBP", 1m),
+            ("GBP", "USD", 1.40m),
+            ("GBP", "CHF", 1.27m),
+            ("GBP", "EUR", 1.17m),
+            ("GBP", "CAD", 1.72m),
+            ("GBP", "AUD", 1.84m),
+            ("GBP", "JPY", 154.85m),
+
+            ("CAD", "CAD", 1m),
+            ("CAD", "USD", 0.81m),
+            ("CAD", "CHF", 0.74m),
+            ("CAD", "EUR", 0.68m),
+            ("CAD", "GBP", 0.58m),
+            ("CAD", "AUD", 1.07m),
+            ("CAD", "JPY", 90.14m),
+
+            ("AUD", "AUD", 1m),
+            ("AUD", "USD", 0.76m),
+            ("AUD", "CHF", 0.69m),
+            ("AUD", "EUR", 0.63m),
+            ("AUD", "GBP", 0.54m),
+            ("AUD", "CAD", 0.93m),
+            ("AUD", "JPY", 84.25m),
+
+            ("JPY", "JPY", 1m),
+            ("JPY", "USD", 0.0090m),
+            ("JPY", "CHF", 0.0082m),
+            ("JPY", "EUR", 0.0075m),
+            ("JPY", "GBP", 0.0065m),
+            ("JPY", "CAD", 0.011m),
+            ("JPY", "AUD", 0.012m),
+        };
+
         private static readonly List<(string ticker, string fullName)> Fiats = new()
         {
             ("USD", "US Dollar"),

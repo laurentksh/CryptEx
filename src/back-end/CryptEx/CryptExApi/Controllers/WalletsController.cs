@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Extensions;
 using CryptExApi.Models.ViewModel;
+using CryptExApi.Models.ViewModel.Wallets;
 using CryptExApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -55,9 +56,9 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserWalletViewModel>))]
         public async Task<IActionResult> GetUserWallets()
         {
-            var user = await HttpContext.GetUser();
-
             try {
+                var user = await HttpContext.GetUser();
+
                 var wallets = new List<UserWalletViewModel>();
                 wallets.AddRange(await walletsService.GetFiatWallets(user));
                 wallets.AddRange(await walletsService.GetCryptoWallets(user));
@@ -65,6 +66,57 @@ namespace CryptExApi.Controllers
                 return Ok(wallets);
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could not get user wallets.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("total")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TotalViewModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTotal()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var total = await walletsService.GetTotal(user, Models.Database.WalletType.Both);
+
+                return Ok(total);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not get total");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("total/fiat")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TotalViewModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTotalFiat()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var total = await walletsService.GetTotal(user, Models.Database.WalletType.Fiat);
+
+                return Ok(total);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not get total");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("total/crypto")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TotalViewModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTotalCrypto()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var total = await walletsService.GetTotal(user, Models.Database.WalletType.Crypto);
+
+                return Ok(total);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not get total");
                 return exceptionHandler.Handle(ex, Request);
             }
         }

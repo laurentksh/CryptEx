@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
 import { SnackbarService } from 'src/app/services/snackbar.service';
-import { WalletType, WalletViewModel } from 'src/app/user/models/wallet-view-model';
-import { AssetCardComponent } from 'src/app/wallet/components/asset-card/asset-card.component';
+import { WalletType, WalletViewModel } from 'src/app/wallet/models/wallet-view-model';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 
 

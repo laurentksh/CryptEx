@@ -117,6 +117,40 @@ namespace CryptExApi.Controllers
             }
         }
 
+        [HttpPost("setPaymentAmount")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SetPaymentAmount([FromQuery] Guid id, [FromQuery] decimal amount)
+        {
+            try {
+                await adminService.SetPaymentAmount(id, amount);
+
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Couldn't set payment amount");
+                return exHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("setCryptoDepositStatus")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SetCryptoDepositStatus([FromQuery] Guid id, [FromQuery] PaymentStatus status)
+        {
+            try {
+                await adminService.SetPaymentStatus(id, status);
+
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Couldn't set payment status");
+                return exHandler.Handle(ex, Request);
+            }
+        }
+
         [HttpGet("pendingBankAccounts")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<FullBankAccountViewModel>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

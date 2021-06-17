@@ -83,6 +83,19 @@
       }
     }
   },
+  "BuySell": {
+    "Title": "Convert assets",
+    "Desc": "Select an asset to convert into another",
+    "Placeholder": "Enter an amount to convert",
+    "Transaction": {
+      "Title": "Converting",
+      "Title2": "into",
+      "InProgress": "Asset conversion in progress",
+      "Done": "Asset conversion done",
+      "Failed": "Asset conversion failed",
+      "Continue": "Continue to my wallets"
+    }
+  },
   "DepositWithdraw": {
     "Title": "Deposit/Withdraw type",
     "Type": {
@@ -93,11 +106,28 @@
       "Title": "Deposit history",
       "None": "You haven't made any deposits yet !"
     },
+    "Both": {
+      "DepositBtn": "DEPOSIT",
+      "WithdrawBtn": "WITHDRAW",
+      "EnterAny": "Enter any",
+      "Amount": "amount."
+    },
     "Fiat": {
       "Deposit": "Deposit fiat",
       "Withdraw": "Withdraw fiat",
-      "DepositBtn": "DEPOSIT",
-      "WithdrawBtn": "WITHDRAW"
+      "Destination": "Transfer destination :",
+      "NoAccount": "You do not have any bank account linked, please go to 'My Account' and link one to withdraw fiat assets.",
+      "Refused": "Your bank account has been refused. Please contact our support.",
+      "NotProcessed": "Your bank account hasn't been processed yet, please try again later."
+    },
+    "Crypto": {
+      "Deposit": "Deposit crypto",
+      "Withdraw": "Withdraw crypto",
+      "Desc": "Select a cryptocurrency to deposit.",
+      "Address": "Send any",
+      "Address2": "to this address and it will appear in your account in less than 15m.",
+      "Warning": "WARNING: Please make sure you only send",
+      "Warning2": "to this address, otherwise your money will be lost."
     }
   },
   "PaymentStatus": {
