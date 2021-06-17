@@ -1,7 +1,7 @@
 import { Component, NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {CryptoComponent} from './Components/crypto/crypto.component';
-import {BuySellComponent} from './Components/buy-sell/buy-sell.component';
+import { CryptoComponent } from './components/crypto/crypto.component';
+import { BuySellComponent } from './components/buy-sell/buy-sell.component';
 import { TransactionStatusPageComponent } from './components/transaction-status-page/transaction-status-page.component';
 
 const routes: Routes = [

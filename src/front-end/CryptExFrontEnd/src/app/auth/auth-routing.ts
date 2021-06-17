@@ -1,10 +1,10 @@
 import { Component, NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { RegisterComponent } from './Components/register/register.component';
-import { LoginComponent } from './Components/login/login.component';
-import { ChangePasswordComponent } from './Components/change-password/change-password.component';
-import { LogoutComponent } from './Components/logout/logout.component';
-import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { LogoutComponent } from './components/logout/logout.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { AuthenticationGuard } from '../guards/authentication.guard';
 import { UnauthenticatedGuard } from '../guards/unauthenticated.guard';
 

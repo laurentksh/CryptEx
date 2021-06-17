@@ -1,10 +1,10 @@
 import { Component, NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {HomeComponent} from './Components/home/home.component';
-import {ContactComponent} from './Components/contact/contact.component';
-import { NotFoundComponent } from './Components/not-found/not-found.component';
-import { ForbiddenComponent } from './Components/forbidden/forbidden.component';
-import { UnauthorizedComponent } from './Components/unauthorized/unauthorized.component';
+import {HomeComponent} from './components/home/home.component';
+import {ContactComponent} from './components/contact/contact.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { ForbiddenComponent } from './components/forbidden/forbidden.component';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 
 const routes: Routes = [
   {
