@@ -8,6 +8,9 @@ on:
     branches: [ master ]
     paths: [ "src/back-end/**", ".github/workflows/backend.yml" ]
 
+env:
+  app_name: 'Cryptex-Back'
+
 jobs:
   build:
     name: .NET Back-End CI/CD
@@ -41,25 +44,12 @@ jobs:
       with:
         name: .net-app
         path: ${{env.DOTNET_ROOT}}/myapp
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-    - name: Download artifact from build job
-      uses: actions/download-artifact@v2
-      with:
-        name: .net-app
-
+      
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'CryptEx-Back'
+        app-name: ${{ env.app_name }}
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_abb347b9b08c4551b383815c8cff1a24 }}
         package: ${{env.DOTNET_ROOT}}/myapp
