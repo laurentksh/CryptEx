@@ -1,7 +1,7 @@
 module.exports = {
   purge: ['./src/**/*.{html,ts,scss}'],
   darkMode: false, // or 'media' or 'class'
-  // mode: 'jit', //JIT compilation, disable if any styling issue occurs.
+  mode: 'jit', //JIT compilation, disable if any styling issue occurs.
   theme: {
     extend: {
       screens: {
