@@ -62,4 +62,4 @@ jobs:
         app-name: 'CryptEx-Back'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_abb347b9b08c4551b383815c8cff1a24 }}
-        package: . #${{env.DOTNET_ROOT}}/myapp
+        package: ${{env.DOTNET_ROOT}}/myapp
