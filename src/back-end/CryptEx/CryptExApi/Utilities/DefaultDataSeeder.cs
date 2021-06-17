@@ -438,6 +438,8 @@ namespace CryptExApi.Utilities
                     });
                 }
             }
+
+            await dbContext.SaveChangesAsync();
         }
     }
 
