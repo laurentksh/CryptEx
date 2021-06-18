@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using CryptExApi.Extensions;
 using CryptExApi.Models.DTO;
 using CryptExApi.Models.SignalR;
-using CryptExApi.Models.ViewModel;
+using CryptExApi.Models.ViewModel.AssetConvert;
 using CryptExApi.Services;
 using CryptExApi.Utilities;
 using Microsoft.AspNetCore.Authorization;
@@ -39,16 +39,11 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Convert(AssetConvertDto dto)
+        public async Task<IActionResult> Convert(AssetConversionDto dto)
         {
             try {
                 var user = await HttpContext.GetUser();
                 var transactionId = await convertService.Convert(user, dto);
-
-                /*_ = new TimerManager(async () =>
-                  {
-                      await hub.Clients.User(user.Id.ToString()).SendAsync(AssetConversionHub.Name, await convertService.GetTransaction(user, transactionId));
-                  });*/
 
                 return Ok(transactionId);
             } catch (Exception ex) {

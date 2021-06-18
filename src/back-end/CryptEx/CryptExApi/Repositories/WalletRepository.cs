@@ -12,6 +12,7 @@ using CryptExApi.Models.ViewModel.Payment;
 using CryptExApi.Models.ViewModel.Wallets;
 using CryptExApi.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CryptExApi.Repositories
 {
@@ -89,18 +90,20 @@ namespace CryptExApi.Repositories
 
         Task<decimal> GetFiatExchangeRate(string left, string right);
 
-        Task<decimal> GetCryptoExchangeRate(string left, string right);
+        Task<decimal> GetCryptoExchangeRate(string left, string right, DateTime? at = null);
     }
 
     public class WalletRepository : IWalletRepository
     {
         private readonly CryptExDbContext dbContext;
         private readonly ICoinbaseClient coinbaseClient;
+        private readonly IMemoryCache memoryCache;
 
-        public WalletRepository(CryptExDbContext dbContext, ICoinbaseClient coinbaseClient)
+        public WalletRepository(CryptExDbContext dbContext, ICoinbaseClient coinbaseClient, IMemoryCache memoryCache)
         {
             this.dbContext = dbContext;
             this.coinbaseClient = coinbaseClient;
+            this.memoryCache = memoryCache;
         }
 
         public async Task<List<Wallet>> GetWallets()
@@ -133,8 +136,7 @@ namespace CryptExApi.Repositories
                 .Where(x => x.UserId == user.Id);
             var assetConversions = dbContext.AssetConversions
                 .Include(x => x.User)
-                .Include(x => x.Left)
-                .Include(x => x.Right)
+                .Include(x => x.PriceLock)
                 .Where(x => x.UserId == user.Id);
             var fiatWithdrawals = dbContext.FiatWithdrawals
                 .Include(x => x.User)
@@ -162,8 +164,8 @@ namespace CryptExApi.Repositories
             }
 
             foreach (var conversion in assetConversions) {
-                var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.LeftId);
-                var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.RightId);
+                var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.LeftId);
+                var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.RightId);
 
                 if (conversion.Status == PaymentStatus.Failed)
                     continue;
@@ -171,7 +173,7 @@ namespace CryptExApi.Repositories
                 if (decreaseWallet != null)
                     decreaseWallet.Amount -= conversion.Amount;
                 if (increaseWallet != null)
-                    increaseWallet.Amount += conversion.Amount * conversion.ExchangeRate;
+                    increaseWallet.Amount += conversion.Amount * conversion.PriceLock.ExchangeRate;
             }
 
             foreach (var withdraw in fiatWithdrawals) {
@@ -194,8 +196,7 @@ namespace CryptExApi.Repositories
                 .Where(x => x.UserId == user.Id);
             var assetConversions = dbContext.AssetConversions
                 .Include(x => x.User)
-                .Include(x => x.Left)
-                .Include(x => x.Right)
+                .Include(x => x.PriceLock)
                 .Where(x => x.UserId == user.Id);
 
             //Add wallets to the results
@@ -219,8 +220,8 @@ namespace CryptExApi.Repositories
             }
 
             foreach (var conversion in assetConversions) {
-                var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.LeftId);
-                var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.RightId);
+                var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.LeftId);
+                var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.RightId);
 
                 if (conversion.Status == PaymentStatus.Failed)
                     continue;
@@ -228,7 +229,7 @@ namespace CryptExApi.Repositories
                 if (decreaseWallet != null)
                     decreaseWallet.Amount -= conversion.Amount;
                 if (increaseWallet != null)
-                    increaseWallet.Amount += conversion.Amount * conversion.ExchangeRate;
+                    increaseWallet.Amount += conversion.Amount * conversion.PriceLock.ExchangeRate;
             }
 
             return result;
@@ -321,12 +322,19 @@ namespace CryptExApi.Repositories
             return Task.FromResult(DefaultDataSeeder.FiatExchangeRates.SingleOrDefault(x => x.leftTicker == left && x.rightTicker == right).exchangeRate);
         }
 
-        public async Task<decimal> GetCryptoExchangeRate(string left, string right)
+        public async Task<decimal> GetCryptoExchangeRate(string left, string right, DateTime? at = null)
         {
-            var resp = await coinbaseClient.Data.GetBuyPriceAsync(left + "-" + right);
+            var cacheHit = $"ExchangeRate.{left}-{right}";
 
+            if (memoryCache.TryGetValue(cacheHit, out decimal rate))
+                return rate;
+
+            var resp = await coinbaseClient.Data.GetSpotPriceAsync(left + "-" + right, at);
+            
             if (resp.HasError())
                 throw new CryptoApiException(resp.Errors);
+
+            memoryCache.Set(cacheHit, resp.Data.Amount, TimeSpan.FromSeconds(60));
 
             return resp.Data.Amount;
         }
