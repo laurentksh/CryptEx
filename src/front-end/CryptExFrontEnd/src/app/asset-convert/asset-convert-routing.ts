@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { CryptoComponent } from './components/crypto/crypto.component';
 import { BuySellComponent } from './components/buy-sell/buy-sell.component';
 import { TransactionStatusPageComponent } from './components/transaction-status-page/transaction-status-page.component';
+import { AuthenticationGuard } from '../guards/authentication.guard';
 
 const routes: Routes = [
   {
@@ -11,7 +12,8 @@ const routes: Routes = [
   },
   {
     path: 'buy-sell',
-    component: BuySellComponent
+    component: BuySellComponent,
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'buy-sell/transaction/:id',
