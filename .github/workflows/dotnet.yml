@@ -6,7 +6,11 @@ on:
 
 jobs:
   build:
+    name: '.NET Back-End CI'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/back-end/CryptEx
 
     steps:
     - uses: actions/checkout@v2
