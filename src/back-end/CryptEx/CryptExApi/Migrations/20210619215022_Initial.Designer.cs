@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CryptExApi.Migrations
 {
     [DbContext(typeof(CryptExDbContext))]
-    [Migration("20210619170704_Initial")]
+    [Migration("20210619215022_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

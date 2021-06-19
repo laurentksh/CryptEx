@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Data;
+using CryptExApi.Extensions;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.SignalR;
 using CryptExApi.Models.ViewModel;
@@ -36,14 +37,16 @@ namespace CryptExApi.Services
         private readonly IDepositRepository repository;
         private readonly IStripeRepository stripeRepository;
         private readonly IWalletRepository walletRepository;
+        private readonly UserManager<AppUser> userManager;
 
-        public DepositService(IConfiguration configuration, IHubContext<DepositHub> hubContext, IDepositRepository repository, IStripeRepository stripeRepository, IWalletRepository walletRepository)
+        public DepositService(IConfiguration configuration, IHubContext<DepositHub> hubContext, IDepositRepository repository, IStripeRepository stripeRepository, IWalletRepository walletRepository, UserManager<AppUser> userManager)
         {
             this.configuration = configuration;
             this.hubContext = hubContext;
             this.repository = repository;
             this.stripeRepository = stripeRepository;
             this.walletRepository = walletRepository;
+            this.userManager = userManager;
         }
 
         public async Task<FiatDepositViewModel> CreatePaymentSession(decimal amount, AppUser user)
@@ -84,17 +87,14 @@ namespace CryptExApi.Services
                     break;
             }
 
-            var options = new SessionCreateOptions
-            {
-                PaymentMethodTypes = paymentMethods,
-                LineItems = new List<SessionLineItemOptions>
+            var lineItems = new List<SessionLineItemOptions>
                 {
                     new SessionLineItemOptions
                     {
                         PriceData = new SessionLineItemPriceDataOptions
                         {
                             Currency = currency,
-                            UnitAmountDecimal = amount * 100,
+                            UnitAmountDecimal = amount * 100m,
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
                                 Name = $"Fiat {user.PreferedCurrency} Deposit",
@@ -102,7 +102,29 @@ namespace CryptExApi.Services
                         },
                         Quantity = 1
                     }
-                },
+                };
+
+            if (!(await userManager.GetClaimsAsync(user)).IsPremium()) {
+                lineItems.Add(new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        Currency = currency,
+                        UnitAmountDecimal = ((amount * 100m) * 0.02m),
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = "Fiat Deposit Fee",
+                            Description = "A 2% transaction fee will be applied to your deposit. Get premium now to have 0 fees on your deposits !"
+                        }
+                    },
+                    Quantity = 1
+                });
+            }
+
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = paymentMethods,
+                LineItems = lineItems,
                 Mode = "payment",
                 SuccessUrl = configuration["BaseUrl"] + "/deposit-withdraw?fiatDepositStatus=success",
                 CancelUrl = configuration["BaseUrl"] + "/deposit-withdraw?fiatDepositStatus=cancelled",

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { SnackBar, SnackBarCreate, AlertType } from 'src/app/components/snackbar/snack-bar';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { StripeService } from 'src/app/stripe/services/stripe.service';
@@ -20,6 +21,7 @@ export class DepositWithdrawFiatComponent implements OnInit {
     private depWitService: DepositWithdrawService,
     private stripe: StripeService,
     public userService: UserService,
+    private authService: AuthService,
     private snackBarService: SnackbarService) { }
 
   ngOnInit(): void {
@@ -30,6 +32,10 @@ export class DepositWithdrawFiatComponent implements OnInit {
         this.snackBarService.ShowSnackbar(new SnackBarCreate("Error", "Could not get bank account information.", AlertType.Error));
       }
     })
+  }
+
+  isPremium(): boolean {
+    return this.authService.HasClaim("premium");
   }
 
   onDeposit(): void {
