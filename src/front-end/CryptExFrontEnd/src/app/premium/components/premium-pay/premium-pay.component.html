@@ -1,0 +1,39 @@
+<h3 class="mt-5 ml-5 text-3xl">{{ 'Premium.Pay.Title' | translate }}</h3>
+
+<div class="bg-white py-16 px-4 sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12">
+    <div class="max-w-lg mx-auto lg:max-w-none">
+        <div class="grid grid-cols-1 gap-y-6">
+            <div>
+                <input type="text" autocomplete="cc-given-name" [(ngModel)]="dto.firstName"
+                    class="block w-full shadow-sm py-3 px-4 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+                    placeholder="{{ 'Premium.Pay.FirstNamePH' | translate }}">
+            </div>
+            <div>
+                <input type="text" autocomplete="cc-family-name" [(ngModel)]="dto.lastName"
+                    class="block w-full shadow-sm py-3 px-4 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+                    placeholder="{{ 'Premium.Pay.LastNamePH' | translate }}">
+            </div>
+            <div>
+                <input type="text" autocomplete="cc-number" [(ngModel)]="dto.creditCardNumber"
+                    class="block w-full shadow-sm py-3 px-4 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+                    placeholder="{{ 'Premium.Pay.CCNumberPH' | translate }}">
+            </div>
+            <div>
+                <input type="text" autocomplete="cc-exp" [(ngModel)]="dto.expiracy"
+                    class="block w-full shadow-sm py-3 px-4 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+                    placeholder="{{ 'Premium.Pay.ExpiracyPH' | translate }}">
+            </div>
+            <div>
+                <input type="text" autocomplete="cc-csc" [(ngModel)]="dto.cvc"
+                    class="block w-full shadow-sm py-3 px-4 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+                    placeholder="{{ 'Premium.Pay.CvcPH' | translate }}">
+            </div>
+            <div>
+                <button type="submit" (click)="doPay()"
+                    class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {{ 'Premium.Pay.Submit' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -182,5 +182,39 @@ namespace CryptExApi.Controllers
                 return exceptionHandler.Handle(ex, Request);
             }
         }
+
+        [HttpPost("premium")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> GetPremium(BuyPremiumDto dto)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await userService.GetPremium(user, dto);
+
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not get premium.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpDelete("premium")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> RemovePremium()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await userService.RemovePremium(user);
+
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not remove premium.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
     }
 }

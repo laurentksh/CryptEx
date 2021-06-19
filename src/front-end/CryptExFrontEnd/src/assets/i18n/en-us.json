@@ -10,6 +10,7 @@
       "MyWallets": "My Wallets",
       "Wallets": "Wallets",
       "DepositWithdraw": "Deposit / Withdraw",
+      "Premium": "Premium",
       "Admin": "Admin portal",
       "Contact": "Contact",
       "OpenUserMenu": "Open user menu"
@@ -52,6 +53,57 @@
       "DepositWithdraw": "Deposit / Withdraw"
     },
     "Copyright": "2021 CryptEx - All rights reserved."
+  },
+  "Home": {
+    "HeaderSmallLine": "Who are we ?",
+    "HeaderMessage": "Discover the world of cryptocurrencies in a few minutes",
+    "HeaderDesc": "CryptEx is an exchange platform between Fiat and Crypto-currencies",
+    "JoinBtn": "Create an account",
+    "Faq": {
+      "Title": "Frequently asked questions",
+      "Q1": "How can I deposit crypto-currencies on my account ?",
+      "A1": "To deposit crypto-currencies, go to 'Deposit / Withdraw', then click on 'Crypto' then select the crypto-currency you want.",
+      "Q2": "How can I deposit Euros on my account ?",
+      "A2": "To deposit Fiat assets, go to 'Deposit / Withdraw', then click on 'Fiat', and enter the amount of your selected currency you want to deposit."
+    },
+    "OurCryptos": "Our crypto-currencies",
+    "Pricing": "Pricing",
+    "PricingDesc": "If you're not satisfied, contact us within the first 14 days and we'll send you a full refund."
+  },
+  "Premium": {
+    "Title": "Premium",
+    "Pay": {
+      "Title": "Get premium",
+      "FirstName": "First name",
+      "LastName": "Last name",
+      "CCNumber": "Credit card number",
+      "Expiracy": "Expiracy date",
+      "Cvc": "Cvc",
+      "FirstNamePH": "First name",
+      "LastNamePH": "Last name",
+      "CCNumberPH": "Credit card number",
+      "ExpiracyPH": "Expiracy date (MM/YY)",
+      "CvcPH": "Cvc (code at the back)",
+      "Submit": "Subscribe"
+    },
+    "Manage": {
+      "Title": "Manage subscription",
+      "Cancel": "Cancel subscription"
+    },
+    "PromoCard": {
+      "Title": "Monthly Premium Membership",
+      "Desc": "With a premium account you have multiple advantages on our platform",
+      "Included": "What's included",
+      "PrivForum": "Private forum access",
+      "MemResx": "Member resources",
+      "AnnualConvs": "Entry to annual conference",
+      "FreeDeposits": "Free Fiat Deposits",
+      "Pay": {
+        "Freq": "Pay every month",
+        "Policy": "Learn about our membership policy",
+        "Get": "Get Premium"
+      }
+    }
   },
   "Auth": {
     "Logout": {
@@ -125,6 +177,8 @@
     },
     "Fiat": {
       "Deposit": "Deposit fiat",
+      "NoFee": "As a premium user, your transaction has 0 fee !",
+      "Fee": "A 2% transaction fee will be applied to your deposit. Get premium now to have 0 fees on your deposits !",
       "Withdraw": "Withdraw fiat",
       "Destination": "Transfer destination :",
       "NoAccount": "You do not have any bank account linked, please go to 'My Account' and link one to withdraw fiat assets.",

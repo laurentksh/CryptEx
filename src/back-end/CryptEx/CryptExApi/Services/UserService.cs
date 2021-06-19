@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CryptExApi.Exceptions;
 using CryptExApi.Models.Database;
@@ -36,6 +37,10 @@ namespace CryptExApi.Services
         Task SetIban(AppUser user, IbanDto dto);
 
         Task SetAccountStatus(Guid userId, AccountStatus status);
+
+        Task GetPremium(AppUser user, BuyPremiumDto dto);
+
+        Task RemovePremium(AppUser user);
     }
 
     public class UserService : IUserService
@@ -157,6 +162,17 @@ namespace CryptExApi.Services
         public async Task SetAccountStatus(Guid userId, AccountStatus status)
         {
             await userRepository.SetAccountStatus(userId, status);
+        }
+
+        //Did not have the time to make a proper premium subscription (I originally wanted to use Stripe)
+        public async Task GetPremium(AppUser user, BuyPremiumDto dto)
+        {
+            await userManager.AddClaimAsync(user, new Claim("premium", bool.TrueString));
+        }
+
+        public async Task RemovePremium(AppUser user)
+        {
+            await userManager.RemoveClaimAsync(user, new Claim("premium", bool.TrueString));
         }
     }
 }
