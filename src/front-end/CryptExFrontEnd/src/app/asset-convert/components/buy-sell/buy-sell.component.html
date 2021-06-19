@@ -1,4 +1,4 @@
-<h3 *ngIf="assets == null">
+<h3 *ngIf="assets == null" class="mx-auto text-3xl">
     {{ 'Global.Loading' | translate }}
 </h3>
 
@@ -29,12 +29,10 @@
             </div>
 
             <div class="mt-5">
-                <input type="number" (change)="amountChanged($event.target.value)" class="w-full rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="{{ 'BuySell.Placeholder' | translate }}">
-
                 <button type="button"
                     class="block w-full max-w-xs mx-auto mt-5 bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
-                    (click)="doConvert()">
-                    {{ 'DepositWithdraw.Both.DepositBtn' | translate }}
+                    (click)="doLock()">
+                    {{ 'BuySell.Convert' | translate }}
                 </button>
             </div>
         </div>

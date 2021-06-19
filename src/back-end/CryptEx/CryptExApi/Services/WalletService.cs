@@ -26,7 +26,7 @@ namespace CryptExApi.Services
 
         Task<List<UserWalletViewModel>> GetCryptoWallets(AppUser user);
 
-        Task<TotalViewModel> GetTotal(AppUser user, WalletType type);
+        Task<TotalsViewModel> GetTotals(AppUser user);
 
         Task<WalletViewModel> GetCryptoFull(Guid id, string currency);
     }
@@ -78,9 +78,34 @@ namespace CryptExApi.Services
             return await walletsRepository.GetCryptoWallets(user);
         }
 
-        public async Task<TotalViewModel> GetTotal(AppUser user, WalletType type)
+        public async Task<TotalsViewModel> GetTotals(AppUser user)
         {
-            return await walletsRepository.GetTotal(user, type);
+            var right = WalletViewModel.FromWallet(await walletsRepository.GetFiatFull(user.PreferedCurrency));
+            var fiat = await walletsRepository.GetFiatWallets(user);
+            var cryptos = await walletsRepository.GetCryptoWallets(user);
+            var cryptosYtd = await walletsRepository.GetCryptoWallets(user, DateTime.UtcNow.AddHours(-24));
+
+            var total = fiat.Sum(x => x.Amount) + cryptos.Sum(x => x.Amount * x.SelectedCurrencyPair.Rate);
+            var fiatTotal = fiat.Sum(x => x.Amount);
+            var cryptoTotal = cryptos.Sum(x => x.Amount * x.SelectedCurrencyPair.Rate);
+
+            var fiatTotalYtd = fiatTotal; //We do not have a fiat exchange rate provider.
+            var cryptoTotalYtd = cryptosYtd.Sum(x => x.Amount * x.SelectedCurrencyPair.Rate);
+            var totalYtd = fiatTotalYtd + cryptoTotalYtd;
+
+            var performance = cryptoTotal - cryptoTotalYtd;
+
+            return new TotalsViewModel
+            {
+                AccountTotal = new TotalViewModel(total, right),
+                FiatTotal = new TotalViewModel(fiatTotal, right),
+                CryptoTotal = new TotalViewModel(cryptoTotal, right),
+
+                AccountTotalYtd = new TotalViewModel(totalYtd, right),
+                FiatTotalYtd = new TotalViewModel(fiatTotalYtd, right),
+                CryptoTotalYtd = new TotalViewModel(cryptoTotalYtd, right),
+                PerformanceYtd = new TotalViewModel(performance, right)
+            };
         }
 
         public async Task<WalletViewModel> GetCryptoFull(Guid id, string currency)

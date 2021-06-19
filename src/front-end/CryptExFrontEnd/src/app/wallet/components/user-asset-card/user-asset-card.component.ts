@@ -9,6 +9,7 @@ import { UserWalletViewModel } from '../../models/user-wallet-view-model';
 })
 export class UserAssetCardComponent implements OnInit {
   @Input() asset: UserWalletViewModel;
+  @Input() hideEmpty: boolean = false;
 
   constructor() { }
 

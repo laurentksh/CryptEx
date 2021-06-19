@@ -62,7 +62,7 @@ namespace CryptExApi.Repositories
 
             var deposit = await dbContext.CryptoDeposits.AddAsync(new CryptoDeposit
             {
-                Amount = -1,
+                Amount = 0,
                 Status = Models.PaymentStatus.NotProcessed,
                 CreationDate = DateTime.UtcNow,
                 TransactionId = StringUtilities.SecureRandom(32, StringUtilities.AllowedChars.AlphabetNumbers),

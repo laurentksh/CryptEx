@@ -87,6 +87,7 @@
     "Title": "Convert assets",
     "Desc": "Select an asset to convert into another",
     "Placeholder": "Enter an amount to convert",
+    "Convert": "CONVERT",
     "Transaction": {
       "Title": "Converting",
       "Title2": "into",
@@ -94,7 +95,17 @@
       "Done": "Asset conversion done",
       "Failed": "Asset conversion failed",
       "Continue": "Continue to my wallets"
+    },
+    "Preview": {
+      "Title": "Preview your transaction",
+      "Confirm": "Confirm",
+      "Cancel": "Cancel",
+      "Rate": "Exchange rate",
+      "Price": "What you will receive"
     }
+  },
+  "Wallets": {
+    "HideEmptyWallets": "Hide empty wallets"
   },
   "DepositWithdraw": {
     "Title": "Deposit/Withdraw type",
@@ -160,6 +171,12 @@
     }
   },
   "Admin": {
+    "ShortTitles": {
+      "Home": "Home",
+      "SearchUser": "Search users",
+      "Deposits": "View recent deposits",
+      "BankAccounts": "View pending bank accounts"
+    },
     "Home": {
       "Welcome": "Welcome",
       "FetchingStats": "Fetching statistics...",

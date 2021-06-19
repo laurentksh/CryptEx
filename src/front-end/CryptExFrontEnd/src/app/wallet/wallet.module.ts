@@ -6,6 +6,8 @@ import { WalletsComponent } from './components/wallets/wallets.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserAssetCardComponent } from './components/user-asset-card/user-asset-card.component';
+import { FormsModule } from '@angular/forms';
+import { PercentageCardComponent } from './components/percentage-card/percentage-card.component';
 
 
 
@@ -13,11 +15,13 @@ import { UserAssetCardComponent } from './components/user-asset-card/user-asset-
   declarations: [
     AssetCardComponent,
     UserAssetCardComponent,
-    WalletsComponent
+    WalletsComponent,
+    PercentageCardComponent
   ],
   imports: [
     CommonModule,
     BrowserModule,
+    FormsModule,
     WalletRoutingModule,
     TranslateModule
   ],

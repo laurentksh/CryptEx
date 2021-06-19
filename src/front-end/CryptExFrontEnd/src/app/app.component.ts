@@ -27,4 +27,8 @@ export class AppComponent {
       this.translateService.use(this.userService.SelectedLang);
     }
   }
+
+  isDarkMode(): boolean {
+    return localStorage.getItem("dark") == "true";
+  }
 }

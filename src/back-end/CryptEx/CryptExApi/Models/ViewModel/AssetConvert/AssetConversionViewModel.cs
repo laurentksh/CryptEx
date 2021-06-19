@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Models.Database;
 
-namespace CryptExApi.Models.ViewModel
+namespace CryptExApi.Models.ViewModel.AssetConvert
 {
     public class AssetConversionViewModel
     {
@@ -21,7 +21,7 @@ namespace CryptExApi.Models.ViewModel
             Id = t.Id,
             Amount = t.Amount,
             Status = t.Status,
-            Pair = WalletPairViewModel.FromWalletPair(new WalletPair(t.Left, t.Right, t.ExchangeRate))
+            Pair = WalletPairViewModel.FromWalletPair(new WalletPair(t.PriceLock.Left, t.PriceLock.Right, t.PriceLock.ExchangeRate))
         };
     }
 }

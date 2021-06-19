@@ -34,6 +34,10 @@ namespace CryptExApi.Models.ViewModel
 
         public string ToCoinbaseString() => Left.Ticker.ToUpper() + "-" + Right.Ticker.ToUpper();
 
-        public static WalletPairViewModel FromWalletPair(WalletPair pair) => new(WalletViewModel.FromWallet(pair.Left), WalletViewModel.FromWallet(pair.Right), pair.Rate);
+        public static WalletPairViewModel FromWalletPair(WalletPair pair) => new(
+            WalletViewModel.FromWallet(pair.Left),
+            WalletViewModel.FromWallet(pair.Right),
+            Math.Round(pair.Rate, 2, MidpointRounding.ToEven)
+        );
     }
 }

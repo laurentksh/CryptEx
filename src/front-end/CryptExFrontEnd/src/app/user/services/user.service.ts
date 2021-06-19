@@ -15,6 +15,7 @@ import { AddressDto } from '../models/address-dto';
 import { AddressViewModel } from '../models/address-view-model';
 import { IbanDto } from '../models/iban-dto';
 import { BankAccountViewModel } from 'src/app/deposit-withdraw/models/bank-account-view-model';
+import { CurrencyService } from 'src/app/main/services/currency.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,12 @@ export class UserService {
   public languages: Language[];
   public currencies: Currency[];
 
-  constructor(private http: CustomHttpClientService, private authService: AuthService, private translateService: TranslateService) {
+  constructor(
+    private http: CustomHttpClientService,
+    private authService: AuthService,
+    private translateService: TranslateService,
+    private currencyService: CurrencyService
+    ) {
     this.languages = [
       { Id: "en-us", DisplayText: "English" },
       { Id: "fr-fr", DisplayText: "Français" },
@@ -70,6 +76,7 @@ export class UserService {
 
   private setSelectedCurrency(val: string) {
     localStorage.setItem("currency", val);
+    this.currencyService.changeCurrencyInternal(val);
   }
 
   public async RefreshUser(): Promise<ApiResult<UserViewModel>> {
@@ -83,7 +90,7 @@ export class UserService {
 
   private setUserInStorage(user: UserViewModel): void {
     localStorage.setItem("user", JSON.stringify(user));
-
+    
     this.setSelectedLang(user.preferedLanguage);
     this.setSelectedCurrency(user.preferedCurrency);
 

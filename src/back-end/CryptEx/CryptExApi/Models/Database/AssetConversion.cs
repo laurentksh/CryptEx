@@ -27,21 +27,10 @@ namespace CryptExApi.Models.Database
         public decimal Amount { get; set; }
 
         public PaymentStatus Status { get; set; }
-        
-        /// <summary>From/Left side of the conversion</summary>
-        public Wallet Left { get; set; }
-        
-        public Guid LeftId { get; set; }
-        
-        /// <summary>To/Right side of the conversion</summary>
-        public Wallet Right { get; set; }
-        
-        public Guid RightId { get; set; }
 
-        /// <summary>
-        /// Exchange rate at the time of the transaction
-        /// </summary>
-        public decimal ExchangeRate { get; set; }
+        public Guid PriceLockId { get; set; }
+
+        public AssetConversionLock PriceLock { get; set; }
         
         public AppUser User { get; set; }
         

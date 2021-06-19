@@ -6,7 +6,7 @@
     <div class="flex mb-2 items-center justify-between">
         <div>
             <span
-                class="text-xs {{ transaction.status == paymentStatusRef.success ? '' : 'animate-pulse' }} mb-1 font-semibold inline-block py-1 px-2 uppercase rounded-full text-black bg-green-400">
+                class="text-xs {{ transaction.status == paymentStatusRef.success || transaction.status == paymentStatusRef.failed ? '' : 'animate-pulse' }} mb-1 font-semibold inline-block py-1 px-2 uppercase rounded-full text-black bg-green-400">
                 {{ 'BuySell.Transaction.' + getStatusText() | translate}}
             </span>
         </div>
@@ -26,7 +26,7 @@
       ]"></div>
     </div>
 
-    <a routerLink="/wallets" class="flex flex-row mt-10">
+    <a *ngIf="transaction.status == paymentStatusRef.success" routerLink="/wallets" class="flex flex-row mt-10">
         {{ 'BuySell.Transaction.Continue' | translate }}
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-3 text-gray-700" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">

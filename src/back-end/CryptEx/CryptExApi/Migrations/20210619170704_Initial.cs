@@ -238,33 +238,31 @@ namespace CryptExApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AssetConversions",
+                name: "AssetConversionLocks",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    ExpirationUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LeftId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RightId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExchangeRate = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExchangeRate = table.Column<decimal>(type: "decimal(20,8)", precision: 20, scale: 8, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssetConversions", x => x.Id);
+                    table.PrimaryKey("PK_AssetConversionLocks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AssetConversions_AspNetUsers_UserId",
+                        name: "FK_AssetConversionLocks_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_AssetConversions_Wallets_LeftId",
+                        name: "FK_AssetConversionLocks_Wallets_LeftId",
                         column: x => x.LeftId,
                         principalTable: "Wallets",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_AssetConversions_Wallets_RightId",
+                        name: "FK_AssetConversionLocks_Wallets_RightId",
                         column: x => x.RightId,
                         principalTable: "Wallets",
                         principalColumn: "Id");
@@ -275,7 +273,7 @@ namespace CryptExApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(14,2)", precision: 14, scale: 2, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TransactionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -304,7 +302,7 @@ namespace CryptExApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(14,2)", precision: 14, scale: 2, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StripeSessionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -333,7 +331,7 @@ namespace CryptExApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(14,2)", precision: 14, scale: 2, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BankAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -358,6 +356,33 @@ namespace CryptExApi.Migrations
                         name: "FK_FiatWithdrawals_Wallets_WalletId",
                         column: x => x.WalletId,
                         principalTable: "Wallets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AssetConversions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(14,2)", precision: 14, scale: 2, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    PriceLockId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AssetConversions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AssetConversions_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AssetConversions_AssetConversionLocks_PriceLockId",
+                        column: x => x.PriceLockId,
+                        principalTable: "AssetConversionLocks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -402,14 +427,25 @@ namespace CryptExApi.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssetConversions_LeftId",
-                table: "AssetConversions",
+                name: "IX_AssetConversionLocks_LeftId",
+                table: "AssetConversionLocks",
                 column: "LeftId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssetConversions_RightId",
-                table: "AssetConversions",
+                name: "IX_AssetConversionLocks_RightId",
+                table: "AssetConversionLocks",
                 column: "RightId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssetConversionLocks_UserId",
+                table: "AssetConversionLocks",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssetConversions_PriceLockId",
+                table: "AssetConversions",
+                column: "PriceLockId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssetConversions_UserId",
@@ -505,13 +541,16 @@ namespace CryptExApi.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "AssetConversionLocks");
+
+            migrationBuilder.DropTable(
                 name: "BankAccounts");
 
             migrationBuilder.DropTable(
-                name: "Wallets");
+                name: "Countries");
 
             migrationBuilder.DropTable(
-                name: "Countries");
+                name: "Wallets");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
