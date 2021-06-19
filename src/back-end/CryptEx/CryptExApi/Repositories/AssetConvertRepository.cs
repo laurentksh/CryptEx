@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Data;
+using CryptExApi.Exceptions;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,13 @@ namespace CryptExApi.Repositories
 {
     public interface IAssetConvertRepository
     {
-        Task<AssetConversionLock> LockTransaction(Wallet left, Wallet right, decimal exchangeRate);
+        Task<AssetConversionLock> LockTransaction(AppUser user, Wallet left, Wallet right, decimal exchangeRate);
+
+        Task RemoveTransactionLock(AppUser user, Guid id);
+
+        Task<AssetConversionLock> GetTransactionLock(Guid transactionLockId);
+
+        Task<List<AssetConversionLock>> GetTransactionLocks(AppUser user);
 
         Task<Guid> Convert(AppUser user, AssetConversionLock priceLock, decimal amount);
 
@@ -20,10 +27,6 @@ namespace CryptExApi.Repositories
         Task<List<AssetConversion>> GetTransactions(AppUser user);
 
         Task<List<AssetConversion>> GetOngoingTransactions(Guid id);
-
-        Task<AssetConversionLock> GetTransactionLock(Guid transactionLockId);
-
-        Task<List<AssetConversionLock>> GetTransactionLocks(AppUser user);
     }
 
     public class AssetConvertRepository : IAssetConvertRepository
@@ -35,7 +38,7 @@ namespace CryptExApi.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<AssetConversionLock> LockTransaction(Wallet left, Wallet right, decimal exchangeRate)
+        public async Task<AssetConversionLock> LockTransaction(AppUser user, Wallet left, Wallet right, decimal exchangeRate)
         {
             var result = await dbContext.AssetConversionLocks.AddAsync(new AssetConversionLock
             {
@@ -43,12 +46,30 @@ namespace CryptExApi.Repositories
                 LeftId = left.Id,
                 Right = right,
                 RightId = right.Id,
+                User = user,
+                UserId = user.Id,
+                ExpirationUtc = DateTime.UtcNow.AddSeconds(60),
                 ExchangeRate = exchangeRate
             });
 
             await dbContext.SaveChangesAsync();
             
             return result.Entity;
+        }
+
+        public async Task RemoveTransactionLock(AppUser user, Guid id)
+        {
+            var tLock = await dbContext.AssetConversionLocks.SingleOrDefaultAsync(x => x.Id == id);
+
+            if (tLock == null)
+                throw new NotFoundException("Transaction lock does not exist.");
+
+            if (tLock.UserId != user.Id)
+                throw new ForbiddenException("You do not own this transaction lock.");
+
+            dbContext.AssetConversionLocks.Remove(tLock);
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<Guid> Convert(AppUser user, AssetConversionLock priceLock, decimal amount)
@@ -106,20 +127,46 @@ namespace CryptExApi.Repositories
 
         public async Task<AssetConversionLock> GetTransactionLock(Guid transactionLockId)
         {
-            return await dbContext.AssetConversionLocks
+            var tLock = await dbContext.AssetConversionLocks
                 .Include(x => x.Left)
                 .Include(x => x.Right)
                 .Include(x => x.Conversion)
                 .SingleOrDefaultAsync(x => x.Id == transactionLockId);
+
+            if (tLock == null)
+                throw new NotFoundException("Transaction lock not found.");
+
+            if (tLock.ExpirationUtc <= DateTime.UtcNow && tLock.Conversion == null) {
+                dbContext.AssetConversionLocks.Remove(tLock);
+                await dbContext.SaveChangesAsync();
+
+                return null;
+            }
+
+            return tLock;
         }
 
         public async Task<List<AssetConversionLock>> GetTransactionLocks(AppUser user)
         {
-            return await dbContext.AssetConversionLocks
+            var tLocks = await dbContext.AssetConversionLocks
                 .Include(x => x.Left)
                 .Include(x => x.Right)
                 .Include(x => x.Conversion)
+                .Where(x => x.UserId == user.Id)
                 .ToListAsync();
+
+            var toDelete = new List<AssetConversionLock>(tLocks.Count);
+            foreach (var tLock in tLocks) {
+                if (tLock.ExpirationUtc <= DateTime.UtcNow && tLock.Conversion == null) {
+                    toDelete.Add(tLock);
+                    tLocks.Remove(tLock);
+                }
+            }
+
+            dbContext.AssetConversionLocks.RemoveRange(toDelete);
+            await dbContext.SaveChangesAsync();
+
+            return tLocks;
         }
     }
 }

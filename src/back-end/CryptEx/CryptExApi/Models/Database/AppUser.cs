@@ -23,7 +23,7 @@ namespace CryptExApi.Models.Database
 
         public string PreferedLanguage { get; set; } = "en-us";
 
-        public string PreferedCurrency { get; set; } = "usd";
+        public string PreferedCurrency { get; set; } = "USD";
 
         public DateTime CreationDate { get; set; }
 

@@ -3,16 +3,16 @@
         <div class="flex flex-col lg:max-w-7xl ml-80">
             <a routerLink="./"
                 class="mb-5 block bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
-                >Home</a>
+                >{{ 'Admin.ShortTitles.Home' | translate }}</a>
             <a routerLink="./search-user"
                 class="mb-5 block bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
-                >SearchUser</a>
+                >{{ 'Admin.ShortTitles.SearchUser' | translate }}</a>
             <a routerLink="./deposits"
                 class="mb-5 block bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
-                >Deposits</a>
+                >{{ 'Admin.ShortTitles.Deposits' | translate }}</a>
             <a routerLink="./bank-accounts"
                 class="mb-5 block bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
-                >Pending bank accounts</a>
+                >{{ 'Admin.ShortTitles.BankAccounts' | translate }}</a>
         </div>
         <div class="ml-10 mr-auto w-full">
             <router-outlet></router-outlet>

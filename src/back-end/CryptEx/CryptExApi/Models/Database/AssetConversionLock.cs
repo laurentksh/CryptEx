@@ -22,6 +22,10 @@ namespace CryptExApi.Models.Database
 
         public Guid RightId { get; set; }
 
+        public AppUser User { get; set; }
+
+        public Guid UserId { get; set; }
+
         /// <summary>
         /// Exchange rate at the time of the transaction
         /// </summary>

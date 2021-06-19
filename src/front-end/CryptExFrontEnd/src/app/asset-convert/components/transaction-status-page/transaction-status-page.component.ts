@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
 import { PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-model';
 import { SnackbarService } from 'src/app/services/snackbar.service';
-import { AssetConvertViewModel } from '../../models/asset-convert-view-model';
+import { AssetConverssionViewModel } from '../../models/asset-converssion-view-model';
 import { AssetConvertService } from '../../services/asset-convert.service';
 
 @Component({
@@ -12,21 +13,23 @@ import { AssetConvertService } from '../../services/asset-convert.service';
   styleUrls: ['./transaction-status-page.component.scss']
 })
 export class TransactionStatusPageComponent implements OnInit {
-  transaction: AssetConvertViewModel;
+  transaction: AssetConverssionViewModel;
   paymentStatusRef = PaymentStatus;
+  sub: Subscription;
 
-  constructor(public service: AssetConvertService, private snack: SnackbarService, private route: ActivatedRoute) { }
+  constructor(public service: AssetConvertService, private snack: SnackbarService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.sub = this.route.params.subscribe(params => {
       const id = params["id"];
 
       if (id == null) {
         this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not load transaction", AlertType.Error));
+        this.router.navigate(['buy-sell']);
         return;
       }
 
-      //this.service.BeginSignalR(id).then()
+      //this.service.BeginSignalR(id).then();
       /*this.service.transaction = {
         amount: 5.5,
         id: 'TEST-91230912039',
@@ -50,6 +53,10 @@ export class TransactionStatusPageComponent implements OnInit {
         this.transaction.status = PaymentStatus.success
       }, 10000);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
   }
 
   getStatusText(): string {

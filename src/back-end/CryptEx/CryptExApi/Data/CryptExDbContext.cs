@@ -41,26 +41,31 @@ namespace CryptExApi.Data
 
             builder.Entity<FiatDeposit>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(14, 2);
 
             builder.Entity<FiatWithdrawal>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(14, 2);
 
             builder.Entity<CryptoDeposit>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(14, 2);
 
             builder.Entity<AssetConversion>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(14, 2);
 
             builder.Entity<AssetConversionLock>()
                 .Property(x => x.ExchangeRate)
-                .HasPrecision(12, 2);
+                .HasPrecision(20, 8);
 
             builder.Entity<AssetConversionLock>()
                 .HasOne(x => x.Left)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<AssetConversionLock>()
+                .HasOne(x => x.User)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
 

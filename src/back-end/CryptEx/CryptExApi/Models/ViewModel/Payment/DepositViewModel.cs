@@ -31,6 +31,7 @@ namespace CryptExApi.Models.ViewModel.Payment
         {
             Id = fiatDeposit.Id,
             Amount = fiatDeposit.Amount,
+            Date = fiatDeposit.CreationDate,
             Status = fiatDeposit.Status,
             SessionId = fiatDeposit.StripeSessionId,
             WalletType = WalletType.Fiat,
@@ -47,6 +48,8 @@ namespace CryptExApi.Models.ViewModel.Payment
         {
             Id = cryptoDeposit.Id,
             Amount = cryptoDeposit.Amount,
+            Date = cryptoDeposit.CreationDate,
+            Status = cryptoDeposit.Status,
             //WalletAddress = null, //Wallet address must be set manually by caller.
             WalletType = WalletType.Crypto,
             WalletId = cryptoDeposit.WalletId,

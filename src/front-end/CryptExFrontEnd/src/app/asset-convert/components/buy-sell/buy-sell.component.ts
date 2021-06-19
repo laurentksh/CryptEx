@@ -5,7 +5,7 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { UserService } from 'src/app/user/services/user.service';
 import { WalletViewModel } from 'src/app/wallet/models/wallet-view-model';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { AssetConvertDto } from '../../models/asset-convert-dto';
+import { AssetConversionLockDto } from '../../models/asset-conversion-lock-dto';
 import { AssetConvertService } from '../../services/asset-convert.service';
 
 @Component({
@@ -15,8 +15,7 @@ import { AssetConvertService } from '../../services/asset-convert.service';
 })
 export class BuySellComponent implements OnInit {
   assets: WalletViewModel[];
-  dto: AssetConvertDto = {} as AssetConvertDto;
-  amount: number = -1;
+  dto: AssetConversionLockDto = {} as AssetConversionLockDto;
 
   constructor(
     private walletService: WalletService,
@@ -30,14 +29,13 @@ export class BuySellComponent implements OnInit {
     this.walletService.GetWalletList().then(x => {
       if (x.success) {
         this.assets = x.content;
+
+        this.dto.leftAssetId = this.assets.find(x => x.ticker == this.user.SelectedCurrency).id;
+        this.dto.rightAssetId = this.assets.find(x => x.ticker == "BTC").id;
       } else {
         this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not load assets.", AlertType.Error));
       }
     })
-  }
-
-  amountChanged(amount: number): void {
-    this.dto.amount = amount;
   }
 
   leftAssetChanged($event: any): void {
@@ -48,11 +46,11 @@ export class BuySellComponent implements OnInit {
     this.dto.rightAssetId = $event.target.value;
   }
 
-  doConvert(): void {
-    this.service.Convert(this.dto).then(x => {
+  doLock(): void {
+    this.service.LockTransaction(this.dto).then(x => {
       if (x.success) {
-        this.router.navigate(['/buy-sell/transaction', x.content]);
-        this.snack.ShowSnackbar(new SnackBarCreate("Success", "The conversion has begun. Watch as it happens in real time !", AlertType.Success));
+        this.router.navigate(['/buy-sell/preview', x.content.id]);
+        this.snack.ShowSnackbar(new SnackBarCreate("Success", "Price locked, set an amount and confirm the transaction or cancel it.", AlertType.Success));
       } else {
         if (x.error.status == 400) {
           this.snack.ShowSnackbar(new SnackBarCreate("Insufficient funds", "You do not have enough funds to convert this asset.", AlertType.Error));
@@ -60,6 +58,6 @@ export class BuySellComponent implements OnInit {
           this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not convert assets.", AlertType.Error));
         }
       }
-    })
+    });
   }
 }

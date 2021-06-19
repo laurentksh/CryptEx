@@ -10,7 +10,7 @@ namespace CryptExApi.Models.ViewModel
     {
         public decimal Amount { get; set; }
 
-        public static UserWalletViewModel FromWallet(Wallet wallet, WalletPairViewModel pair = null) => new()
+        public static new UserWalletViewModel FromWallet(Wallet wallet, WalletPairViewModel pair = null) => new()
         {
             Id = wallet.Id,
             Ticker = wallet.Ticker,

@@ -1,0 +1,50 @@
+<h3 *ngIf="lock == null" class="mx-auto text-3xl">
+    {{ 'Global.Loading' | translate }}
+</h3>
+
+<div *ngIf="lock != null" class="flex flex-col w-3/4 mx-auto">
+    <div class="mr-auto ml-auto 2xl:w-1/3 my-20">
+        <div class="shadow bg-white rounded-md p-5">
+            <h3 class="font-bold text-2xl">{{ 'BuySell.Title' | translate }}</h3>
+            <p class="mb-5">{{ 'BuySell.Preview.Title' | translate }}</p>
+
+            <div class="flex flex-row">
+                <div class="w-48 mt-3 appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    <p>{{ lock.pair.left.ticker }}</p>
+                </div>
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mt-3 mx-auto text-gray-700" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+
+                <div class="w-48 mt-3 appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    <p>{{ lock.pair.right.ticker }}</p>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <p class="text-lg">{{ 'BuySell.Preview.Rate' | translate }} : <span class="font-semibold">{{ lock.pair.rate }}</span></p>
+                <p class="text-lg mt-1" *ngIf="dto.amount != null">{{ 'BuySell.Preview.Price' | translate }}: {{ lock.pair.right.ticker }} <span class="font-semibold">{{ getResultPrice() }}</span></p>
+            </div>
+
+            <div class="mt-5">
+                <input type="number" (change)="amountChanged($event.target.value)" class="w-full px-2 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="{{ 'BuySell.Placeholder' | translate }}">
+
+                <button type="button"
+                    [disabled]="dto.amount == null"
+                    [ngClass]="[dto.amount == null ? 'bg-indigo-300' : 'bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700']"
+                    class="block w-full max-w-xs mx-auto mt-5  text-white rounded-lg px-3 py-3 font-semibold"
+                    (click)="doConvert()">
+                    {{ 'BuySell.Preview.Confirm' | translate }}
+                </button>
+                <button type="button"
+                    class="block w-full max-w-xs mx-auto mt-5 bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
+                    (click)="doCancel()">
+                    {{ 'BuySell.Preview.Cancel' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

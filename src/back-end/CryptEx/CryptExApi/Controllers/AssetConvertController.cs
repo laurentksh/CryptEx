@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Extensions;
 using CryptExApi.Models.DTO;
+using CryptExApi.Models.DTO.AssetConvert;
 using CryptExApi.Models.SignalR;
 using CryptExApi.Models.ViewModel.AssetConvert;
 using CryptExApi.Services;
@@ -57,15 +58,87 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTransaction([FromQuery] Guid id)
+        public async Task<IActionResult> GetTransactions([FromQuery] Guid id)
         {
             try {
                 var user = await HttpContext.GetUser();
-                var transaction = await convertService.GetTransaction(user, id);
+                var transactions = await convertService.GetTransaction(user, id);
 
-                return Ok(transaction);
+                return Ok(transactions);
             } catch (Exception ex) {
-                logger.LogWarning(ex, "Could not convert assets.");
+                logger.LogWarning(ex, "Could not get transactions.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("transactions")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AssetConversionViewModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTransactions()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var transactions = await convertService.GetTransactions(user);
+
+                return Ok(transactions);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not get transactions.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("lock")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AssetConversionLockViewModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTransactionLock([FromQuery] Guid id)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var transactionLock = await convertService.GetTransactionLock(user, id);
+
+                return Ok(transactionLock);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not get transaction lock.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("lock")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AssetConversionLockViewModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RequestTransactionLock([FromBody] AssetConvertionLockDto dto)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var transactionLock = await convertService.LockTransaction(user, dto);
+
+                return Ok(transactionLock);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not request transaction lock.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpDelete("lock")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AssetConversionLockViewModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoveTransactionLock([FromQuery] Guid id)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await convertService.RemoveTransactionLock(user, id);
+
+                return Ok();
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Could not get transaction lock.");
                 return exceptionHandler.Handle(ex, Request);
             }
         }

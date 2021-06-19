@@ -10,7 +10,7 @@ module.exports = {
             syntax: 'postcss-scss',
             plugins: [
               require('postcss-import'),
-              //require('tailwindcss'), // Fuck whoever made this file and added this line, I spent 2 hours debugging a bug caused by it.
+              require('tailwindcss'), // Nvm it's actually required now ?? Makes no sense... Comment this line if having issues with styling
               require('autoprefixer'),
             ],
           },

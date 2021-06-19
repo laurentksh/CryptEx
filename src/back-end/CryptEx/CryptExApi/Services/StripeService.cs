@@ -39,7 +39,7 @@ namespace CryptExApi.Services
         {
             var stripeEvent = EventUtility.ConstructEvent(jsonBody, stripeSignature, configuration["WHCheckoutCallbackSecret"]);
             Session session;
-
+            
             switch (stripeEvent.Type) {
                 case Events.CheckoutSessionCompleted:
                     session = stripeEvent.Data.Object as Session;
