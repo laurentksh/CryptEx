@@ -18,20 +18,14 @@
                   <div class="text-base text-white ">Account total</div>
                   <div class="flex items-center pt-1">
                     <div class="text-2xl font-bold text-white">
-                      <p *ngIf="total != null; else totalNull">
-                        {{ total.reference.ticker }} {{ total.amount.toLocaleString() }}
+                      <p *ngIf="totals != null; else totalNull">
+                        {{ totals.accountTotal.reference.ticker }} {{ totals.accountTotal.amount.toLocaleString() }}
                       </p>
                       <ng-template #totalNull>
                         -
                       </ng-template>
                     </div>
-                    <span class="flex items-center px-2 py-0.5 mx-2 text-sm text-green-600 bg-green-100 rounded-full">
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M18 15L12 9L6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                          stroke-linejoin="round"></path>
-                      </svg>
-                      <span>5.2%</span>
-                    </span>
+                    <app-percentage-card [oldValue]="totals == null ? null : totals.accountTotalYtd.amount" [newValue]="totals == null ? null : totals.accountTotal.amount"></app-percentage-card>
                   </div>
                 </div>
 
@@ -39,20 +33,14 @@
                   <div class="text-base text-white ">Total Fiat</div>
                   <div class="flex items-center pt-1">
                     <div class="text-2xl font-bold text-white ">
-                      <p *ngIf="totalFiat != null; else totalFiatNull">
-                        {{ totalFiat.reference.ticker }} {{ totalFiat.amount.toLocaleString() }}
+                      <p *ngIf="totals != null; else totalFiatNull">
+                        {{ totals.fiatTotal.reference.ticker }} {{ totals.fiatTotal.amount.toLocaleString() }}
                       </p>
                       <ng-template #totalFiatNull>
                         -
                       </ng-template>
                     </div>
-                    <span class="flex items-center px-2 py-0.5 mx-2 text-sm text-green-600 bg-green-100 rounded-full">
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M18 15L12 9L6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                          stroke-linejoin="round"></path>
-                      </svg>
-                      <span>1.8%</span>
-                    </span>
+                    <app-percentage-card [oldValue]="totals?.fiatTotalYtd.amount" [newValue]="totals?.fiatTotal.amount"></app-percentage-card>
                   </div>
                 </div>
 
@@ -60,29 +48,28 @@
                   <div class="text-base text-white ">Total Crypto</div>
                   <div class="flex items-center pt-1">
                     <div class="text-2xl font-bold text-white ">
-                      <p *ngIf="totalCrypto != null; else totalCryptoNull">
-                        {{ totalCrypto.reference.ticker }} {{ totalCrypto.amount.toLocaleString() }}
+                      <p *ngIf="totals != null; else totalCryptoNull">
+                        {{ totals.cryptoTotal.reference.ticker }} {{ totals.cryptoTotal.amount.toLocaleString() }}
                       </p>
                       <ng-template #totalCryptoNull>
                         -
                       </ng-template>
                     </div>
-                    <span class="flex items-center px-2 py-0.5 mx-2 text-sm text-red-600 bg-red-100 rounded-full">
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                          stroke-linejoin="round"></path>
-                      </svg>
-                      <span>2.5%</span>
-                    </span>
+                    <app-percentage-card [oldValue]="totals?.cryptoTotalYtd.amount" [newValue]="totals?.cryptoTotal.amount"></app-percentage-card>
                   </div>
                 </div>
                 <h2 class="focus-within:text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl my-8 ">
                   Performances
                 </h2>
-                <div class="mb-3  bg-red-800 p-3 rounded shadow-sm">
+                <div class="mb-3 p-3 rounded shadow-sm" [ngClass]="[
+                  totals == null ? 'bg-gray-500' : '',
+                  totals != null && totals.performanceYtd.amount >= 0 ? 'bg-green-800' : '',
+                  totals != null && totals.performanceYtd.amount < 0 ? 'bg-red-800' : ''
+                ]">
                   <div class="text-base text-white ">Gain / Loss <span class="text-xs">24 hours</span></div>
                   <div class="flex items-center pt-1">
-                    <div class="text-2xl font-bold text-white ">-</div>
+                    <p *ngIf="totals != null; else totalPerfNull" class="text-2xl font-bold text-white ">{{ totals.performanceYtd.amount.toLocaleString() }}</p>
+                    <ng-template #totalPerfNull>-</ng-template>
                   </div>
                 </div>
               </div>
@@ -94,14 +81,28 @@
 
     <div class="bg-white py-16 px-4 sm:px-6 lg:col-span-3 lg:px-8 lg:py-24 xl:pr-12">
       <div class="max-w-lg mx-auto">
-        <h2 class="focus-within:text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
-          My wallets
-        </h2>
+        <div class="flex flex-row">
+          <h2 class="focus-within:text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
+            My wallets
+          </h2>
+          <label class="flex items-center relative w-max cursor-pointer select-none ml-auto">
+            <span class="text-lg font-bold mr-3">{{ 'Wallets.HideEmptyWallets' | translate }}</span>
+            <!-- [(ngModel)]="hideEmptyWallets" [ngModelOptions]="{standalone: true}" -->
+            <button
+              type="button"
+              (click)="hideEmptyWallets = !hideEmptyWallets"
+              class="appearance-none transition-colors cursor-pointer w-14 h-7 rounded-full focus:outline-none focus:appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-blue-500"
+              [ngClass]="hideEmptyWallets ? 'bg-green-500' : 'bg-red-500'"></button>
+            <!-- <span class="absolute font-medium text-xs uppercase right-1 text-white"> OFF </span>
+            <span class="absolute font-medium text-xs uppercase right-8 text-white"> ON </span> -->
+            <span [ngClass]="hideEmptyWallets ? 'translate-x-7' : ''" class="w-7 h-7 right-7 absolute rounded-full transform transition-transform bg-gray-200"></span>
+          </label>
+        </div>
         <dl class="mt-8 text-base text-white-500">
-          <div class="flex place-items-auto bg-gray-50 dark:bg-gray-900">
+          <div class="flex place-items-auto">
             <div class="container max-w-6xl mx-auto">
               <div class="grid grid-cols-1">
-                <app-user-asset-card *ngFor="let wallet of wallets" [asset]="wallet"></app-user-asset-card>
+                <app-user-asset-card *ngFor="let wallet of wallets" [asset]="wallet" [hideEmpty]="hideEmptyWallets"></app-user-asset-card>
               </div>
             </div>
           </div>

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { createChart, isBusinessDay } from 'lightweight-charts';
+import { Subscription } from 'rxjs';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
+import { CurrencyService } from 'src/app/main/services/currency.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
-import { TotalViewModel } from '../../models/total-view-model';
+import { TotalsViewModel } from '../../models/totals-view-model';
 import { UserWalletViewModel } from '../../models/user-wallet-view-model';
 import { WalletService } from '../../services/wallet.service';
 
@@ -12,14 +14,20 @@ import { WalletService } from '../../services/wallet.service';
   styleUrls: ['./wallets.component.scss']
 })
 export class WalletsComponent implements OnInit {
+  sub: Subscription;
   wallets: UserWalletViewModel[];
-  total: TotalViewModel;
-  totalFiat: TotalViewModel;
-  totalCrypto: TotalViewModel;
+  totals: TotalsViewModel;
 
-  constructor(private walletService: WalletService, private snack: SnackbarService) { }
+  public hideEmptyWallets: boolean = false;
+
+  constructor(private walletService: WalletService, private snack: SnackbarService, private curService: CurrencyService) { }
 
   ngOnInit(): void {
+    this.loadData();
+    this.sub = this.curService.OnCurrencyChange.subscribe(() => this.loadData());
+  }
+
+  loadData(): void {
     this.walletService.GetUserWallets().then(x => {
       if (x.success) {
         this.wallets = x.content;
@@ -28,23 +36,9 @@ export class WalletsComponent implements OnInit {
       }
     });
 
-    this.walletService.GetTotal().then(x => {
+    this.walletService.GetTotals().then(x => {
       if (x.success)
-        this.total = x.content;
-      else
-        this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not user data.", AlertType.Error));
-    });
-
-    this.walletService.GetTotalFiat().then(x => {
-      if (x.success)
-        this.totalFiat = x.content;
-      else
-        this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not user data.", AlertType.Error));
-    });
-
-    this.walletService.GetTotalCrypto().then(x => {
-      if (x.success)
-        this.totalCrypto = x.content;
+        this.totals = x.content;
       else
         this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not user data.", AlertType.Error));
     });

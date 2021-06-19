@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Coinbase;
@@ -12,6 +13,8 @@ using CryptExApi.Models.ViewModel.Payment;
 using CryptExApi.Models.ViewModel.Wallets;
 using CryptExApi.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace CryptExApi.Repositories
 {
@@ -39,6 +42,12 @@ namespace CryptExApi.Repositories
 
         Task<List<CryptoDepositViewModel>> GetCryptoDeposits(AppUser user, Guid walletId);
 
+        /// <summary>
+        /// Get the value of a wallet, with the user's preferred currency.
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <param name="walletId">Wallet</param>
+        /// <returns>Wallet total value</returns>
         Task<decimal> GetWalletAmount(AppUser user, Guid walletId);
 
         /// <summary>
@@ -53,7 +62,7 @@ namespace CryptExApi.Repositories
         /// </summary>
         /// <param name="user">AppUser</param>
         /// <returns></returns>
-        Task<List<UserWalletViewModel>> GetCryptoWallets(AppUser user);
+        Task<List<UserWalletViewModel>> GetCryptoWallets(AppUser user, DateTime? at = null);
 
         /// <summary>
         /// Get the total amount (of cryptos, fiats or both)
@@ -61,7 +70,7 @@ namespace CryptExApi.Repositories
         /// <param name="user"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        Task<TotalViewModel> GetTotal(AppUser user, WalletType type);
+        Task<TotalViewModel> GetTotal(AppUser user, WalletType type, DateTime? at = null);
 
         /// <summary>
         /// Get a fiat wallet.
@@ -85,22 +94,40 @@ namespace CryptExApi.Repositories
         /// <returns></returns>
         Task<WalletViewModel> GetCryptoFull(Guid id, string currency);
 
+        /// <summary>
+        /// Returns wheter an asset exists or not.
+        /// </summary>
+        /// <param name="ticker">Asset ticker (e.g: 'USD', 'BTC')</param>
+        /// <param name="match">If the asset has to be fiat, crypto or both.</param>
+        /// <returns></returns>
         Task<bool> WalletExists(string ticker, WalletType match);
 
         Task<decimal> GetFiatExchangeRate(string left, string right);
 
-        Task<decimal> GetCryptoExchangeRate(string left, string right);
+        /// <summary>
+        /// Get the exchange price for an asset pair
+        /// </summary>
+        /// <param name="left">Left asset (e.g: USD)</param>
+        /// <param name="right">Left asset (e.g: BTC)</param>
+        /// <param name="at">(Optional) Specific date to get the price at</param>
+        /// <param name="noCache">(Optional) Ignore cached values</param>
+        /// <returns></returns>
+        Task<decimal> GetCryptoExchangeRate(string left, string right, DateTime? at = null, bool noCache = false);
     }
 
     public class WalletRepository : IWalletRepository
     {
         private readonly CryptExDbContext dbContext;
         private readonly ICoinbaseClient coinbaseClient;
+        private readonly IMemoryCache memoryCache;
+        private readonly ILogger<WalletRepository> logger;
 
-        public WalletRepository(CryptExDbContext dbContext, ICoinbaseClient coinbaseClient)
+        public WalletRepository(CryptExDbContext dbContext, ICoinbaseClient coinbaseClient, IMemoryCache memoryCache, ILogger<WalletRepository> logger)
         {
             this.dbContext = dbContext;
             this.coinbaseClient = coinbaseClient;
+            this.memoryCache = memoryCache;
+            this.logger = logger;
         }
 
         public async Task<List<Wallet>> GetWallets()
@@ -133,8 +160,7 @@ namespace CryptExApi.Repositories
                 .Where(x => x.UserId == user.Id);
             var assetConversions = dbContext.AssetConversions
                 .Include(x => x.User)
-                .Include(x => x.Left)
-                .Include(x => x.Right)
+                .Include(x => x.PriceLock)
                 .Where(x => x.UserId == user.Id);
             var fiatWithdrawals = dbContext.FiatWithdrawals
                 .Include(x => x.User)
@@ -162,8 +188,8 @@ namespace CryptExApi.Repositories
             }
 
             foreach (var conversion in assetConversions) {
-                var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.LeftId);
-                var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.RightId);
+                var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.LeftId);
+                var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.RightId);
 
                 if (conversion.Status == PaymentStatus.Failed)
                     continue;
@@ -171,7 +197,7 @@ namespace CryptExApi.Repositories
                 if (decreaseWallet != null)
                     decreaseWallet.Amount -= conversion.Amount;
                 if (increaseWallet != null)
-                    increaseWallet.Amount += conversion.Amount * conversion.ExchangeRate;
+                    increaseWallet.Amount += conversion.Amount * conversion.PriceLock.ExchangeRate;
             }
 
             foreach (var withdraw in fiatWithdrawals) {
@@ -185,7 +211,7 @@ namespace CryptExApi.Repositories
             return result;
         }
 
-        public async Task<List<UserWalletViewModel>> GetCryptoWallets(AppUser user)
+        public async Task<List<UserWalletViewModel>> GetCryptoWallets(AppUser user, DateTime? at = null)
         {
             var result = new List<UserWalletViewModel>();
             var cryptoDeposits = dbContext.CryptoDeposits
@@ -194,8 +220,7 @@ namespace CryptExApi.Repositories
                 .Where(x => x.UserId == user.Id);
             var assetConversions = dbContext.AssetConversions
                 .Include(x => x.User)
-                .Include(x => x.Left)
-                .Include(x => x.Right)
+                .Include(x => x.PriceLock)
                 .Where(x => x.UserId == user.Id);
 
             //Add wallets to the results
@@ -204,7 +229,7 @@ namespace CryptExApi.Repositories
 
             var tasks = wallets.Select(async x =>
             {
-                return UserWalletViewModel.FromWallet(x, WalletPairViewModel.FromWalletPair(new WalletPair(x, right, await GetCryptoExchangeRate(x.Ticker, right.Ticker))));
+                return UserWalletViewModel.FromWallet(x, WalletPairViewModel.FromWalletPair(new WalletPair(x, right, await GetCryptoExchangeRate(x.Ticker, right.Ticker, at))));
             });
 
             foreach (var task in tasks)
@@ -219,8 +244,8 @@ namespace CryptExApi.Repositories
             }
 
             foreach (var conversion in assetConversions) {
-                var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.LeftId);
-                var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.RightId);
+                var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.LeftId);
+                var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.RightId);
 
                 if (conversion.Status == PaymentStatus.Failed)
                     continue;
@@ -228,7 +253,7 @@ namespace CryptExApi.Repositories
                 if (decreaseWallet != null)
                     decreaseWallet.Amount -= conversion.Amount;
                 if (increaseWallet != null)
-                    increaseWallet.Amount += conversion.Amount * conversion.ExchangeRate;
+                    increaseWallet.Amount += conversion.Amount * conversion.PriceLock.ExchangeRate;
             }
 
             return result;
@@ -273,7 +298,7 @@ namespace CryptExApi.Repositories
             return result;
         }
 
-        public async Task<TotalViewModel> GetTotal(AppUser user, WalletType type)
+        public async Task<TotalViewModel> GetTotal(AppUser user, WalletType type, DateTime? at = null)
         {
             var selectedWallet = await GetFiatFull(user.PreferedCurrency);
             var wallets = new List<UserWalletViewModel>();
@@ -282,7 +307,7 @@ namespace CryptExApi.Repositories
             if (type == WalletType.Fiat || type == WalletType.Both)
                 wallets.AddRange(await GetFiatWallets(user));
             if (type == WalletType.Crypto || type == WalletType.Both)
-                wallets.AddRange(await GetCryptoWallets(user));
+                wallets.AddRange(await GetCryptoWallets(user, at));
 
             foreach (var wallet in wallets) {
                 total += wallet.Amount * wallet.SelectedCurrencyPair.Rate;
@@ -321,13 +346,39 @@ namespace CryptExApi.Repositories
             return Task.FromResult(DefaultDataSeeder.FiatExchangeRates.SingleOrDefault(x => x.leftTicker == left && x.rightTicker == right).exchangeRate);
         }
 
-        public async Task<decimal> GetCryptoExchangeRate(string left, string right)
+        public async Task<decimal> GetCryptoExchangeRate(string left, string right, DateTime? at = null, bool noCache = false)
         {
-            var resp = await coinbaseClient.Data.GetBuyPriceAsync(left + "-" + right);
+            var cacheKey = $"ExchangeRate.{left}-{right}@{at.GetValueOrDefault(DateTime.UtcNow).ToString("yyyy-MM-dd.HH", CultureInfo.InvariantCulture)}";
 
+            bool cacheHit = memoryCache.TryGetValue(cacheKey, out decimal rate);
+            if (cacheHit && !noCache)
+                return rate;
+
+            if (!cacheHit)
+                logger.LogTrace($"Cache miss, querying exchange rate for {left}-{right}. Cache id: {cacheKey}");
+
+            var pair = string.Empty;
+            bool inverseRate = false;
+
+            if (DefaultDataSeeder.Fiats.Any(x => x.ticker == left)) { //Coinbase endpoint currency pair format is {CRYPTO}-{FIAT}
+                pair = right + "-" + left;
+                inverseRate = true;
+            } else {
+                pair = left + "-" + right;
+            }
+
+            var resp = await coinbaseClient.Data.GetSpotPriceAsync(pair, at);
+            
             if (resp.HasError())
                 throw new CryptoApiException(resp.Errors);
 
+            if (inverseRate)
+                rate = Math.Round(1m / resp.Data.Amount, 8);
+            else
+                rate = resp.Data.Amount;
+
+            memoryCache.Set(cacheKey, rate, TimeSpan.FromSeconds(60));
+            
             return resp.Data.Amount;
         }
     }

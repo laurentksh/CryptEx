@@ -7,6 +7,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { CryptoRouting } from './asset-convert-routing';
 import { TranslateModule } from '@ngx-translate/core';
 import { TransactionStatusPageComponent } from './components/transaction-status-page/transaction-status-page.component';
+import { PreviewTransactionComponent } from './components/preview-transaction/preview-transaction.component';
+import { TransactionHistoryComponent } from './components/transaction-history/transaction-history.component';
 
 
 
@@ -14,7 +16,9 @@ import { TransactionStatusPageComponent } from './components/transaction-status-
   declarations: [
     BuySellComponent,
     CryptoComponent,
-    TransactionStatusPageComponent
+    TransactionStatusPageComponent,
+    PreviewTransactionComponent,
+    TransactionHistoryComponent
   ],
   imports: [
     CommonModule,

@@ -70,51 +70,17 @@ namespace CryptExApi.Controllers
             }
         }
 
-        [HttpGet("total")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TotalViewModel))]
+        [HttpGet("totals")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TotalsViewModel))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetTotal()
         {
             try {
                 var user = await HttpContext.GetUser();
-                var total = await walletsService.GetTotal(user, Models.Database.WalletType.Both);
+                var totals = await walletsService.GetTotals(user);
 
-                return Ok(total);
-            } catch (Exception ex) {
-                logger.LogWarning(ex, "Could not get total");
-                return exceptionHandler.Handle(ex, Request);
-            }
-        }
-
-        [HttpGet("total/fiat")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TotalViewModel))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTotalFiat()
-        {
-            try {
-                var user = await HttpContext.GetUser();
-                var total = await walletsService.GetTotal(user, Models.Database.WalletType.Fiat);
-
-                return Ok(total);
-            } catch (Exception ex) {
-                logger.LogWarning(ex, "Could not get total");
-                return exceptionHandler.Handle(ex, Request);
-            }
-        }
-
-        [HttpGet("total/crypto")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TotalViewModel))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTotalCrypto()
-        {
-            try {
-                var user = await HttpContext.GetUser();
-                var total = await walletsService.GetTotal(user, Models.Database.WalletType.Crypto);
-
-                return Ok(total);
+                return Ok(totals);
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could not get total");
                 return exceptionHandler.Handle(ex, Request);

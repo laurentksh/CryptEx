@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CryptExApi.Data;
+using CryptExApi.Exceptions;
 using CryptExApi.Models.Database;
 using CryptExApi.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CryptExApi.Utilities
@@ -75,7 +78,7 @@ namespace CryptExApi.Utilities
             ("JPY", "AUD", 0.012m),
         };
 
-        private static readonly List<(string ticker, string fullName)> Fiats = new()
+        public static readonly List<(string ticker, string fullName)> Fiats = new()
         {
             ("USD", "US Dollar"),
             ("CHF", "Swiss Franc"),
@@ -86,7 +89,7 @@ namespace CryptExApi.Utilities
             ("JPY", "Japan Yen")
         };
 
-        private static readonly List<(string ticker, string fullName)> Cryptos = new()
+        public static readonly List<(string ticker, string fullName)> Cryptos = new()
         {
             ("BTC", "Bitcoin"),
             ("ETH", "Ethereum"),
@@ -392,17 +395,18 @@ namespace CryptExApi.Utilities
                     LastName = "Admin",
                     BirthDay = DateTime.UnixEpoch,
                     PreferedCurrency = "CHF",
-                    PreferedLanguage = "fr-fr",
+                    PreferedLanguage = "en-us",
                     CreationDate = DateTime.UnixEpoch
                 };
 
                 var result = await userManager.CreateAsync(user, "Password123$");
 
                 if (!result.Succeeded) {
-                    throw new Exception("Could not create admin account.");
+                    throw new IdentityException("Could not create admin account.");
                 }
 
                 await userManager.AddToRolesAsync(user, new List<string>() { "user", "admin" });
+                await userManager.AddClaimsAsync(user, new List<Claim> { new Claim("premium", true.ToString()) });
             }
 
             // Fiats
@@ -455,6 +459,7 @@ namespace CryptExApi.Utilities
     {
         public async Task Seed(IServiceProvider serviceProvider)
         {
+            var dbContext = serviceProvider.GetService<CryptExDbContext>();
             var userManager = serviceProvider.GetService<UserManager<AppUser>>();
             var roleManager = serviceProvider.GetService<RoleManager<AppRole>>();
             var authService = serviceProvider.GetService<IAuthService>();
@@ -467,6 +472,41 @@ namespace CryptExApi.Utilities
                     LastName = "Account",
                     Password = "Password123$"
                 });
+
+                var user = await userManager.FindByEmailAsync("testaccount@cryptex-trade.tech");
+                var wallet = await dbContext.Wallets.SingleAsync(x => x.Ticker == "CHF");
+                var btc = await dbContext.Wallets.SingleAsync(x => x.Ticker == "BTC");
+
+                await dbContext.FiatDeposits.AddAsync(new FiatDeposit
+                {
+                    Amount = 20000000,
+                    Status = Models.PaymentStatus.Success,
+                    StripeSessionId = "TESTSESSIONID",
+                    CreationDate = DateTime.UtcNow.AddDays(-3),
+                    UserId = user.Id,
+                    WalletId = wallet.Id
+                });
+
+                var result = await dbContext.AssetConversionLocks.AddAsync(new AssetConversionLock
+                {
+                    ExchangeRate = 0.000031m,
+                    LeftId = wallet.Id,
+                    RightId = btc.Id,
+                    UserId = user.Id,
+                    ExpirationUtc = DateTime.UtcNow.AddDays(-3),
+                });
+
+                await dbContext.SaveChangesAsync();
+
+                await dbContext.AssetConversions.AddAsync(new AssetConversion
+                {
+                    Amount = 1000000,
+                    PriceLockId = result.Entity.Id,
+                    UserId = user.Id,
+                    Status = Models.PaymentStatus.Success
+                });
+
+                await dbContext.SaveChangesAsync();
             }
         }
     }

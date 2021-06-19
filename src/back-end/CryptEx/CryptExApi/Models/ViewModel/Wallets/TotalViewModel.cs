@@ -10,5 +10,16 @@ namespace CryptExApi.Models.ViewModel.Wallets
         public decimal Amount { get; set; }
 
         public WalletViewModel Reference { get; set; }
+
+        public TotalViewModel()
+        {
+
+        }
+
+        public TotalViewModel(decimal amount, WalletViewModel reference)
+        {
+            Amount = amount;
+            Reference = reference;
+        }
     }
 }

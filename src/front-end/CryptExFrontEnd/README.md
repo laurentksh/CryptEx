@@ -2,26 +2,22 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.1.
 
-## Development server
+## Running locally
 
+This project requires NodeJS to be installed (and thus NPM).
+Before everything you must run 'npm install' in the current folder, so that dependencies get installed.
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Add '--prod' when running the command above to use the Azure production server. (CORS is/should be configured properly so that you can use it when running locally).
 
-## Code scaffolding
+## Common issues
+Common issues you might encounter, and how to resolve them.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### No styling
+If no styling is loaded (i.e all the pages are a big mess to look at), or you have any issue with CSS compilation,
+then consider disabling Tailwind's JIT compilation in 'tailwind.config.js'. The property name is 'jit', setting it to false will resolve this issue.
+
+
 
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

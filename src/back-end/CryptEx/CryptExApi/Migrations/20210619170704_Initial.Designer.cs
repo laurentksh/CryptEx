@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CryptExApi.Migrations
 {
     [DbContext(typeof(CryptExDbContext))]
-    [Migration("20210617023435_Initial")]
+    [Migration("20210619170704_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -143,21 +143,46 @@ namespace CryptExApi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("decimal(12,2)");
+                        .HasPrecision(14, 2)
+                        .HasColumnType("decimal(14,2)");
+
+                    b.Property<Guid>("PriceLockId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PriceLockId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AssetConversions");
+                });
+
+            modelBuilder.Entity("CryptExApi.Models.Database.AssetConversionLock", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("ExchangeRate")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("decimal(12,2)");
+                        .HasPrecision(20, 8)
+                        .HasColumnType("decimal(20,8)");
+
+                    b.Property<DateTime>("ExpirationUtc")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("LeftId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("RightId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -170,7 +195,7 @@ namespace CryptExApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AssetConversions");
+                    b.ToTable("AssetConversionLocks");
                 });
 
             modelBuilder.Entity("CryptExApi.Models.Database.BankAccount", b =>
@@ -223,8 +248,8 @@ namespace CryptExApi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("decimal(12,2)");
+                        .HasPrecision(14, 2)
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -257,8 +282,8 @@ namespace CryptExApi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("decimal(12,2)");
+                        .HasPrecision(14, 2)
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -291,8 +316,8 @@ namespace CryptExApi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("decimal(12,2)");
+                        .HasPrecision(14, 2)
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<Guid>("BankAccountId")
                         .HasColumnType("uniqueidentifier");
@@ -480,6 +505,25 @@ namespace CryptExApi.Migrations
 
             modelBuilder.Entity("CryptExApi.Models.Database.AssetConversion", b =>
                 {
+                    b.HasOne("CryptExApi.Models.Database.AssetConversionLock", "PriceLock")
+                        .WithOne("Conversion")
+                        .HasForeignKey("CryptExApi.Models.Database.AssetConversion", "PriceLockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CryptExApi.Models.Database.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PriceLock");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CryptExApi.Models.Database.AssetConversionLock", b =>
+                {
                     b.HasOne("CryptExApi.Models.Database.Wallet", "Left")
                         .WithMany()
                         .HasForeignKey("LeftId")
@@ -495,7 +539,7 @@ namespace CryptExApi.Migrations
                     b.HasOne("CryptExApi.Models.Database.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Left");
@@ -656,6 +700,11 @@ namespace CryptExApi.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("BankAccount");
+                });
+
+            modelBuilder.Entity("CryptExApi.Models.Database.AssetConversionLock", b =>
+                {
+                    b.Navigation("Conversion");
                 });
 #pragma warning restore 612, 618
         }

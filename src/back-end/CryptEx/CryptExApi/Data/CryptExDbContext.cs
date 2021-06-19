@@ -13,6 +13,8 @@ namespace CryptExApi.Data
 
         public DbSet<AssetConversion> AssetConversions { get; set; }
 
+        public DbSet<AssetConversionLock> AssetConversionLocks { get; set; }
+
         public DbSet<FiatWithdrawal> FiatWithdrawals { get; set; }
 
         public DbSet<Wallet> Wallets { get; set; }
@@ -39,33 +41,43 @@ namespace CryptExApi.Data
 
             builder.Entity<FiatDeposit>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(14, 2);
 
             builder.Entity<FiatWithdrawal>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(14, 2);
 
             builder.Entity<CryptoDeposit>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(14, 2);
 
             builder.Entity<AssetConversion>()
                 .Property(x => x.Amount)
-                .HasPrecision(12, 2);
+                .HasPrecision(14, 2);
 
-            builder.Entity<AssetConversion>()
+            builder.Entity<AssetConversionLock>()
                 .Property(x => x.ExchangeRate)
-                .HasPrecision(12, 2);
+                .HasPrecision(20, 8);
 
-            builder.Entity<AssetConversion>()
+            builder.Entity<AssetConversionLock>()
                 .HasOne(x => x.Left)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<AssetConversion>()
+            builder.Entity<AssetConversionLock>()
+                .HasOne(x => x.User)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<AssetConversionLock>()
                 .HasOne(x => x.Right)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<AssetConversion>()
+                .HasOne(x => x.PriceLock)
+                .WithOne(x => x.Conversion)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
