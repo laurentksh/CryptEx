@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthenticationGuard } from '../guards/authentication.guard';
 import { PremiumGuard } from '../guards/premium.guard';
 import { PremiumHomeComponent } from './components/premium-home/premium-home.component';
 import { PremiumManageComponent } from './components/premium-manage/premium-manage.component';
@@ -8,16 +9,18 @@ import { PremiumPayComponent } from './components/premium-pay/premium-pay.compon
 const routes: Routes = [
   {
     path: 'premium',
-    component: PremiumHomeComponent
+    component: PremiumHomeComponent,
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'premium/pay',
-    component: PremiumPayComponent
+    component: PremiumPayComponent,
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'premium/manage',
     component: PremiumManageComponent,
-    canActivate: [PremiumGuard]
+    canActivate: [AuthenticationGuard, PremiumGuard]
   }
 ];
 

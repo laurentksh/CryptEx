@@ -68,7 +68,7 @@
                 ]">
                   <div class="text-base text-white ">Gain / Loss <span class="text-xs">24 hours</span></div>
                   <div class="flex items-center pt-1">
-                    <p *ngIf="totals != null; else totalPerfNull" class="text-2xl font-bold text-white ">{{ totals.performanceYtd.amount.toLocaleString() }}</p>
+                    <p *ngIf="totals != null; else totalPerfNull" class="text-2xl font-bold text-white ">{{ totals.performanceYtd.reference.ticker }} {{ totals.performanceYtd.amount.toLocaleString() }}</p>
                     <ng-template #totalPerfNull>-</ng-template>
                   </div>
                 </div>

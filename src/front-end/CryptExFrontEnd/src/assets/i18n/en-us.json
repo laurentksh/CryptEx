@@ -88,7 +88,8 @@
     },
     "Manage": {
       "Title": "Manage subscription",
-      "Cancel": "Cancel subscription"
+      "Cancel": "Cancel subscription",
+      "Perks": "Your perks"
     },
     "PromoCard": {
       "Title": "Monthly Premium Membership",
@@ -97,7 +98,7 @@
       "PrivForum": "Private forum access",
       "MemResx": "Member resources",
       "AnnualConvs": "Entry to annual conference",
-      "FreeDeposits": "Free Fiat Deposits",
+      "NoFees": "Free transaction fees",
       "Pay": {
         "Freq": "Pay every month",
         "Policy": "Learn about our membership policy",
@@ -153,7 +154,9 @@
       "Confirm": "Confirm",
       "Cancel": "Cancel",
       "Rate": "Exchange rate",
-      "Price": "What you will receive"
+      "Price": "What you will receive",
+      "TimeLeft1": "You have",
+      "TimeLeft2": "seconds to confirm the transaction."
     }
   },
   "Wallets": {

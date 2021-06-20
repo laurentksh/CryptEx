@@ -53,7 +53,8 @@ namespace CryptExApi.Repositories
             });
 
             await dbContext.SaveChangesAsync();
-            
+            await result.ReloadAsync();
+
             return result.Entity;
         }
 

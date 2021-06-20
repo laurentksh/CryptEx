@@ -51,7 +51,7 @@ export class TransactionStatusPageComponent implements OnInit {
       }, 4000);
       setTimeout(() => {
         this.transaction.status = PaymentStatus.success
-      }, 10000);
+      }, 8000);
     });
   }
 

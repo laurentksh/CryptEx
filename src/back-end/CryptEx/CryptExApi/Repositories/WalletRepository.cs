@@ -379,7 +379,7 @@ namespace CryptExApi.Repositories
 
             memoryCache.Set(cacheKey, rate, TimeSpan.FromSeconds(60));
             
-            return resp.Data.Amount;
+            return rate;
         }
     }
 }
