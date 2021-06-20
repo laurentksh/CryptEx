@@ -24,6 +24,11 @@ After trading on the platform, the users can then withdraw their money on their 
 ### Technologies used
 Please read project-specific READMEs for more informations on the technologies we used.
 
+## Test accounts
+When in production there is only one "test" account, which is admin@cryptex-trade.tech
+When in development, both admin and testaccount@cryptex-trade.tech are available.
+The password for both is 'Password123$'
+
 ## Sub projects
 This project has two sub-projects, "CryptExApi" and "CryptExFrontEnd" :
 
