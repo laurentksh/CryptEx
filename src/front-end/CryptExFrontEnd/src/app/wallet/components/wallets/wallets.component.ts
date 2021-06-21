@@ -37,9 +37,11 @@ export class WalletsComponent implements OnInit {
     });
 
     this.walletService.GetTotals().then(x => {
-      if (x.success)
+      if (x.success) {
         this.totals = x.content;
-      else
+
+        this.hideEmptyWallets = x.content.accountTotal.amount != 0;
+      } else
         this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not user data.", AlertType.Error));
     });
   }
