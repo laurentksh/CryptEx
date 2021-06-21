@@ -56,12 +56,22 @@ namespace CryptExApi.Services
 
         public async Task<UserViewModel> GetUser(Guid id)
         {
-            return UserViewModel.FromAppUser(await userRepository.GetUser(id));
+            var user = await userRepository.GetUser(id);
+
+            if (user == null)
+                throw new NotFoundException($"User with id '{id}' could not be found.");
+
+            return UserViewModel.FromAppUser(user);
         }
 
         public async Task<FullUserViewModel> GetFullUser(Guid id)
         {
-            return FullUserViewModel.FromAppUser(await userRepository.GetFullUser(id));
+            var user = await userRepository.GetFullUser(id);
+
+            if (user == null)
+                throw new NotFoundException($"User with id '{id}' could not be found.");
+
+            return FullUserViewModel.FromAppUser(user);
         }
 
         public async Task<UserViewModel> UpdateUser(AppUser user, UpdateUserDto dto)
@@ -99,7 +109,6 @@ namespace CryptExApi.Services
         {
             if (passwordChangeDTO is null)
                 throw new ArgumentNullException(nameof(passwordChangeDTO));
-
             
             user ??= await userManager.FindByEmailAsync(passwordChangeDTO.Email);
             if (user == null)
