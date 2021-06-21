@@ -12,6 +12,10 @@ export interface FullUserViewModel {
 
     status: AccountStatus;
 
+    email: string;
+    
+    phoneNumber: string;
+
     preferedLanguage: string;
 
     preferedCurrency: string;
