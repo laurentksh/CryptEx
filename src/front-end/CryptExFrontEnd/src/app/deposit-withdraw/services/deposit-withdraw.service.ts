@@ -44,6 +44,7 @@ export class DepositWithdrawService {
     };
 
     this.hubConnection = new signalR.HubConnectionBuilder()
+      .configureLogging(this.env.production ? signalR.LogLevel.Warning : signalR.LogLevel.Trace)
       .withAutomaticReconnect()
       .withUrl(this.env.apiBaseUrl + "feed/deposits", options)
       .build();
@@ -79,7 +80,7 @@ export class DepositWithdrawService {
   }
 
   public async RefreshDeposits(): Promise<ApiResult> {
-    return this.http.Get("Payment/deposits", { params: new HttpParams().set("signalR", "true")});
+    return this.http.Get("Payment/deposits", { params: new HttpParams().set("signalR", "true") });
   }
 
   public async DepositFiat(amount: number): Promise<ApiResult<FiatDepositViewModel>> {
