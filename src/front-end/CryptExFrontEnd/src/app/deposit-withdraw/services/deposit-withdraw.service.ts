@@ -61,7 +61,7 @@ export class DepositWithdrawService {
 
   private refreshData(data: DepositViewModel[]): void {
     data.forEach(newElement => {
-      var index = this.deposits.findIndex(x => x.id == element.id)
+      var index = this.deposits.findIndex(x => x.id == newElement.id)
 
       if (index != -1) {
         var element = this.deposits[index];
