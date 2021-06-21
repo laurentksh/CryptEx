@@ -16,6 +16,10 @@ namespace CryptExApi.Models.ViewModel
 
         public DateTime BirthDay { get; set; }
 
+        public string Email { get; set; }
+
+        public string PhoneNumber { get; set; }
+
         public AccountStatus Status { get; set; }
 
         public string PreferedLanguage { get; set; }
@@ -34,6 +38,8 @@ namespace CryptExApi.Models.ViewModel
             FirstName = user.FirstName,
             LastName = user.LastName,
             BirthDay = user.BirthDay,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber,
             Status = user.Status,
             PreferedLanguage = user.PreferedLanguage,
             PreferedCurrency = user.PreferedCurrency,
