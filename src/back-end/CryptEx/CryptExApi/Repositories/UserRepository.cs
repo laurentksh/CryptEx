@@ -51,6 +51,7 @@ namespace CryptExApi.Repositories
             var user = await DbContext.Users
                 .Include(x => x.BankAccount)
                 .Include(x => x.Address)
+                    .ThenInclude(x => x.Country)
                 .SingleAsync(x => x.Id == id);
 
             return user;
